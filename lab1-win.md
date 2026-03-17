@@ -15,8 +15,33 @@ Swoje odpowiedzi wpisuj w miejsca oznaczone jako:
 > Wyniki:
 
 ```sql
---  ...
+select avg(unitprice) avgprice
+from products p;
 ```
+
+
+
+```sql
+select avg(unitprice) over () as avgprice
+from products p;
+```
+
+
+
+```sql
+select categoryid, avg(unitprice) avgprice
+from products p
+group by categoryid;
+```
+
+
+
+```sql
+select avg(unitprice) over (partition by categoryid) as avgprice
+from products p;
+```
+
+
 
 ---
 
