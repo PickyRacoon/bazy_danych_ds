@@ -18,30 +18,26 @@ Swoje odpowiedzi wpisuj w miejsca oznaczone jako:
 select avg(unitprice) avgprice
 from products p;
 ```
-
-
+![zdj1](./wyniki/zdj1.png)
 
 ```sql
 select avg(unitprice) over () as avgprice
 from products p;
 ```
-
-
+![zdj2](./wyniki/zdj2.png)
 
 ```sql
 select categoryid, avg(unitprice) avgprice
 from products p
 group by categoryid;
 ```
-
-
+![zdj3](./wyniki/zdj3.png)
 
 ```sql
 select avg(unitprice) over (partition by categoryid) as avgprice
 from products p;
 ```
-
-
+![zdj4](./wyniki/zdj4.png)
 
 ---
 
