@@ -168,6 +168,7 @@ where productid < 10
 ```
 
 ![zdj4](./wyniki/zad21.png)
+
 ---
 
 # Zadanie 3
