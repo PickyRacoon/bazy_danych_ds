@@ -103,11 +103,15 @@ from products p;
 ```
 ![zdj1](./wyniki/zdj1.png)
 
+Jedna średnia z wartości unitprice dla całej tabeli products. Grupuje dane.
+
 ```sql
 select avg(unitprice) over () as avgprice
 from products p;
 ```
 ![zdj2](./wyniki/zdj2.png)
+
+Ta sama średnia z całej tabeli products, ale przez funkcję okienkową jest tyle wierszy ile w products. Nie grupuje danych jak avg().
 
 ```sql
 select categoryid, avg(unitprice) avgprice
@@ -116,11 +120,15 @@ group by categoryid;
 ```
 ![zdj3](./wyniki/zdj3.png)
 
+Średnia jest liczona dla każdej kategorii osobno, ale przez grupowanie jest jeden wiersz na jedną kategorię.
+
 ```sql
 select avg(unitprice) over (partition by categoryid) as avgprice
 from products p;
 ```
 ![zdj4](./wyniki/zdj4.png)
+
+Średnia liczona dla każdej kategorii osobno, ale nie ma grupowania danych, więc jest tyle wierszy, ile w początkowej tabeli products.
 
 ---
 
