@@ -204,7 +204,34 @@ W DataGrip użyj opcji Explain Plan/Explain Analyze
 > Wyniki:
 
 ```sql
---  ...
+SELECT
+    ProductID,
+    ProductName,
+    UnitPrice,
+    (SELECT AVG(UnitPrice) FROM Products) AS AvgPrice
+FROM Products;
+```
+
+```sql
+SELECT
+    p.ProductID,
+    p.ProductName,
+    p.UnitPrice,
+    avg_table.AvgPrice
+FROM Products p
+         CROSS JOIN (
+    SELECT AVG(UnitPrice) AS AvgPrice
+    FROM Products
+) avg_table;
+```
+
+```sql
+SELECT
+    ProductID,
+    ProductName,
+    UnitPrice,
+    AVG(UnitPrice) OVER () AS AvgPrice
+FROM Products;
 ```
 
 ---
@@ -337,9 +364,13 @@ Wykonaj polecenia: `select count(*) from product_history`, potwierdzające wykon
 
 > Wyniki:
 
-```sql
---  ...
-```
+SQL Srerver
+
+![zdj1](./wyniki/duzo_ms.png)
+
+Postgresql
+
+![zdj1](./wyniki/duzo_pg.png)
 
 # Zadanie 6
 
