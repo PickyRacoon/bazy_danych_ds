@@ -158,7 +158,7 @@ select p.productid, p.ProductName, p.unitprice,
 from products p
 where productid < 10
 ```
-![zdj4](./wyniki/zad22.png)
+![zdj4](./wyniki/zad23.png)
 
 ```sql
 select p.productid, p.ProductName, p.unitprice,
