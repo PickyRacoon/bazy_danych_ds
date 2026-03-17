@@ -14,30 +14,7 @@ Swoje odpowiedzi wpisuj w miejsca oznaczone jako:
 
 > Wyniki:
 
-```sql
-select avg(unitprice) avgprice
-from products p;
-```
-![zdj1](./wyniki/zdj1.png)
 
-```sql
-select avg(unitprice) over () as avgprice
-from products p;
-```
-![zdj2](./wyniki/zdj2.png)
-
-```sql
-select categoryid, avg(unitprice) avgprice
-from products p
-group by categoryid;
-```
-![zdj3](./wyniki/zdj3.png)
-
-```sql
-select avg(unitprice) over (partition by categoryid) as avgprice
-from products p;
-```
-![zdj4](./wyniki/zdj4.png)
 
 ---
 
@@ -121,8 +98,29 @@ Jaka jest są podobieństwa, jakie różnice pomiędzy grupowaniem danych a dzia
 > Wyniki:
 
 ```sql
---  ...
+select avg(unitprice) avgprice
+from products p;
 ```
+![zdj1](./wyniki/zdj1.png)
+
+```sql
+select avg(unitprice) over () as avgprice
+from products p;
+```
+![zdj2](./wyniki/zdj2.png)
+
+```sql
+select categoryid, avg(unitprice) avgprice
+from products p
+group by categoryid;
+```
+![zdj3](./wyniki/zdj3.png)
+
+```sql
+select avg(unitprice) over (partition by categoryid) as avgprice
+from products p;
+```
+![zdj4](./wyniki/zdj4.png)
 
 ---
 
@@ -155,9 +153,21 @@ Jaka jest różnica? Czego dotyczy warunek w każdym z przypadków? Napisz polec
 > Wyniki:
 
 ```sql
---  ...
+select p.productid, p.ProductName, p.unitprice,
+       (select avg(unitprice) from products) as avgprice
+from products p
+where productid < 10
+```
+![zdj4](./wyniki/zad22.png)
+
+```sql
+select p.productid, p.ProductName, p.unitprice,
+       avg(unitprice) over () as avgprice
+from products p
+where productid < 10
 ```
 
+![zdj4](./wyniki/zad21.png)
 ---
 
 # Zadanie 3
