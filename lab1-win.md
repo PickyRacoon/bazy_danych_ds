@@ -151,13 +151,13 @@ Przetestuj działanie w różnych SZBD (MS SQL Server, PostgreSql, SQLite)
 
 W SSMS włącz dwie opcje: Include Actual Execution Plan oraz Include Live Query Statistics
 
-![w:700](_img/window-1.png)
+![w:700](./window-1.png)
 
 W DataGrip użyj opcji Explain Plan/Explain Analyze
 
-![w:700](_img/window-2.png)
+![w:700](./window-2.png)
 
-![w:700](_img/window-3.png)
+![w:700](./window-3.png)
 
 ---
 
