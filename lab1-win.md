@@ -364,13 +364,15 @@ Wykonaj polecenia: `select count(*) from product_history`, potwierdzające wykon
 
 > Wyniki:
 
-SQL Srerver
+SQL Srerver:
 
 ![zdj1](./wyniki/duzo_ms.png)
 
-Postgresql
+Postgresql:
 
 ![zdj1](./wyniki/duzo_pg.png)
+
+O wiele dłużej polecenie wykonywało się w sql serwerze (pare minut) niż postgresie (pare sekund).
 
 # Zadanie 6
 
