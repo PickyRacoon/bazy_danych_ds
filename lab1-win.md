@@ -212,6 +212,20 @@ SELECT
 FROM Products;
 ```
 
+MS SQL Server
+
+![zdj1](./wyniki/time_avg1_ms.png)
+![zdj1](./wyniki/plan_avg1_ms.png)
+
+PostgreSql
+
+![zdj1](./wyniki/time_avg1_pg.png)
+![zdj1](./wyniki/plan_avg1_pg.png)
+
+SQLite
+
+![zdj1](./wyniki/plan_avg1_sl.png)
+
 ```sql
 SELECT
     p.ProductID,
@@ -225,6 +239,20 @@ FROM Products p
 ) avg_table;
 ```
 
+MS SQL Server
+
+![zdj1](./wyniki/time_avg2_ms.png)
+![zdj1](./wyniki/plan_avg2_ms.png)
+
+PostgreSql
+
+![zdj1](./wyniki/time_avg2_pg.png)
+![zdj1](./wyniki/plan_avg2_pg.png)
+
+SQLite
+
+![zdj1](./wyniki/plan_avg2_sl.png)
+
 ```sql
 SELECT
     ProductID,
@@ -233,6 +261,20 @@ SELECT
     AVG(UnitPrice) OVER () AS AvgPrice
 FROM Products;
 ```
+
+MS SQL Server
+
+![zdj1](./wyniki/time_avg3_ms.png)
+![zdj1](./wyniki/plan_avg3_ms.png)
+
+PostgreSql
+
+![zdj1](./wyniki/time_avg3_pg.png)
+![zdj1](./wyniki/plan_avg3_pg.png)
+
+SQLite
+
+![zdj1](./wyniki/plan_avg3_sl.png)
 
 ---
 
@@ -364,11 +406,11 @@ Wykonaj polecenia: `select count(*) from product_history`, potwierdzające wykon
 
 > Wyniki:
 
-SQL Srerver:
+SQL Srerver
 
 ![zdj1](./wyniki/duzo_ms.png)
 
-Postgresql:
+Postgresql
 
 ![zdj1](./wyniki/duzo_pg.png)
 
