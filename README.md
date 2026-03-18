@@ -1,3 +1,5 @@
-# bazy_danych_ds
+# Bazy Danych w Data Science
 
-hihi
+### Autorzy:
+- Karolina Węgrzyn
+- Patrycja Markiewicz
