@@ -3,7 +3,7 @@
 ---
 
 **Imiona i nazwiska:**
-
+Karolina Węgrzyn, Patrycja Markiewicz
 ---
 
 Celem ćwiczenia jest przygotowanie środowiska pracy, wstępne zapoznanie się z działaniem funkcji okna (window functions) w SQL, analiza wydajności zapytań i porównanie z rozwiązaniami przy wykorzystaniu "tradycyjnych" konstrukcji SQL
@@ -372,7 +372,7 @@ Postgresql:
 
 ![zdj1](./wyniki/duzo_pg.png)
 
-O wiele dłużej polecenie wykonywało się w sql serwerze (pare minut) niż postgresie (pare sekund).
+O wiele dłużej polecenie wykonywało się w sql serwerze (pare minut) niż w postgresie (pare sekund).
 
 # Zadanie 6
 
