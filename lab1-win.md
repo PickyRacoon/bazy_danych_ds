@@ -204,6 +204,7 @@ W DataGrip użyj opcji Explain Plan/Explain Analyze
 > Wyniki:
 
 ```sql
+--- 1
 SELECT
     ProductID,
     ProductName,
@@ -212,21 +213,8 @@ SELECT
 FROM Products;
 ```
 
-MS SQL Server
-
-![zdj1](./wyniki/time_avg1_ms.png)
-![zdj1](./wyniki/plan_avg1_ms.png)
-
-PostgreSql
-
-![zdj1](./wyniki/time_avg1_pg.png)
-![zdj1](./wyniki/plan_avg1_pg.png)
-
-SQLite
-
-![zdj1](./wyniki/plan_avg1_sl.png)
-
 ```sql
+--- 2
 SELECT
     p.ProductID,
     p.ProductName,
@@ -239,21 +227,8 @@ FROM Products p
 ) avg_table;
 ```
 
-MS SQL Server
-
-![zdj1](./wyniki/time_avg2_ms.png)
-![zdj1](./wyniki/plan_avg2_ms.png)
-
-PostgreSql
-
-![zdj1](./wyniki/time_avg2_pg.png)
-![zdj1](./wyniki/plan_avg2_pg.png)
-
-SQLite
-
-![zdj1](./wyniki/plan_avg2_sl.png)
-
 ```sql
+--- 3
 SELECT
     ProductID,
     ProductName,
@@ -262,17 +237,35 @@ SELECT
 FROM Products;
 ```
 
+
 MS SQL Server
+
+![zdj1](./wyniki/time_avg1_ms.png)
+![zdj1](./wyniki/plan_avg1_ms.png)
+
+![zdj1](./wyniki/time_avg2_ms.png)
+![zdj1](./wyniki/plan_avg2_ms.png)
+
 
 ![zdj1](./wyniki/time_avg3_ms.png)
 ![zdj1](./wyniki/plan_avg3_ms.png)
 
 PostgreSql
 
+![zdj1](./wyniki/time_avg1_pg.png)
+![zdj1](./wyniki/plan_avg1_pg.png)
+
+![zdj1](./wyniki/time_avg2_pg.png)
+![zdj1](./wyniki/plan_avg2_pg.png)
+
 ![zdj1](./wyniki/time_avg3_pg.png)
 ![zdj1](./wyniki/plan_avg3_pg.png)
 
 SQLite
+
+![zdj1](./wyniki/plan_avg1_sl.png)
+
+![zdj1](./wyniki/plan_avg2_sl.png)
 
 ![zdj1](./wyniki/plan_avg3_sl.png)
 
