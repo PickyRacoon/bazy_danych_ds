@@ -255,6 +255,7 @@ Plan jest podobny do powyższego: dwa Full Index Scan, Stream Aggregate wyliczaj
 
 Jeden Full Index Scan odczytuje dane, następnie Transformation (Segment) dzieli wiersze na partycje (tutaj: jedna partycja, to cała tabela), Temporary (Lazy Spool) buforuje dane, a Stream Aggregate wylicza średnią raz z bufora. Wyniki łączone są przez dwa Nested Loops.
 
+
 Fumkcja okna ma najszybszy czas wykonania, a pozostałe dwa plany są bardzo podobne do siebie przez co też czas wykonania jets prawie identyczny.
 
 PostgreSql
@@ -274,7 +275,8 @@ Podobnie jak wyżej: dwa Full Scan of products, jeden pod Aggregate, złączone 
 
 Tabela skanowana tylko raz - WindowAgg oblicza średnią w jednym przebiegu. 
 
-Pod względem czasu najlepiej wypadła opcja z funkcją okna, a CROSS JOIN najgorzej.
+
+Wszystkie wersje mają bardzo zbliżony do siebie czas wykonania.
 
 SQLite
 
