@@ -243,12 +243,17 @@ MS SQL Server
 ![zdj1](./wyniki/time_avg1_ms.png)
 ![zdj1](./wyniki/plan_avg1_ms.png)
 
+Plan zawiera dwa Full Index Scan na tabeli products. Pierwszy skan odczytuje dane główne, drugi wykonuje agregację w ramach Compute Scalar, obliczając średnią. Wyniki łączone są przez Nested Loops (Inner Join), a na zewnątrz dodatkowy Compute Scalar dołącza wartość średniej do każdego wiersza. Podzapytanie jest więc materializowane jako osobna gałąź planu.
+
 ![zdj1](./wyniki/time_avg2_ms.png)
 ![zdj1](./wyniki/plan_avg2_ms.png)
 
+Plan jest podobny do powyższego: dwa Full Index Scan, Stream Aggregate wyliczający średnią, Compute Scalar oraz Nested Loops (Inner Join). SQL Server zoptymalizował oba zapytania do prawie tego samego planu. Różnicą jest brak jednego Compute Scalar, który nie musi występować, bo CROSS JOIN złączy średnią sam.
 
 ![zdj1](./wyniki/time_avg3_ms.png)
 ![zdj1](./wyniki/plan_avg3_ms.png)
+
+Jeden Full Index Scan odczytuje dane, następnie Transformation (Segment) dzieli wiersze na partycje (tutaj: jedna partycja, to cała tabela), Temporary (Lazy Spool) buforuje dane, a Stream Aggregate wylicza średnią raz z bufora. Wyniki łączone są przez dwa Nested Loops.
 
 PostgreSql
 
