@@ -255,11 +255,17 @@ PostgreSql
 ![zdj1](./wyniki/time_avg1_pg.png)
 ![zdj1](./wyniki/plan_avg1_pg.png)
 
+Plan zawiera dwa Full Scan of products. Jeden skan dla zapytania głównego, drugi dla podzapytania wewnątrz Aggregate. Oba potem są łączone.
+
 ![zdj1](./wyniki/time_avg2_pg.png)
 ![zdj1](./wyniki/plan_avg2_pg.png)
 
+Podobnie jak wyżej: dwa Full Scan of products, jeden pod Aggregate, złączone przez Nested Loop (zagnieżdżone pętle).
+
 ![zdj1](./wyniki/time_avg3_pg.png)
 ![zdj1](./wyniki/plan_avg3_pg.png)
+
+Tabela skanowana tylko raz - WindowAgg oblicza średnią w jednym przebiegu. 
 
 SQLite
 
