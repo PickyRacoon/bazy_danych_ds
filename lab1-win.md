@@ -265,9 +265,17 @@ SQLite
 
 ![zdj1](./wyniki/plan_avg1_sl.png)
 
+Plan zawiera dwa odczyty tabeli - Full Scan of Products dla zapytania głównego i podzapytania, potem je łączy do jednej tabeli.
+
 ![zdj1](./wyniki/plan_avg2_sl.png)
 
+Plan zawiera trzy gałęzie - SQLite materializuje podzapytanie jako tabele tymczasową po przeskanowaniu tabeli Products, odczytuje ją (tymczasową tabele) i znowu wykonuje Full Scan of Products i dokleja wynik z avg_table.
+
 ![zdj1](./wyniki/plan_avg3_sl.png)
+
+SQLite implementuje funkcję okna jako coroutine - jeden odczyt danych, który oblicza średnią. Zapytanie główne czyta wyniki obliczane przez funkcję okna i je wykorzystuje.
+
+SQLite nie podaje kosztów zapytań. 
 
 ---
 
