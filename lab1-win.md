@@ -412,6 +412,8 @@ Plan wykonania dla tego zapytania jest zauważalnie prostszy. Koszt spadł dwukt
 
 To podejście okazało się tak samo wydajne jak `JOIN`, plany wykonania wyglądają prawie identycznie. Z planu wykonania wynika, że baza skanuje tabelę products tylko jeden raz, co jest dużą oszczędnością w porównaniu do podzapytania. Baza dzieli dane na segmenty według kategorii, a następnie, zamiast zwijać wiersze jak przy zwykłym grupowaniu, wylicza średnią raz dla każdej kategorii i dopisuje ją do każdego produktu. Na samym końcu nakładany jest filtr, który odrzuca produkty tańsze niż średnia. Dzięki zastosowaniu konstrukcji `WITH`, mamy pewność, że filtr zadziała na już przeliczonych danych, co widać po strukturze drzewa operacji.
 
+---
+
 # PostgreSql
 
 ## Podzapytanie
@@ -446,6 +448,8 @@ Zastosowanie złączenia `JOIN` z grupowaniem zoptymalizowało zapytanie, reduku
 **Czas**: 0.338ms
 
 Plan wykonania dla funkcji okna ma strukturę w pełni liniową, bez żadnych rozgałęzień. Baza danych wykonuje skanowanie tabeli `Seq Scan`, a następnie sortuje dane według ID kategorii `Sort`. Na tak posortowanym zbiorze uruchamiany jest operator `WindowAgg`, który wylicza średnie dla poszczególnych kategorii. Cały, przeliczony zestaw danych przekazywany jest wyżej `Subquery Scan`, gdzie następuje końcowe filtrowanie odrzucające produkty poniżej średniej. Choć koszt całkowity `6.49` jest minimalnie wyższy niż w przypadku złączenia `4.45`, rozwiązanie to pozostaje wysoce optymalne, eliminując konieczność wielokrotnego skanowania tabeli.
+
+---
 
 # SQLite
 
@@ -614,6 +618,8 @@ Przetestuj działanie w różnych SZBD (MS SQL Server, PostgreSql, SQLite)
 
 > Wyniki:
 
+Zgodnie z poleceniem ograniczono analizowany zbiór do 10 000 wierszy za pomocą klauzuli `WITH`.
+
 # Podzapytanie
 
 ```sql
@@ -665,29 +671,77 @@ where unitprice > avgprice
 
 ## Podzapytanie
 
+![zdj1](./wyniki/zad6_time_avg1_ms.png)
+![zdj1](./wyniki/zad6_plan_avg1_ms.png)
+
+**Koszt**: 1.154
+
+**Czas**: 77ms
+
 ## Join
 
+![zdj1](./wyniki/zad6_time_avg2_ms.png)
+![zdj1](./wyniki/zad6_plan_avg2_ms.png)
+
+**Koszt**:
+
+**Czas**: ms
+
 ## Funkcja okna
+
+![zdj1](./wyniki/zad6_time_avg3_ms.png)
+![zdj1](./wyniki/zad6_plan_avg3_ms.png)
+
+**Koszt**:
+
+**Czas**: ms
+
+---
 
 # PostgreSql
 
 ## Podzapytanie
 
+![zdj1](./wyniki/zad6_time_avg1_pg.png)
+![zdj1](./wyniki/zad6_plan_avg1_pg.png)
+
+**Koszt**:
+
+**Czas**: ms
+
 ## Join
 
+![zdj1](./wyniki/zad6_time_avg2_pg.png)
+![zdj1](./wyniki/zad6_plan_avg2_pg.png)
+
+**Koszt**:
+
+**Czas**: ms
+
 ## Funkcja okna
+
+![zdj1](./wyniki/zad6_time_avg3_pg.png)
+![zdj1](./wyniki/zad6_plan_avg3_pg.png)
+
+**Koszt**:
+
+**Czas**: ms
+
+---
 
 # SQLite
 
 ## Podzapytanie
 
+![zdj1](./wyniki/zad6_plan_avg1_sl.png)
+
 ## Join
+
+![zdj1](./wyniki/zad6_plan_avg2_sl.png)
 
 ## Funkcja okna
 
-```sql
-
-```
+![zdj1](./wyniki/zad6_plan_avg3_sl.png)
 
 ---
 
