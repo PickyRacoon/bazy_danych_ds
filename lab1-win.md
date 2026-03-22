@@ -168,9 +168,9 @@ where productid < 10
 ```
 ![zdj4](./wyniki/zad23.png)
 
-Warunek 'WHERE' dotyczy tylko zapytania zewnętrznego, czyli decyduje o tym, które wiersze ostatecznie zostaną zwrócone. Podzapytanie wewnętrzne nie ma żadnego własnego warunku 'WHERE', dlatego średnia jest obliczana dla wszystkich produktów w tabeli.
+Warunek `WHERE` dotyczy tylko zapytania zewnętrznego, czyli decyduje o tym, które wiersze ostatecznie zostaną zwrócone. Podzapytanie wewnętrzne nie ma żadnego własnego warunku `WHERE`, dlatego średnia jest obliczana dla wszystkich produktów w tabeli.
 
-Polecenie równoważne z z wykorzystaniem funkcji okna:
+Polecenie równoważne z wykorzystaniem funkcji okna:
 
 ```sql
 with avg_all as (
@@ -193,7 +193,7 @@ where productid < 10
 
 ![zdj4](./wyniki/zad21.png)
 
-Funkcje okna są obliczane pod sam koniec przetwarzania zapytania, w szczególności po klauzuli 'WHERE', która filtruje wiersze przed uruchomieniem tej funkcji. Dlatego wartość 'avgprice' jest tu średnią ceną wyłącznie dla produktów o 'ID' mniejszym niż 10.
+Funkcje okna są obliczane pod sam koniec przetwarzania zapytania, w szczególności po klauzuli `WHERE`, która filtruje wiersze przed uruchomieniem tej funkcji. Dlatego wartość `avgprice` jest tu średnią ceną wyłącznie dla produktów o id mniejszym niż 10.
 
 Polecenie równoważne z wykorzystaniem podzapytania: 
 
