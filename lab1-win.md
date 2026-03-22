@@ -453,13 +453,19 @@ Plan wykonania dla funkcji okna ma strukturę w pełni liniową, bez żadnych ro
 
 ![zdj1](./wyniki/zad4_plan_avg1_sl.png)
 
+Z planu wynika, że zapytanie jest nieoptymalne. Baza wykonuje pełne skanowanie tabeli głównej `Full Scan of p1`, a następnie dla każdego odczytanego wiersza uruchamia dwa oddzielne podzapytania `Subquery`. Chociaż SQLite optymalizuje te podzapytania używając indeksu `Index Scan of p2 na categoryid`, to konieczność ciągłego powtarzania tych samych obliczeń sprawia, że rozwiązanie to jest bardzo niewydajne.
+
 ## Join
 
 ![zdj1](./wyniki/zad4_plan_avg2_sl.png)
 
+Z planu wynika, że zastosowanie złączenia `JOIN` znacząco optymalizuje działanie bazy. SQLite wydziela obliczanie średnich do operacji `Operation (CO-ROUTINE)`, grupując dane przy pomocy indeksu `Index Scan of products`. Wynik tych obliczeń traktowany jest jako tymczasowy zbiór `Full Scan of c`, który następnie jest łączony z główną tabelą produktów, co również wspiera indeks `Index Scan of p`. Dzięki temu baza liczy średnie tylko raz dla każdej kategorii.
+
 ## Funkcja okna
 
 ![zdj1](./wyniki/zad4_plan_avg3_sl.png)
+
+Z planu wykonania wynika, że SQLite radzi sobie z funkcją okna bardzo sprawnie. Najpierw baza wykorzystuje indeks `Index Scan of products`, aby szybko pogrupować produkty według kategorii i policzyć dla nich średnie. Cały ten przeliczony zbiór danych (pochodzący z klauzuli WITH) jest tymczasowo zapisywany w pamięci jako wirtualna tabela `avg`. W drugim kroku zapytanie główne wykonuje już tylko jeden, prosty odczyt tej gotowej tabeli `Full Scan of avg` odrzucając te produkty, których cena jest niższa lub równa wyliczonej średniej.
 
 ---
 
