@@ -384,8 +384,9 @@ where unitprice > avgprice
 ![zdj1](./wyniki/zad4_time_avg1_ms.png)
 ![zdj1](./wyniki/zad4_plan_avg1_ms.png)
 
-Koszt: 0.038
-Czas: 0.0ms
+**Koszt**: 0.038
+
+**Czas**: 0.0ms
 
 Plan wykonania dla tego zapytania jest złożony i stosunkowo kosztowny. Wymusza on np. podwójny odczyt tabeli products `Full Index Scan` – dla zapytania głównego i podzapytania. Oznacza to, że silnik bazy danych musiał sięgnąć do tabeli `products` dwa razy, raz żeby pobrać listę produktów i drugi raz, żeby zebrać dane do wyliczenia średnich. Optymalizator częściowo ratuje wydajność, buforując wyliczone średnie dla każdej kategorii w pamięci `Lazy Spool`, by nie liczyć ich wielokrotnie. Czas wykonania to 0.0 ms wyłącznie dzięki małemu rozmiarowi tabeli, wynoszącemu 77 wierszy. Przy dużej ilości danych, duża liczba operacji Nested Loops zapewne drastycznie obniżyłaby wydajność tego zapytania.
 
@@ -394,8 +395,9 @@ Plan wykonania dla tego zapytania jest złożony i stosunkowo kosztowny. Wymusza
 ![zdj1](./wyniki/zad4_time_avg2_ms.png)
 ![zdj1](./wyniki/zad4_plan_avg2_ms.png)
 
-Koszt: 0.018
-Czas: 0.0ms
+**Koszt**: 0.018
+
+**Czas**: 0.0ms
 
 Plan wykonania dla tego zapytania jest zauważalnie prostszy. Koszt spadł dwuktornie w porównaniu do wersji z podzapytaniem. Najważniejszą różnicą jest to, że silnik bazy danych wykonał tylko jeden odczyt tabeli z dysku `Full Index Scan`. Optymalizator odczytał tabelę products tylko raz, posortował dane i umieścił je w buforze pamięci tymczasowej `Lazy Spool`. Następnie wykorzystał ten bufor do wyliczenia średnich i złączenia danych `Nested Loops`. Czas wykonania to wciąż 0.0 ms ze względu na 77 wierszy w tabeli, jednak wyeliminowanie podwójnego fizycznego skanowania tabeli sprawia, że ta metoda jest bez porównania wydajniejsza i o wiele lepiej poradziłaby sobie przy dużej ilości danych.
 
@@ -404,10 +406,11 @@ Plan wykonania dla tego zapytania jest zauważalnie prostszy. Koszt spadł dwukt
 ![zdj1](./wyniki/zad4_time_avg3_ms.png)
 ![zdj1](./wyniki/zad4_plan_avg3_ms.png)
 
-Koszt: 0.018
-Czas: 0.0ms
+**Koszt**: 0.018
 
-To podejście okazało się tak samo wydajne jak `JOIN`, a przy tym znacznie czytelniejsze. Z planu wykonania wynika, że baza skanuje tabelę products tylko jeden raz, co jest dużą oszczędnością w porównaniu do podzapytania. Baza dzieli dane na segmenty według kategorii, a następnie, zamiast zwijać wiersze jak przy zwykłym grupowaniu, wylicza średnią raz dla każdej kategorii i dopisuje ją do każdego produktu. Na samym końcu nakładany jest filtr, który odrzuca produkty tańsze niż średnia. Dzięki zastosowaniu konstrukcji `WITH`, mamy pewność, że filtr zadziała na już przeliczonych danych, co widać po strukturze drzewa operacji.
+**Czas**: 0.0ms
+
+To podejście okazało się tak samo wydajne jak `JOIN`, plany wykonania wyglądają prawie identycznie. Z planu wykonania wynika, że baza skanuje tabelę products tylko jeden raz, co jest dużą oszczędnością w porównaniu do podzapytania. Baza dzieli dane na segmenty według kategorii, a następnie, zamiast zwijać wiersze jak przy zwykłym grupowaniu, wylicza średnią raz dla każdej kategorii i dopisuje ją do każdego produktu. Na samym końcu nakładany jest filtr, który odrzuca produkty tańsze niż średnia. Dzięki zastosowaniu konstrukcji `WITH`, mamy pewność, że filtr zadziała na już przeliczonych danych, co widać po strukturze drzewa operacji.
 
 # PostgreSql
 
@@ -416,15 +419,33 @@ To podejście okazało się tak samo wydajne jak `JOIN`, a przy tym znacznie czy
 ![zdj1](./wyniki/zad4_time_avg1_pg.png)
 ![zdj1](./wyniki/zad4_plan_avg1_pg.png)
 
+**Koszt**: 207.96
+
+**Czas**: 0.647ms
+
+Z planu wykonania wynika, że to zapytanie jest bardzo nieoptymalne. Główny węzeł wykonuje pełne skanowanie tabeli wiersz po wierszu `Full Scan (Seq Scan)`. Ponieważ podzapytanie zostało użyte w kodzie dwukrotnie (raz w `SELECT`, drugi raz w `WHERE`), diagram rozgałęzia się na dwa osobne tory obliczeniowe, co prowadzi do tego, że dla każdego z 77 odczytanych produktów najpierw od nowa przeszukuje tabelę i liczy średnią dla jego kategorii `Aggregate`, aby sprawdzić warunek z klauzuli `WHERE`. Następnie, jeśli wiersz spełnia warunek, baza zamiast zapamiętać ten wynik, uruchamia drugi tor i liczy dokładnie tę samą średnią od nowa, by wyświetlić ją w `SELECT`. Stąd bierze się tak wysoki koszt całkowity. Choć przy małej tabeli czas wykonania to zaledwie 0.647ms, tego typu struktura zapytania drastycznie obniżyłaby wydajność przy pracy na dużej ilości danych.
+
 ## Join
 
 ![zdj1](./wyniki/zad4_time_avg2_pg.png)
 ![zdj1](./wyniki/zad4_plan_avg2_pg.png)
 
+**Koszt**: 4.45
+
+**Czas**: 0.535ms
+
+Zastosowanie złączenia `JOIN` z grupowaniem zoptymalizowało zapytanie, redukując koszt całkowity z 207.96 do zaledwie 4.45. Z planu wykonania wynika, operacja dzieli się na dwa etapy. Najpierw baza jednokrotnie wylicza średnie dla poszczególnych kategorii `Aggregate` i umieszcza je w pamięci operacyjnej `Transformation (Hash)`. Następnie wykonuje pojedynczy odczyt wszystkich produktów i łączy je z obliczonymi wcześniej średnimi za pomocą operatora `Hash Join`. Takie podejście eliminuje problem wielokrotnego skanowania tabeli i powtarzania tych samych obliczeń, co czyni zapytanie wydajnym.
+
 ## Funkcja okna
 
 ![zdj1](./wyniki/zad4_time_avg3_pg.png)
 ![zdj1](./wyniki/zad4_plan_avg3_pg.png)
+
+**Koszt**: 6.49
+
+**Czas**: 0.338ms
+
+Plan wykonania dla funkcji okna ma strukturę w pełni liniową, bez żadnych rozgałęzień. Baza danych wykonuje skanowanie tabeli `Seq Scan`, a następnie sortuje dane według ID kategorii `Sort`. Na tak posortowanym zbiorze uruchamiany jest operator `WindowAgg`, który wylicza średnie dla poszczególnych kategorii. Cały, przeliczony zestaw danych przekazywany jest wyżej `Subquery Scan`, gdzie następuje końcowe filtrowanie odrzucające produkty poniżej średniej. Choć koszt całkowity `6.49` jest minimalnie wyższy niż w przypadku złączenia `4.45`, rozwiązanie to pozostaje wysoce optymalne, eliminując konieczność wielokrotnego skanowania tabeli.
 
 # SQLite
 
