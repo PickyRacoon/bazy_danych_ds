@@ -4,6 +4,7 @@
 
 **Imiona i nazwiska:**
 Karolina Węgrzyn, Patrycja Markiewicz
+
 ---
 
 Celem ćwiczenia jest przygotowanie środowiska pracy, wstępne zapoznanie się z działaniem funkcji okna (window functions) w SQL, analiza wydajności zapytań i porównanie z rozwiązaniami przy wykorzystaniu "tradycyjnych" konstrukcji SQL
@@ -13,8 +14,6 @@ Swoje odpowiedzi wpisuj w miejsca oznaczone jako:
 ---
 
 > Wyniki:
-
-
 
 ---
 
@@ -101,6 +100,7 @@ Jaka jest są podobieństwa, jakie różnice pomiędzy grupowaniem danych a dzia
 select avg(unitprice) avgprice
 from products p;
 ```
+
 ![zdj1](./wyniki/zdj1.png)
 
 Jedna średnia z wartości unitprice dla całej tabeli products. Grupuje dane.
@@ -109,6 +109,7 @@ Jedna średnia z wartości unitprice dla całej tabeli products. Grupuje dane.
 select avg(unitprice) over () as avgprice
 from products p;
 ```
+
 ![zdj2](./wyniki/zdj2.png)
 
 Ta sama średnia z całej tabeli products, ale przez funkcję okienkową jest tyle wierszy ile w products. Nie grupuje danych jak avg().
@@ -118,6 +119,7 @@ select categoryid, avg(unitprice) avgprice
 from products p
 group by categoryid;
 ```
+
 ![zdj3](./wyniki/zdj3.png)
 
 Średnia jest liczona dla każdej kategorii osobno, ale przez grupowanie jest jeden wiersz na jedną kategorię.
@@ -126,6 +128,7 @@ group by categoryid;
 select avg(unitprice) over (partition by categoryid) as avgprice
 from products p;
 ```
+
 ![zdj4](./wyniki/zdj4.png)
 
 Średnia liczona dla każdej kategorii osobno, ale nie ma grupowania danych, więc jest tyle wierszy, ile w początkowej tabeli products.
@@ -166,6 +169,7 @@ select p.productid, p.ProductName, p.unitprice,
 from products p
 where productid < 10
 ```
+
 ![zdj22](./wyniki/zad22.png)
 
 Warunek `WHERE` dotyczy tylko zapytania zewnętrznego, czyli decyduje o tym, które wiersze ostatecznie zostaną zwrócone. Podzapytanie wewnętrzne nie ma żadnego własnego warunku `WHERE`, dlatego średnia jest obliczana dla wszystkich produktów w tabeli.
@@ -197,7 +201,7 @@ where productid < 10
 
 Funkcje okna są obliczane pod sam koniec przetwarzania zapytania, w szczególności po klauzuli `WHERE`, która filtruje wiersze przed uruchomieniem tej funkcji. Dlatego wartość `avgprice` jest tu średnią ceną wyłącznie dla produktów o id mniejszym niż 10.
 
-Polecenie równoważne z wykorzystaniem podzapytania: 
+Polecenie równoważne z wykorzystaniem podzapytania:
 
 ```sql
 select p.productid, p.ProductName, p.unitprice,
@@ -268,7 +272,6 @@ SELECT
 FROM Products;
 ```
 
-
 MS SQL Server
 
 ![zdj1](./wyniki/time_avg1_ms.png)
@@ -285,7 +288,6 @@ Plan jest podobny do powyższego: dwa Full Index Scan, Stream Aggregate wyliczaj
 ![zdj1](./wyniki/plan_avg3_ms.png)
 
 Jeden Full Index Scan odczytuje dane, następnie Transformation (Segment) dzieli wiersze na partycje (tutaj: jedna partycja, to cała tabela), Temporary (Lazy Spool) buforuje dane, a Stream Aggregate wylicza średnią raz z bufora. Wyniki łączone są przez dwa Nested Loops.
-
 
 Fumkcja okna ma najszybszy czas wykonania, a pozostałe dwa plany są bardzo podobne do siebie przez co też czas wykonania jets prawie identyczny.
 
@@ -304,8 +306,7 @@ Podobnie jak wyżej: dwa Full Scan of products, jeden pod Aggregate, złączone 
 ![zdj1](./wyniki/time_avg3_pg.png)
 ![zdj1](./wyniki/plan_avg3_pg.png)
 
-Tabela skanowana tylko raz - WindowAgg oblicza średnią w jednym przebiegu. 
-
+Tabela skanowana tylko raz - WindowAgg oblicza średnią w jednym przebiegu.
 
 Wszystkie wersje mają bardzo zbliżony do siebie czas wykonania.
 
@@ -323,7 +324,7 @@ Plan zawiera trzy gałęzie - SQLite materializuje podzapytanie jako tabele tymc
 
 SQLite implementuje funkcję okna jako coroutine - jeden odczyt danych, który oblicza średnią. Zapytanie główne czyta wyniki obliczane przez funkcję okna i je wykorzystuje.
 
-SQLite nie podaje kosztów zapytań. 
+SQLite nie podaje kosztów zapytań.
 
 ---
 
@@ -341,9 +342,103 @@ Przetestuj działanie w różnych SZBD (MS SQL Server, PostgreSql, SQLite)
 
 > Wyniki:
 
+Podzapytanie
+
 ```sql
---  ...
+select p1.productid, p1.productname, p1.unitprice,
+       (select avg(unitprice) from products p2 where p1.categoryid = p2.categoryid) as avgprice
+from products p1
+where p1.unitprice > (select avg(unitprice) from products p2 where p1.categoryid = p2.categoryid)
 ```
+
+Join
+
+```sql
+select p.productid, p.productname, p.unitprice, c.avgprice
+from products p
+join (
+    select categoryid, avg(unitprice) as avgprice
+    from products
+    group by categoryid
+) c on p.categoryid = c.categoryid
+where p.unitprice > c.avgprice
+```
+
+Funkcja okna
+
+```sql
+with avg as (
+    select productid, productname, unitprice,
+           avg(unitprice) over (partition by categoryid) as avgprice
+    from products
+)
+select productid, productname, unitprice, avgprice
+from avg
+where unitprice > avgprice
+```
+
+# MS SQL Server
+
+## Podzapytanie
+
+![zdj1](./wyniki/zad4_time_avg1_ms.png)
+![zdj1](./wyniki/zad4_plan_avg1_ms.png)
+
+Koszt: 0.038
+Czas: 0.0ms
+
+Plan wykonania dla tego zapytania jest złożony i stosunkowo kosztowny. Wymusza on np. podwójny odczyt tabeli products `Full Index Scan` – dla zapytania głównego i podzapytania. Oznacza to, że silnik bazy danych musiał sięgnąć do tabeli `products` dwa razy, raz żeby pobrać listę produktów i drugi raz, żeby zebrać dane do wyliczenia średnich. Optymalizator częściowo ratuje wydajność, buforując wyliczone średnie dla każdej kategorii w pamięci `Lazy Spool`, by nie liczyć ich wielokrotnie. Czas wykonania to 0.0 ms wyłącznie dzięki małemu rozmiarowi tabeli, wynoszącemu 77 wierszy. Przy dużej ilości danych, duża liczba operacji Nested Loops zapewne drastycznie obniżyłaby wydajność tego zapytania.
+
+## Join
+
+![zdj1](./wyniki/zad4_time_avg2_ms.png)
+![zdj1](./wyniki/zad4_plan_avg2_ms.png)
+
+Koszt: 0.018
+Czas: 0.0ms
+
+Plan wykonania dla tego zapytania jest zauważalnie prostszy. Koszt spadł dwuktornie w porównaniu do wersji z podzapytaniem. Najważniejszą różnicą jest to, że silnik bazy danych wykonał tylko jeden odczyt tabeli z dysku `Full Index Scan`. Optymalizator odczytał tabelę products tylko raz, posortował dane i umieścił je w buforze pamięci tymczasowej `Lazy Spool`. Następnie wykorzystał ten bufor do wyliczenia średnich i złączenia danych `Nested Loops`. Czas wykonania to wciąż 0.0 ms ze względu na 77 wierszy w tabeli, jednak wyeliminowanie podwójnego fizycznego skanowania tabeli sprawia, że ta metoda jest bez porównania wydajniejsza i o wiele lepiej poradziłaby sobie przy dużej ilości danych.
+
+## Funkcja okna
+
+![zdj1](./wyniki/zad4_time_avg3_ms.png)
+![zdj1](./wyniki/zad4_plan_avg3_ms.png)
+
+Koszt: 0.018
+Czas: 0.0ms
+
+To podejście okazało się tak samo wydajne jak `JOIN`, a przy tym znacznie czytelniejsze. Z planu wykonania wynika, że baza skanuje tabelę products tylko jeden raz, co jest dużą oszczędnością w porównaniu do podzapytania. Baza dzieli dane na segmenty według kategorii, a następnie, zamiast zwijać wiersze jak przy zwykłym grupowaniu, wylicza średnią raz dla każdej kategorii i dopisuje ją do każdego produktu. Na samym końcu nakładany jest filtr, który odrzuca produkty tańsze niż średnia. Dzięki zastosowaniu konstrukcji `WITH`, mamy pewność, że filtr zadziała na już przeliczonych danych, co widać po strukturze drzewa operacji.
+
+# PostgreSql
+
+## Podzapytanie
+
+![zdj1](./wyniki/zad4_time_avg1_pg.png)
+![zdj1](./wyniki/zad4_plan_avg1_pg.png)
+
+## Join
+
+![zdj1](./wyniki/zad4_time_avg2_pg.png)
+![zdj1](./wyniki/zad4_plan_avg2_pg.png)
+
+## Funkcja okna
+
+![zdj1](./wyniki/zad4_time_avg3_pg.png)
+![zdj1](./wyniki/zad4_plan_avg3_pg.png)
+
+# SQLite
+
+## Podzapytanie
+
+![zdj1](./wyniki/zad4_plan_avg1_sl.png)
+
+## Join
+
+![zdj1](./wyniki/zad4_plan_avg2_sl.png)
+
+## Funkcja okna
+
+![zdj1](./wyniki/zad4_plan_avg3_sl.png)
 
 ---
 
