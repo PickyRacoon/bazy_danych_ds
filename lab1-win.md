@@ -151,9 +151,9 @@ from products p
 where productid < 10
 ```
 
-Jaka jest różnica? Czego dotyczy warunek w każdym z przypadków? Napisz polecenie równoważne
+Jaka jest różnica? Czego dotyczy warunek w każdym z przypadków? Napisz polecenie równoważne:
 
-- 1. z wykorzystaniem funkcji okna. Napisz polecenie równoważne
+- 1. z wykorzystaniem funkcji okna
 - 2. z wykorzystaniem podzapytania
 
 ---
@@ -166,7 +166,25 @@ select p.productid, p.ProductName, p.unitprice,
 from products p
 where productid < 10
 ```
-![zdj4](./wyniki/zad23.png)
+![zdj22](./wyniki/zad22.png)
+
+Warunek `WHERE` dotyczy tylko zapytania zewnętrznego, czyli decyduje o tym, które wiersze ostatecznie zostaną zwrócone. Podzapytanie wewnętrzne nie ma żadnego własnego warunku `WHERE`, dlatego średnia jest obliczana dla wszystkich produktów w tabeli.
+
+Polecenie równoważne z wykorzystaniem funkcji okna:
+
+```sql
+with avg_all as (
+    select productid, productname, unitprice,
+           avg(unitprice) over () as avgprice
+    from products
+)
+select * from avg_all
+where productid < 10
+```
+
+![zdj24](./wyniki/zad24.png)
+
+---
 
 ```sql
 select p.productid, p.ProductName, p.unitprice,
@@ -175,7 +193,20 @@ from products p
 where productid < 10
 ```
 
-![zdj4](./wyniki/zad21.png)
+![zdj21](./wyniki/zad21.png)
+
+Funkcje okna są obliczane pod sam koniec przetwarzania zapytania, w szczególności po klauzuli `WHERE`, która filtruje wiersze przed uruchomieniem tej funkcji. Dlatego wartość `avgprice` jest tu średnią ceną wyłącznie dla produktów o id mniejszym niż 10.
+
+Polecenie równoważne z wykorzystaniem podzapytania: 
+
+```sql
+select p.productid, p.ProductName, p.unitprice,
+       (select avg(unitprice) from products where productid < 10) as avgprice
+from products p
+where productid < 10
+```
+
+![zdj23](./wyniki/zad23.png)
 
 ---
 
