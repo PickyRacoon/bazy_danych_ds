@@ -342,7 +342,7 @@ Przetestuj działanie w różnych SZBD (MS SQL Server, PostgreSql, SQLite)
 
 > Wyniki:
 
-Podzapytanie
+# Podzapytanie
 
 ```sql
 select p1.productid, p1.productname, p1.unitprice,
@@ -351,7 +351,7 @@ from products p1
 where p1.unitprice > (select avg(unitprice) from products p2 where p1.categoryid = p2.categoryid)
 ```
 
-Join
+# Join
 
 ```sql
 select p.productid, p.productname, p.unitprice, c.avgprice
@@ -364,7 +364,7 @@ join (
 where p.unitprice > c.avgprice
 ```
 
-Funkcja okna
+# Funkcja okna
 
 ```sql
 with avg as (
@@ -614,8 +614,79 @@ Przetestuj działanie w różnych SZBD (MS SQL Server, PostgreSql, SQLite)
 
 > Wyniki:
 
+# Podzapytanie
+
 ```sql
---  ...
+with t as (select * from product_history where id between 1 and 10000)
+select t1.id,
+       t1.productid,
+       t1.productname,
+       t1.categoryid,
+       t1.unitprice,
+       (select avg(unitprice) from t t2 where t1.categoryid = t2.categoryid) as avgprice
+from t t1
+where t1.unitprice > (select avg(unitprice) from t t2 where t1.categoryid = t2.categoryid)
+```
+
+# Join
+
+```sql
+with t as (select * from product_history where id between 1 and 10000)
+select t.id,
+       t.productid,
+       t.productname,
+       t.categoryid,
+       t.unitprice,
+       c.avgprice
+from t
+         join (select categoryid, avg(unitprice) as avgprice
+               from t
+               group by categoryid) as c on t.categoryid = c.categoryid
+where t.unitprice > c.avgprice
+```
+
+# Funkcja okna
+
+```sql
+with t as (select * from product_history where id between 1 and 10000),
+     t_avg as (select id,
+                      productid,
+                      productname,
+                      categoryid,
+                      unitprice,
+                      avg(unitprice) over (partition by categoryid) as avgprice
+               from t)
+select id, productid, productname, categoryid, unitprice, avgprice
+from t_avg
+where unitprice > avgprice
+```
+
+# MS SQL Server
+
+## Podzapytanie
+
+## Join
+
+## Funkcja okna
+
+# PostgreSql
+
+## Podzapytanie
+
+## Join
+
+## Funkcja okna
+
+# SQLite
+
+## Podzapytanie
+
+## Join
+
+## Funkcja okna
+
+```sql
+
 ```
 
 ---
