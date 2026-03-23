@@ -291,7 +291,7 @@ Jeden Full Index Scan odczytuje dane, następnie Transformation (Segment) dzieli
 
 Fumkcja okna ma najszybszy czas wykonania, a pozostałe dwa plany są bardzo podobne do siebie przez co też czas wykonania jets prawie identyczny.
 
-# ostgreSql
+# PostgreSql
 
 ![zdj1](./wyniki/time_avg1_pg.png)
 ![zdj1](./wyniki/plan_avg1_pg.png)
@@ -346,9 +346,13 @@ Przetestuj działanie w różnych SZBD (MS SQL Server, PostgreSql, SQLite)
 
 ```sql
 select p1.productid, p1.productname, p1.unitprice,
-       (select avg(unitprice) from products p2 where p1.categoryid = p2.categoryid) as avgprice
+       (select avg(unitprice)
+       from products p2
+       where p1.categoryid = p2.categoryid) as avgprice
 from products p1
-where p1.unitprice > (select avg(unitprice) from products p2 where p1.categoryid = p2.categoryid)
+where p1.unitprice > (select avg(unitprice)
+                      from products p2
+                      where p1.categoryid = p2.categoryid)
 ```
 
 # Join
@@ -629,9 +633,13 @@ select t1.id,
        t1.productname,
        t1.categoryid,
        t1.unitprice,
-       (select avg(unitprice) from t t2 where t1.categoryid = t2.categoryid) as avgprice
+       (select avg(unitprice)
+        from t t2
+        where t1.categoryid = t2.categoryid) as avgprice
 from t t1
-where t1.unitprice > (select avg(unitprice) from t t2 where t1.categoryid = t2.categoryid)
+where t1.unitprice > (select avg(unitprice)
+                      from t t2
+                      where t1.categoryid = t2.categoryid)
 ```
 
 # Join
