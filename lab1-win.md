@@ -742,7 +742,7 @@ Zastosowanie złączenia `JOIN` w PostgreSQL przyniosło ogromną poprawę wydaj
 
 **Czas**: 13.329ms
 
-W podejściu z `funkcją okna` PostgreSQL wykonuje tylko jeden odczyt tabeli `Index Scan`. Plan ma strukturę liniową: dane są sortowane według kategorii, a następnie operator `WindowAgg` wylicza średnią dla każdego okna danych. Ostatnim etapem jest filtrowanie wyników przez `Subquery Scan`. Przy koszcie 1695.39 czas wykonania wyniósł 13.329 ms, co czyni tę metodę najszybszą w PostgreSQL — jest ona minimalnie wydajniejsza od złączenia `JOIN` (14.19 ms) i deklasuje podzapytanie, którego wykonanie trwało ponad 6 sekund.
+W podejściu z `funkcją okna` PostgreSQL wykonuje tylko jeden odczyt tabeli `Index Scan`. Plan ma strukturę liniową: dane są sortowane według kategorii, a następnie operator `WindowAgg` wylicza średnią dla każdego okna danych. Ostatnim etapem jest filtrowanie wyników przez `Subquery Scan`. Przy koszcie 1695.39 czas wykonania wyniósł 13.329 ms, co czyni tę metodę najszybszą w PostgreSQL, jest ona minimalnie wydajniejsza od złączenia `JOIN` (14.19 ms) i deklasuje podzapytanie, którego wykonanie trwało ponad 6 sekund.
 
 ---
 
@@ -752,13 +752,19 @@ W podejściu z `funkcją okna` PostgreSQL wykonuje tylko jeden odczyt tabeli `In
 
 ![zdj1](./wyniki/zad6_plan_avg1_sl.png)
 
+Plan wykonania w SQLite wykazuje bardzo niską wydajność ze względu na trzykrotne pełne skanowanie tabeli `Full Scan of product_history`. Silnik bazy danych oddzielnie skanuje tabelę dla zapytania głównego oraz dla każdego z dwóch podzapytań. Przy braku wykorzystania indeksów i dużej liczbie wierszy, takie podejście wymusza wielokrotne, nadmiarowe czytanie tych samych danych z dysku, co bardzo spowalnia zapytanie.
+
 ## Join
 
 ![zdj1](./wyniki/zad6_plan_avg2_sl.png)
 
+Zastosowanie JOIN w SQLite jest znacznie wydajniejsze dzięki mechanizmowi `Operation (CO-ROUTINE)`, który wylicza średnie kategorii tylko raz. Silnik wykonuje jeden pełny odczyt tabeli w celu pogrupowania danych, tworząc tymczasowy zbiór wyników. Następnie łączy te gotowe wyliczenia z głównym odczytem tabeli za pomocą szybkiego przeszukiwania indeksu `Index Scan` na kluczu `categoryid`. Takie podejście eliminuje nadmiarowe skanowanie tabeli charakterystyczne dla podzapytań skorelowanych.
+
 ## Funkcja okna
 
 ![zdj1](./wyniki/zad6_plan_avg3_sl.png)
+
+Z planu wynika, że silnik najpierw jednokrotnie skanuje i sortuje dane na potrzeby klauzuli `PARTITION BY`, po czym wylicza średnie w pamięci, tworząc wirtualną tabelę. Główne zapytanie wykonuje już tylko pojedynczy odczyt tych gotowych wyników `Full Scan of t_avg`, aby zastosować filtr z klauzuli `WHERE`. Takie podejście całkowicie eliminuje problem powtarzalnych obliczeń i wielokrotnego czytania dysku, zapewniając wysoką wydajność.
 
 ---
 
