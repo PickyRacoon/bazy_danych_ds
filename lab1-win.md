@@ -662,7 +662,12 @@ with t as (select * from product_history where id between 1 and 10000),
                       unitprice,
                       avg(unitprice) over (partition by categoryid) as avgprice
                from t)
-select id, productid, productname, categoryid, unitprice, avgprice
+select id,
+       productid,
+       productname,
+       categoryid,
+       unitprice,
+       avgprice
 from t_avg
 where unitprice > avgprice
 ```
@@ -676,25 +681,31 @@ where unitprice > avgprice
 
 **Koszt**: 1.154
 
-**Czas**: 77ms
+**Czas**: 78ms
+
+Na planie wykonania widoczny jest trzykrotny odczyt tabeli `Index Scan`. Baza skanuje dane raz dla głównego zapytania oraz dwa razy osobno dla podzapytań (dla klauzuli SELECT i WHERE). Średnie są liczone dwukrotnie w dwóch osobnych gałęziach planu. Koszt wynoszący 1.154 i czas 77 ms są stosunkowo wysokie. Wynika to z faktu, że silnik musi wykonywać te same obliczenia wielokrotnie.
 
 ## Join
 
 ![zdj1](./wyniki/zad6_time_avg2_ms.png)
 ![zdj1](./wyniki/zad6_plan_avg2_ms.png)
 
-**Koszt**:
+**Koszt**: 0.448
 
-**Czas**: ms
+**Czas**: 19ms
+
+Zastosowanie złączenia `JOIN` znacząco zoptymalizowało zapytanie. Czas wykonania spadł z 78 ms do 19 ms, a koszt z 1.154 do 0.448. Na planie wykonania widać tylko dwukrotny odczyt tabeli `Index Scan` zamiast trzech odczytów. Silnik raz skanuje dane dla zapytania głównego, a drugi raz wykonuje agregację za pomocą `Hash Match`, aby wyliczyć średnie dla kategorii, które następnie łączy operatorem `Hash Join`. Jest to o wiele wydajniejsze, ponieważ średnia dla danej kategorii liczona jest tylko raz i dołączana do pasujących produktów.
 
 ## Funkcja okna
 
 ![zdj1](./wyniki/zad6_time_avg3_ms.png)
 ![zdj1](./wyniki/zad6_plan_avg3_ms.png)
 
-**Koszt**:
+**Koszt**: 0.840
 
-**Czas**: ms
+**Czas**: 30ms
+
+W podejściu z funkcją okna silnik wykonuje tylko jeden odczyt tabeli `Index Scan`. Plan obejmuje sortowanie danych według kategorii, ich segmentację oraz buforowanie `Lazy Spool` w celu wyliczenia średniej przez operator `Stream Aggregate` i nałożenie końcowego filtra. Przy koszcie 0.840 czas wykonania wyniósł 30 ms. Jest to wynik znacznie lepszy niż w przypadku `podzapytania` (78 ms), lecz gorszy niż przy złączeniu `JOIN` (19 ms).
 
 ---
 
@@ -705,27 +716,33 @@ where unitprice > avgprice
 ![zdj1](./wyniki/zad6_time_avg1_pg.png)
 ![zdj1](./wyniki/zad6_plan_avg1_pg.png)
 
-**Koszt**:
+**Koszt**: 2 716 221.05
 
-**Czas**: ms
+**Czas**: 6 713.68ms
+
+W przypadku PostgreSQL to rozwiązanie okazało się ekstremalnie niewydajne, co widać po gigantycznym koszcie przekraczającym 2,7 mln oraz czasie wykonania wynoszącym ponad 6,7 sekundy. Wynika to z faktu, że silnik wykonuje ogromną liczbę powtarzalnych operacji: dla każdego wiersza z zapytania głównego baza musi dwukrotnie przeszukać zbiór tymczasowy `CTE Scan` i wyliczyć średnią (osobno dla klauzuli SELECT i WHERE), co prowadzi do drastycznego spadku wydajności przy 10 000 rekordów.
 
 ## Join
 
 ![zdj1](./wyniki/zad6_time_avg2_pg.png)
 ![zdj1](./wyniki/zad6_plan_avg2_pg.png)
 
-**Koszt**:
+**Koszt**: 1243.72
 
-**Czas**: ms
+**Czas**: 14.192ms
+
+Zastosowanie złączenia `JOIN` w PostgreSQL przyniosło ogromną poprawę wydajności w porównaniu do podzapytania. Koszt spadł z milionów do 1243.72, a czas wykonania z ponad 6 sekund do zaledwie 14.192 ms. Silnik bazy danych wyliczył średnie dla kategorii na zbiorze CTE tylko raz za pomocą `Aggregate`, umieścił je w tymczasowej tablicy, a następnie błyskawicznie dopasował je do produktów za pomocą operatora `Hash Join`. Taka strategia eliminuje problem wielokrotnego skanowania tych samych danych dla każdego wiersza z osobna.
 
 ## Funkcja okna
 
 ![zdj1](./wyniki/zad6_time_avg3_pg.png)
 ![zdj1](./wyniki/zad6_plan_avg3_pg.png)
 
-**Koszt**:
+**Koszt**: 1695.39
 
-**Czas**: ms
+**Czas**: 13.329ms
+
+W podejściu z `funkcją okna` PostgreSQL wykonuje tylko jeden odczyt tabeli `Index Scan`. Plan ma strukturę liniową: dane są sortowane według kategorii, a następnie operator `WindowAgg` wylicza średnią dla każdego okna danych. Ostatnim etapem jest filtrowanie wyników przez `Subquery Scan`. Przy koszcie 1695.39 czas wykonania wyniósł 13.329 ms, co czyni tę metodę najszybszą w PostgreSQL — jest ona minimalnie wydajniejsza od złączenia `JOIN` (14.19 ms) i deklasuje podzapytanie, którego wykonanie trwało ponad 6 sekund.
 
 ---
 
