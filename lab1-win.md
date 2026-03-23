@@ -272,7 +272,7 @@ SELECT
 FROM Products;
 ```
 
-MS SQL Server
+# MS SQL Server
 
 ![zdj1](./wyniki/time_avg1_ms.png)
 ![zdj1](./wyniki/plan_avg1_ms.png)
@@ -291,7 +291,7 @@ Jeden Full Index Scan odczytuje dane, następnie Transformation (Segment) dzieli
 
 Fumkcja okna ma najszybszy czas wykonania, a pozostałe dwa plany są bardzo podobne do siebie przez co też czas wykonania jets prawie identyczny.
 
-PostgreSql
+# ostgreSql
 
 ![zdj1](./wyniki/time_avg1_pg.png)
 ![zdj1](./wyniki/plan_avg1_pg.png)
@@ -310,7 +310,7 @@ Tabela skanowana tylko raz - WindowAgg oblicza średnią w jednym przebiegu.
 
 Wszystkie wersje mają bardzo zbliżony do siebie czas wykonania.
 
-SQLite
+# SQLite
 
 ![zdj1](./wyniki/plan_avg1_sl.png)
 
