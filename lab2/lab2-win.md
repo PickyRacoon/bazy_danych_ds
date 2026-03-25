@@ -199,7 +199,7 @@ Dla całego zbioru danych udało się tylko uzyskać wyniki dla funkcji okna:
 - Total Cost: 55.1518
 - Actual Total Time: 525.0
   
-Drugi sposób jest bardzo nieefektywny. Wyniki pomiędzy dwoma sposobami porównamy tylko dla jednego wybranego roku, tj. 1997.
+Drugi sposób jest bardzo nieefektywny - nie udało się uzyskać wyniku zapytania. Wyniki pomiędzy dwoma sposobami porównamy tylko dla jednego wybranego roku, tj. 1997.
 
 ![zdj1](./wyniki/11_1.png)
 
