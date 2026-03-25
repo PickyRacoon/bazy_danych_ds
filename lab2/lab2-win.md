@@ -464,7 +464,27 @@ Czy są jeszcze jakieś ciekawe/przydatne funkcje okna (z których nie korzysta�
 Do analizy użyj wybranego systemu/bazy danych - wybierz MS SQLserver, Postgres lub SQLite)
 
 ---
-> Wyniki: 
+> Wyniki:
+
+Średnia wartości zamówień z ostatnich 5 zamówień klienta.
+
+```sql
+SELECT
+    o.customerid,
+    o.orderid,
+    o.orderdate,
+    SUM(od.unitprice * od.quantity * (1 - od.discount)) + o.freight AS ordertotal,
+    AVG(SUM(od.unitprice * od.quantity * (1 - od.discount)) + o.freight)
+        OVER (
+            PARTITION BY o.customerid
+            ORDER BY o.orderdate
+            ROWS BETWEEN 4 PRECEDING AND CURRENT ROW
+            ) AS moving_avg
+FROM orders o
+JOIN orderdetails od ON o.orderid = od.orderid
+GROUP BY o.customerid, o.orderid, o.orderdate, o.freight
+ORDER BY o.customerid, o.orderdate;
+```
 
 CUME_DIST() - procent zamówień mniejszych lub równych danej wartości
 
