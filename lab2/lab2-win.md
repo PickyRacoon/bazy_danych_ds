@@ -156,6 +156,13 @@ WHERE ranknumber <= 4
 ORDER BY year, productid, ranknumber;
 ```
 
+
+![zdj1](./wyniki/2_1.png)
+
+
+![zdj1](./wyniki/2_11.png)
+
+
 ```sql
 SELECT
     ph1.year,
