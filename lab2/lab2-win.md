@@ -299,7 +299,49 @@ Do analizy użyj wybranego systemu/bazy danych - wybierz MS SQLserver, Postgres 
 > Wyniki: 
 
 ```sql
---  ...
+;WITH ordervalues as (
+    SELECT
+        o.orderid,
+        o.customerid,
+        o.orderdate,
+        SUM(od.unitprice * od.quantity * (1 - od.discount)) + o.freight AS ordertotal,
+        YEAR(o.orderdate) AS orderyear,
+        MONTH(o.orderdate) AS ordermonth
+    FROM orders o
+    JOIN orderdetails od ON o.orderid = od.orderid
+    GROUP BY o.orderid, o.customerid, o.orderdate, o.freight
+)
+SELECT
+    ov.customerid as clientid,
+    ov.orderid,
+    ov.orderdate,
+    ov.ordertotal,
+    FIRST_VALUE(ov.orderid) OVER (
+        PARTITION BY ov.customerid, ov.orderyear, ov.ordermonth
+        ORDER BY ov.ordertotal ASC
+        ) AS minorderid,
+    FIRST_VALUE(ov.orderdate) OVER (
+        PARTITION BY ov.customerid, ov.orderyear, ov.ordermonth
+        ORDER BY ov.ordertotal ASC
+        ) AS minorderdate,
+    FIRST_VALUE(ov.ordertotal) OVER (
+        PARTITION BY ov.customerid, ov.orderyear, ov.ordermonth
+        ORDER BY ov.ordertotal ASC
+        ) AS minordertotal,
+    FIRST_VALUE(ov.orderid) OVER (
+        PARTITION BY ov.customerid, ov.orderyear, ov.ordermonth
+        ORDER BY ov.ordertotal DESC
+        ) AS maxorderid,
+    FIRST_VALUE(ov.orderdate) OVER (
+        PARTITION BY ov.customerid, ov.orderyear, ov.ordermonth
+        ORDER BY ov.ordertotal DESC
+        ) AS maxorderdate,
+    FIRST_VALUE(ov.ordertotal) OVER (
+        PARTITION BY ov.customerid, ov.orderyear, ov.ordermonth
+        ORDER BY ov.ordertotal DESC
+        ) AS maxordertotal
+FROM ordervalues ov
+ORDER BY ov.customerid, ov.orderyear, ov.ordermonth, ov.orderid;
 ```
 
 ---
