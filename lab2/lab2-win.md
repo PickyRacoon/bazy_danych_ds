@@ -466,8 +466,47 @@ Do analizy użyj wybranego systemu/bazy danych - wybierz MS SQLserver, Postgres 
 ---
 > Wyniki: 
 
+CUME_DIST() - procent zamówień mniejszych lub równych danej wartości
+
+Dla każdego zamówienia klienta liczymy pozycję zamówienia w procentach w stosunku do wszystkich zamówień tego klienta.
+
 ```sql
---  ...
+SELECT
+    o.customerid,
+    o.orderid,
+    o.orderdate,
+    SUM(od.unitprice * od.quantity * (1 - od.discount)) + o.freight AS ordertotal,
+    CUME_DIST() OVER (
+        PARTITION BY o.customerid
+        ORDER BY SUM(od.unitprice * od.quantity * (1 - od.discount)) + o.freight
+        ) AS percent_rank
+FROM orders o
+JOIN orderdetails od ON o.orderid = od.orderid
+GROUP BY o.customerid, o.orderid, o.orderdate, o.freight
+ORDER BY o.customerid, ordertotal, o.orderdate;
+```
+PERCENT_RANK() - ranking procentowy
+
+Ranking zamówień klienta w stosunku do najwyższej wartości zamówienia. 
+
+```sql
+SELECT
+    o.customerid,
+    o.orderid,
+    SUM(od.unitprice * od.quantity * (1 - od.discount)) + o.freight AS ordertotal,
+    PERCENT_RANK() OVER (
+        PARTITION BY o.customerid
+        ORDER BY SUM(od.unitprice * od.quantity * (1 - od.discount)) + o.freight
+        ) AS percent_rank
+FROM orders o
+JOIN orderdetails od ON o.orderid = od.orderid
+GROUP BY o.customerid, o.orderid, o.freight
+ORDER BY o.customerid, ordertotal;
+```
+Umożliwia to szybkie wyświetlenie np. top 10% największych zamówień klienta:
+
+```sql
+WHERE percent_rank >= 0.9
 ```
 
 ---
