@@ -195,6 +195,32 @@ WHERE (
       ) < 4
 ORDER BY ph1.year, ph1.productid, ranknumber;
 ```
+Dla całego zbioru danych udało się tylko uzyskać wyniki dla funkcji okna:
+- Total Cost: 55.1518
+- Actual Total Time: 525.0
+  
+Drugi sposób jest bardzo nieefektywny. Wyniki pomiędzy dwoma sposobami porównamy tylko dla jednego wybranego roku, tj. 1997.
+
+![zdj1](./wyniki/11_1.png)
+
+
+![zdj1](./wyniki/11_11.png)
+
+
+![zdj1](./wyniki/2_2.png)
+
+
+![zdj1](./wyniki/2_22.png)
+
+Funkcja okna:
+- Total Cost: 20.2169
+- Actual Total Time: 62.0
+
+Bez funkcji okna:
+- Total Cost: 1297.19
+- Actual Total Time: 44256.0
+
+Dla tak ograniczonych danych już możemy zauważyć ogromną różnicę w czasie i koszcie wykonania tych zapytań.
 
 ---
 
