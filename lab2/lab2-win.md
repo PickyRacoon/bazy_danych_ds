@@ -4,6 +4,7 @@
 ---
 
 **Imiona i nazwiska:**
+Karolina Węgrzyn, Patrycja Markiewicz
 
 --- 
 
