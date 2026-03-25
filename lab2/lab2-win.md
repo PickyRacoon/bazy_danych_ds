@@ -138,7 +138,55 @@ Przetestuj działanie w różnych SZBD (MS SQL Server, PostgreSql, SQLite)
 > Wyniki: 
 
 ```sql
---  ...
+;WITH rankedprices AS (
+    SELECT
+        YEAR(date) as year,
+        productid,
+        productname,
+        unitprice,
+        date,
+        ROW_NUMBER() OVER (
+            PARTITION BY productid, YEAR(date)
+            ORDER BY unitprice DESC
+            ) AS ranknumber
+    FROM product_history
+)
+SELECT * FROM rankedprices
+WHERE ranknumber <= 4
+ORDER BY year, productid, ranknumber;
+```
+
+```sql
+SELECT
+    ph1.year,
+    ph1.productid,
+    ph1.productname,
+    ph1.unitprice,
+    ph1.date,
+    (
+        SELECT COUNT(*)
+        FROM product_history ph2
+        WHERE ph2.productid = ph1.productid
+          AND YEAR(ph2.date) = ph1.year
+          AND ph2.unitprice >= ph1.unitprice
+    ) AS ranknumber
+FROM (
+         SELECT
+             productid,
+             YEAR(date) AS year,
+             unitprice,
+             productname,
+             date
+         FROM product_history
+     ) ph1
+WHERE (
+          SELECT COUNT(*)
+          FROM product_history ph2
+          WHERE ph2.productid = ph1.productid
+            AND YEAR(ph2.date) = ph1.year
+            AND ph2.unitprice > ph1.unitprice
+      ) < 4
+ORDER BY ph1.year, ph1.productid, ranknumber;
 ```
 
 ---
