@@ -208,7 +208,27 @@ Do analizy użyj wybranego systemu/bazy danych - wybierz MS SQLserver, Postgres 
 > Wyniki: 
 
 ```sql
---  ...
+;WITH ordervalues as (
+    SELECT
+        o.orderid,
+        o.customerid,
+        o.orderdate,
+        SUM(od.unitprice * od.quantity * (1 - od.discount)) + o.freight AS ordertotal
+    FROM orders o
+    JOIN orderdetails od ON o.orderid = od.orderid
+    GROUP BY o.orderid, o.customerid, o.orderdate, o.freight
+)
+SELECT
+    c.companyname as clientname,
+    ov.orderid,
+    ov.orderdate,
+    ov.ordertotal,
+    LAG(ov.orderid) OVER (PARTITION BY ov.customerid ORDER BY ov.orderdate) AS previousorderid,
+    LAG(ov.orderdate) OVER (PARTITION BY ov.customerid ORDER BY ov.orderdate) AS previousorderdate,
+    LAG(ov.ordertotal) OVER (PARTITION BY ov.customerid ORDER BY ov.orderdate) AS previousordertotal
+FROM ordervalues ov
+JOIN customers c ON ov.customerid = c.customerid
+ORDER BY c.companyname, ov.orderdate;
 ```
 
 
