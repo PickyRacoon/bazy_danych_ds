@@ -476,6 +476,20 @@ from products
 order by categoryid, unitprice desc;
 ```
 
+---
+
+> Wyniki:
+
+```sql
+select productid, productname, unitprice, categoryid,
+    first_value(productname) over (partition by categoryid
+order by unitprice desc) first,
+    last_value(productname) over (partition by categoryid
+order by unitprice desc) last
+from products
+order by categoryid, unitprice desc;
+```
+
 ![zdj1](./wyniki/5_1.png)
 
 Funkcja `first_value` zwraca nazwę najdroższego produktu w każdym wierszu danej kategorii.
@@ -504,14 +518,6 @@ order by categoryid, unitprice desc;
 ![zdj2](./wyniki/5_2.png)
 
 Teraz funkcja `first_value` pokazuje najdroższy produkt w kategorii, a funkcja `last_value` najtańszy.
-
----
-
-> Wyniki:
-
-```sql
---  ...
-```
 
 ---
 
