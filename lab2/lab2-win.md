@@ -107,7 +107,7 @@ Do analizy użyj wybranego systemu/bazy danych - wybierz MS SQLserver, Postgres 
 
 > Wyniki:
 
-Zadanie wykonane zostało przy użyciu MS SQLserver'a.
+**MS SQL Server**
 
 ```sql
 select productid, productname, unitprice, categoryid,
@@ -318,9 +318,88 @@ Do analizy użyj wybranego systemu/bazy danych - wybierz MS SQLserver, Postgres 
 
 > Wyniki:
 
+**MS SQL Server**
+
+Funkcja `lag()` (opóźnienie) pobiera wartość z poprzedniego wiersza w określonym oknie.
+Funkcja `lead()` (wyprzedzenie) pobiera wartość z następnego wiersza w określonym oknie.
+Domyślnie obie funkcje przeskakują o 1 wiersz, ale można ten parametr zmienić. Jeśli poprzedniego lub następnego wiersza nie ma to funkcja zwróci NULL.
+
 ```sql
---  ...
+select productid, productname, categoryid, date, unitprice,
+       lag(unitprice) over (partition by productid order by date)
+as previousprodprice,
+       lead(unitprice) over (partition by productid order by date)
+as nextprodprice
+from product_history
+where productid = 1 and year(date) = 2022
+order by date;
 ```
+
+![zdj1](./wyniki/3_1.png)
+![zdj2](./wyniki/3_2.png)
+
+Wartości NULL na skrajnych pozycjach wynikają z faktu, że baza najpierw odfiltrowuje dane zostawiając tylko 2022 rok, a dopiero na tak przycietym zbiorze uruchamia funkcje okna. Z tego powodu funkcja `lag()` w pierwszym wierszu nie widzi odciętych danych z 2021 roku i musi zwrócić wartość pustą. Z kolei w ostatnim wierszu funkcja `lead()` nie ma już dostępu do rekordów z 2023 roku, co analogicznie skutkuje wynikiem NULL.
+
+```sql
+with t as (select productid, productname, categoryid, date, unitprice,
+                  lag(unitprice) over (partition by productid
+order by date) as previousprodprice,
+                  lead(unitprice) over (partition by productid
+order by date) as nextprodprice
+           from product_history
+           )
+select * from t
+where productid = 1 and year(date) = 2022
+order by date;
+```
+
+![zdj3](./wyniki/3_3.png)
+![zdj4](./wyniki/3_4.png)
+
+W zapytaniu z klauzulą WITH funkcje okna obliczane są dla całego `product_history` jeszcze przed nałożeniem filtru na rok 2022. Dzięki temu funkcja `lag()` w pierwszym wierszu poprawnie zaciąga cenę z końca 2021 roku, która była dostępna przed filtrowaniem. Z kolei NULL dla funkcji `lead()` w ostatnim wierszu wynika wyłącznie z faktu, ze w samej tabeli fizycznie brakuje danych z 2023 roku, z których można by pobrać kolejną wartość.
+
+Zapytanie równoważne bez użycia funkcji okna.
+
+```sql
+select
+    p1.productid,
+    p1.productname,
+    p1.categoryid,
+    p1.date,
+    p1.unitprice,
+
+    (select top 1 p2.unitprice
+     from product_history p2
+     where p2.productid = p1.productid
+       and p2.date < p1.date
+     order by p2.date desc
+     ) as previousprodprice,
+
+    (select top 1 p3.unitprice
+     from product_history p3
+     where p3.productid = p1.productid
+       and p3.date > p1.date
+     order by p3.date asc
+     ) as nextprodprice
+
+from product_history p1
+where p1.productid = 1
+  and YEAR(p1.date) = 2022
+order by p1.date;
+```
+
+![zdj5](./wyniki/3_5.png)
+![zdj6](./wyniki/3_6.png)
+
+Wynik tego zapytania jest dokładnie taki sam jak w przypadku zapytania z klauzulą WITH i funkcjami okna.
+
+| Metoda                              | Koszt   | Czas (ms) |
+| :---------------------------------- | :------ | :-------- |
+| Funkcje okna (bezpośrednio z WHERE) | 19.3605 | 18.0      |
+| Funkcje okna (w klauzuli WITH)      | 20.1186 | 105.0     |
+| Bez funkcji okna                    | 204.898 | 1151.0    |
+
+Wydajność zależy od momentu filtrowania danych. Bezpośrednie użycie funkcji okna jest najszybsze, bo silnik działa na już przyciętym zbiorze, podczas gdy klauzula WITH zmusza go do wcześniejszego przetworzenia całej historii. Z kolei podzapytania bez funkcji okna są skrajnie nieefektywne, ponieważ wymuszaja wielokrotne skanowanie tabeli wiersz po wierszu
 
 ---
 
