@@ -166,10 +166,10 @@ order by p1.categoryid, rowno
 
 Jak widać wynik jest taki sam jak w przypadku funkcji okna.
 
-| Metoda zapytania         | Koszt | Czas (ms) |
-| :----------------------- | :---- | :-------- |
-| Podzapytania skorelowane | 0.964 | 2.0       |
-| Funkcje okna             | 0.016 | 0.0       |
+| Metoda       | Koszt | Czas (ms) |
+| :----------- | :---- | :-------- |
+| Podzapytania | 0.964 | 2.0       |
+| Funkcje okna | 0.016 | 0.0       |
 
 Wersja z podzapytaniami jest wielokrotnie droższa dla silnika bazy danych ponieważ przy podzapytaniach baza musi przeliczać całą tabelę dla każdego pojedynczego wiersza. Funkcje okna wypadają dużo lepiej.
 
@@ -271,15 +271,10 @@ Drugi sposób jest bardzo nieefektywny - nie udało się uzyskać wyniku zapytan
 
 ![zdj1](./wyniki/2_22.png)
 
-Funkcja okna:
-
-- Total Cost: 20.2169
-- Actual Total Time: 62.0
-
-Bez funkcji okna:
-
-- Total Cost: 1297.19
-- Actual Total Time: 44256.0
+| Metoda           | Koszt   | Czas (ms) |
+| :--------------- | :------ | :-------- |
+| Funkcje okna     | 20.2169 | 62.0      |
+| Bez funkcji okna | 1297.19 | 44256.0   |
 
 Dla tak ograniczonych danych już możemy zauważyć ogromną różnicę w czasie i koszcie wykonania tych zapytań.
 
