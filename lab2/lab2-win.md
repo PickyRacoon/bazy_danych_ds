@@ -476,6 +476,35 @@ from products
 order by categoryid, unitprice desc;
 ```
 
+![zdj1](./wyniki/5_1.png)
+
+Funkcja `first_value` zwraca nazwę najdroższego produktu w każdym wierszu danej kategorii.
+Funkcja `last_value` zwraca nazwę produktu z bieżącego wiersza, natomiast w przypadku remisów, czyli w tym przypadku produktów o tych samych cenach, zwraca nazwę ostatniego produktu w tej cenie. Nie pokazuje najtańszego produktu.
+
+Przyczyną takiego działania funkcji `last_value` jest domyślna ramka okna, która przy użyciu klauzuli `ORDER BY` ustawia się automatycznie na `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`, co oznacza, że obejmuje wszystkie wiersze od początku partycji aż do bieżącego wiersza włącznie z jego remisami. W rezultacie funkcja nie widzi całej kategorii od razu, lecz jej wzrok urywa się na aktualnie przetwarzanym wierszu. Dlatego dla każdego kroku jako ostatnią wartość bierze po prostu bieżący rekord lub ostatni z grupy remisującej.
+
+Aby funkcja `last_value` faktycznie pokazywała najtańszy produkt na samym dole kategorii, musimy ręcznie nadpisać tę domyślną, uciętą ramkę okna i kazać bazie patrzeć do samego końca grupy. W tym celu po klauzuli ORDER BY należy dopisać: `ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING` czyli ramka okna od pierwszego wiersza aż do ostatniego wiersza partycji.
+
+```sql
+select productid, productname, unitprice, categoryid,
+    first_value(productname) over (
+        partition by categoryid
+        order by unitprice desc
+    ) as first_product,
+
+    last_value(productname) over (
+        partition by categoryid
+        order by unitprice desc
+        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+    ) as last_product
+from products
+order by categoryid, unitprice desc;
+```
+
+![zdj2](./wyniki/5_2.png)
+
+Teraz funkcja `first_value` pokazuje najdroższy produkt w kategorii, a funkcja `last_value` najtańszy.
+
 ---
 
 > Wyniki:
