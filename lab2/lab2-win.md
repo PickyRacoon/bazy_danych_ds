@@ -373,8 +373,6 @@ WHERE ranknumber <= 4
 ORDER BY year, productid, ranknumber;
 ```
 
-![zdj1](./wyniki/d_2.png)
-
 ![zdj1](./wyniki/dd_2.png)
 
 ```sql
@@ -411,9 +409,13 @@ WHERE (
 ORDER BY ph1.year, ph1.productid, ranknumber;
 ```
 
-![zdj1](./wyniki/d_22.png)
-
 ![zdj1](./wyniki/dd_22.png)
+
+
+| Metoda            | Czas (ms) |
+| :--------------- | :-------- |
+| Funkcje okna     | 1.868      |
+| Bez funkcji okna  | przerwane   |
 
 ---
 
