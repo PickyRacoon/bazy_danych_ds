@@ -200,6 +200,8 @@ Przetestuj działanie w różnych SZBD (MS SQL Server, PostgreSql, SQLite)
 
 > Wyniki:
 
+MS SQL Server
+
 ```sql
 ;WITH rankedprices AS (
     SELECT
@@ -277,6 +279,74 @@ Drugi sposób jest bardzo nieefektywny - nie udało się uzyskać wyniku zapytan
 | Bez funkcji okna | 1297.19 | 44256.0   |
 
 Dla tak ograniczonych danych już możemy zauważyć ogromną różnicę w czasie i koszcie wykonania tych zapytań.
+
+PostgreSql
+
+Od początku dane były ograniczoe, mimo tego dla sposobu bez funkcji okna nie udało się uzyskać wyników.
+
+```sql
+WITH rankedprices AS (
+    SELECT
+        EXTRACT(YEAR FROM date) AS year,
+        productid,
+        productname,
+        unitprice,
+        date,
+        ROW_NUMBER() OVER (
+            PARTITION BY productid, EXTRACT(YEAR FROM date)
+            ORDER BY unitprice DESC
+            ) AS ranknumber
+    FROM product_history
+    WHERE EXTRACT(YEAR FROM date) = 1997
+)
+SELECT *
+FROM rankedprices
+WHERE ranknumber <= 4
+ORDER BY year, productid, ranknumber;
+```
+
+![zdj1](./wyniki/d_1.png)
+
+![zdj1](./wyniki/dd_1.png)
+
+```sql
+SELECT
+    ph1.year,
+    ph1.productid,
+    ph1.productname,
+    ph1.unitprice,
+    ph1.date,
+    (
+        SELECT COUNT(*)
+        FROM product_history ph2
+        WHERE ph2.productid = ph1.productid
+          AND EXTRACT(YEAR FROM ph2.date) = 1997
+          AND ph2.unitprice >= ph1.unitprice
+    ) AS ranknumber
+FROM (
+         SELECT
+             productid,
+             EXTRACT(YEAR FROM date) AS year,
+             unitprice,
+             productname,
+             date
+         FROM product_history
+         WHERE EXTRACT(YEAR FROM date) = 1997
+     ) ph1
+WHERE (
+          SELECT COUNT(*)
+          FROM product_history ph2
+          WHERE ph2.productid = ph1.productid
+            AND EXTRACT(YEAR FROM ph2.date) = 1997
+            AND ph2.unitprice > ph1.unitprice
+      ) < 4
+ORDER BY ph1.year, ph1.productid, ranknumber;
+```
+
+| Metoda           | Koszt   | Czas (ms) |
+| :--------------- | :------ | :-------- |
+| Funkcje okna     | 46989.27 | 331.56      |
+| Bez funkcji okna | przerwane | przerwane   |
 
 ---
 
