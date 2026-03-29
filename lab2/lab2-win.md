@@ -348,6 +348,73 @@ ORDER BY ph1.year, ph1.productid, ranknumber;
 | Funkcje okna     | 46989.27 | 331.56      |
 | Bez funkcji okna | przerwane | przerwane   |
 
+SQLite
+
+Również działamy od razu na ograniczonych danych.
+
+```sql
+WITH rankedprices AS (
+    SELECT
+        strftime('%Y', date) AS year,
+        productid,
+        productname,
+        unitprice,
+        date,
+        ROW_NUMBER() OVER (
+            PARTITION BY productid, strftime('%Y', date)
+            ORDER BY unitprice DESC
+            ) AS ranknumber
+    FROM product_history
+    WHERE strftime('%Y', date) = '1997'
+)
+SELECT *
+FROM rankedprices
+WHERE ranknumber <= 4
+ORDER BY year, productid, ranknumber;
+```
+
+![zdj1](./wyniki/d_2.png)
+
+![zdj1](./wyniki/dd_2.png)
+
+```sql
+SELECT
+    ph1.year,
+    ph1.productid,
+    ph1.productname,
+    ph1.unitprice,
+    ph1.date,
+    (
+        SELECT COUNT(*)
+        FROM product_history ph2
+        WHERE ph2.productid = ph1.productid
+          AND strftime('%Y', ph2.date) = '1997'
+          AND ph2.unitprice >= ph1.unitprice
+    ) AS ranknumber
+FROM (
+         SELECT
+             productid,
+             strftime('%Y', date) AS year,
+             unitprice,
+             productname,
+             date
+         FROM product_history
+         WHERE strftime('%Y', date) = '1997'
+     ) ph1
+WHERE (
+          SELECT COUNT(*)
+          FROM product_history ph2
+          WHERE ph2.productid = ph1.productid
+            AND strftime('%Y', ph2.date) = '1997'
+            AND ph2.unitprice > ph1.unitprice
+      ) < 4
+ORDER BY ph1.year, ph1.productid, ranknumber;
+```
+
+![zdj1](./wyniki/d_22.png)
+
+![zdj1](./wyniki/dd_22.png)
+
 ---
 
 # Zadanie 3
