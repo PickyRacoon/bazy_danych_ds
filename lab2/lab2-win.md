@@ -618,9 +618,240 @@ Przetestuj działanie w różnych SZBD (MS SQL Server, PostgreSql, SQLite)
 
 > Wyniki:
 
+## MS SQL Server
+
+### Funkcja okna
+
 ```sql
---  ...
+select
+    id,
+    productid,
+    date,
+    unitprice,
+    sum(unitprice) over (
+        partition by productid, year(date), month(date)
+        order by date
+    ) as mtd_sales
+from product_history
+order by productid, date
 ```
+
+![zdj1](./wyniki/7_1.png)
+
+Plan jest liniowy i zoptymalizowany. Wykonuje zaledwie jeden skan tabeli, a sumę narastającą oblicza w jednym przejściu za pomocą dedykowanego operatora Window Aggregate.
+
+### Bez użycia funkcji okna
+
+```sql
+select
+    p1.id,
+    p1.productid,
+    p1.date,
+    p1.unitprice,
+    (select sum(p2.unitprice)
+     from product_history p2
+     where p2.productid = p1.productid
+       and year(p2.date) = year(p1.date)
+       and month(p2.date) = month(p2.date)
+       and p2.date <= p1.date
+     ) as mtd_sales
+from product_history p1
+order by productid, date
+```
+
+![zdj2](./wyniki/7_2.png)
+
+Plan skrajnie nieefektywny i złożony. Głównym wąskim gardłem jest tu operator Nested Loops, który wymusza na bazie wielokrotne, bardzo kosztowne skanowanie tej samej tabeli dla każdego wiersza z osobna, na planie również dwa Full Index Scany.
+
+---
+
+| Metoda           | Koszt   | Czas (ms) |
+| :--------------- | :------ | :-------- |
+| Funkcja okna     | 49.2984 | 374       |
+| Bez funkcji okna | 12677.7 | 1176205   |
+
+Zapytanie z funkcją okna poradziło sobie znacznie lepiej niż to bez funkcji okna. Zarówno czas jak i koszt są drastycznie mniejsze dla funkcji okna.
+
+## PostgreSql
+
+### Funkcja okna
+
+```sql
+select
+    id,
+    productid,
+    date,
+    unitprice,
+    sum(unitprice) over (
+        partition by productid, extract(year from date), extract(month from date)
+        order by date
+    ) as mtd_sales
+from product_history
+order by productid, date;
+```
+
+![zdj3](./wyniki/7_3.png)
+
+Plan jest zoptymalizowany i liniowy, oparty na jednokrotnym skanowaniu tabeli Seq Scan i zrównoleglonym sortowaniu Gather Merge. Dzięki zastosowaniu dedykowanego operatora WindowAgg, suma narastająca obliczana jest wydajnie w jednym przejściu przez posortowane dane.
+
+### Bez użycia funkcji okna - podzapytanie
+
+```sql
+select
+    p1.id,
+    p1.productid,
+    p1.date,
+    p1.unitprice,
+
+    (select sum(p2.unitprice)
+     from product_history p2
+     where p2.productid = p1.productid
+       and extract(year from p2.date) = extract(year from p1.date)
+       and extract(month from p2.date) = extract(month from p1.date)
+       and p2.date <= p1.date
+     ) as mtd_sales
+
+from product_history p1
+order by productid, date;
+```
+
+![zdj4](./wyniki/7_4.png)
+
+Zapytanie okazało się skrajnie niewydajne - jego wykonanie zostało przerwane po 2 godzinach. Główną przyczyną tak drastycznego spadku wydajności jest zastosowanie podzapytania skorelowanego, które zmusza optymalizator do wielokrotnego, pełnego skanowania tabeli dla każdego analizowanego wiersza z osobna. Dodatkowy, choć mniejszy narzut obliczeniowy, generuje wielokrotne wywoływanie funkcji extract w warunkach złączenia.
+
+### Kolejna próba bez użycia funkcji okna - join
+
+```sql
+select
+    p1.id,
+    p1.productid,
+    p1.date,
+    p1.unitprice,
+    sum(p2.unitprice) as mtd_sales
+from product_history p1
+join product_history p2
+    on p1.productid = p2.productid
+    and extract(year from p1.date) = extract(year from p2.date)
+    and extract(month from p1.date) = extract(month from p2.date)
+    and p2.date <= p1.date
+group by
+    p1.id,
+    p1.productid,
+    p1.date,
+    p1.unitprice
+order by
+    p1.productid,
+    p1.date;
+```
+
+![zdj5](./wyniki/7_5.png)
+
+Plan opiera się na złączeniu dwóch pełnych skanów tabeli za pomocą operatora Merge Join. Choć rozwiązanie to eliminuje problem zapętlonego podzapytania, warunek nierówności (<=) generuje gigantyczną liczbę wierszy pośrednich. Wymusza to na bazie kosztowne operacje wielokrotnego sortowania i grupowania, co czyni tę metodę wciąż znacznie wolniejszą od zastosowania funkcji okna.
+
+---
+
+| Metoda                          | Koszt     | Czas            |
+| :------------------------------ | :-------- | :-------------- |
+| Funkcja okna                    | 938197.96 | 2364.96 ms      |
+| Bez funkcji okna (join)         | 851574.74 | 19119.568 ms    |
+| Bez funkcji okna (podzapytanie) | -         | Przerwane po 2h |
+
+Funkcja okna wypada najlepiej po względem czasu wykonania, podczas gdy podzapytanie skorelowane okazało się zupełną katastrofą. Warto jednak zauważyć, że metoda ze złączeniem poradziła sobie wcale nie tak źle (ok 19 s), stanowiąc całkiem sensowną, choć zauważalnie wolniejszą alternatywę.
+
+## SQLite
+
+### Funkcja okna
+
+```sql
+select
+    id,
+    productid,
+    date,
+    unitprice,
+    sum(unitprice) over (
+        partition by productid, strftime('%Y-%m', date)
+        order by date
+    ) as mtd_sales
+from product_history
+order by productid, date;
+```
+
+![zdj6](./wyniki/7_6.png)
+
+Plan wysoce zoptymalizowany. Wykonuje tylko jeden skan tabeli, a obliczenia sumy narastającej realizuje wydajnie w pamięci przy użyciu operacji CO-ROUTINE oraz tymczasowego drzewa B-TREE do sortowania.
+
+### Bez użycia funkcji okna - podzapytanie
+
+```sql
+select
+    p1.id,
+    p1.productid,
+    p1.date,
+    p1.unitprice,
+
+    (select sum(p2.unitprice)
+     from product_history p2
+     where p2.productid = p1.productid
+       and strftime('%Y-%m', p2.date) = strftime('%Y-%m', p1.date)
+       and p2.date <= p1.date
+    ) as mtd_sales
+
+from product_history p1
+order by p1.productid, p1.date;
+```
+
+![zdj7](./wyniki/7_7.png)
+
+Plan skrajnie niewydajny. Baza wykonuje pełny skan tabeli głównej, a dla każdego napotkanego wiersza uruchamia podzapytanie wymuszające kolejne, powtarzające się pełne skanowanie tabeli p2.
+
+### Bez użycia funkcji okna - join
+
+```sql
+select
+    p1.id,
+    p1.productid,
+    p1.date,
+    p1.unitprice,
+    sum(p2.unitprice) as mtd_sales
+from product_history p1
+join product_history p2
+    on p1.productid = p2.productid
+    and strftime('%Y-%m', p1.date) = strftime('%Y-%m', p2.date)
+    and p2.date <= p1.date
+group by
+    p1.id,
+    p1.productid,
+    p1.date,
+    p1.unitprice
+order by
+    p1.productid,
+    p1.date;
+```
+
+![zdj8](./wyniki/7_8.png)
+
+Plan wykorzystuje pełny skan tabeli p1 i skan indeksu dla p2. Niestety, złączenie z warunkiem nierówności generuje gigantyczną liczbę wierszy pośrednich, co wymusza niezwykle kosztowne operacje grupowania i sortowania, ostatecznie dławiąc silnik SQLite równie mocno co podzapytanie.
+
+---
+
+| Metoda                          | Czas               |
+| :------------------------------ | :----------------- |
+| Funkcja okna                    | 3687 ms            |
+| Bez funkcji okna (podzapytanie) | Przerwane po 40min |
+| Bez funkcji okna (join)         | Przerwane po 30min |
+
+Kolejny raz funkcje okna wypadają najlepiej, można powiedzieć, że w tym przypadku są bezkonkurencyjne.
+
+---
+
+### Podsumowanie czasów dla każdego z serwerów
+
+| Metoda                          | MS SQL Server | PostgreSQL | SQLite    |
+| :------------------------------ | :------------ | :--------- | :-------- |
+| Funkcja okna                    | 374 ms        | 2364.96 ms | 3687 ms   |
+| Bez funkcji okna (podzapytanie) | 1176205 ms    | Przerwane  | Przerwane |
+
+Funkcje okna są nieporównywalnie szybsze w każdym z testowanych serweró. Podejście z podzapytaniem kompletnie nie radzi sobie przy większej ilości danych, MS SQL Server mielił to zapytanie przez prawie 20 minut, a w Postgresie i SQLite trzeba było je po prostu przerwać.
 
 ---
 
