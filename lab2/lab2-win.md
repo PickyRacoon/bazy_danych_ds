@@ -690,7 +690,7 @@ from product_history
 order by productid, date;
 ```
 
-![zdj3](./wyniki/7_3.png)
+![zdj3](./wyniki/7_3.jpg)
 
 Plan jest zoptymalizowany i liniowy, oparty na jednokrotnym skanowaniu tabeli Seq Scan i zrównoleglonym sortowaniu Gather Merge. Dzięki zastosowaniu dedykowanego operatora WindowAgg, suma narastająca obliczana jest wydajnie w jednym przejściu przez posortowane dane.
 
@@ -776,7 +776,7 @@ from product_history
 order by productid, date;
 ```
 
-![zdj6](./wyniki/7_6.png)
+![zdj6](./wyniki/7_6.jpg)
 
 Plan wysoce zoptymalizowany. Wykonuje tylko jeden skan tabeli, a obliczenia sumy narastającej realizuje wydajnie w pamięci przy użyciu operacji CO-ROUTINE oraz tymczasowego drzewa B-TREE do sortowania.
 
@@ -800,7 +800,7 @@ from product_history p1
 order by p1.productid, p1.date;
 ```
 
-![zdj7](./wyniki/7_7.png)
+![zdj7](./wyniki/7_7.jpg)
 
 Plan skrajnie niewydajny. Baza wykonuje pełny skan tabeli głównej, a dla każdego napotkanego wiersza uruchamia podzapytanie wymuszające kolejne, powtarzające się pełne skanowanie tabeli p2.
 
