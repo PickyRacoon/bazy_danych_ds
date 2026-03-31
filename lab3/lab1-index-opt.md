@@ -493,13 +493,17 @@ Co można o nich powiedzieć?
 
 ---
 > Wyniki:
+
 --- 1
+
 ![zdj2](./_img/5.1.png)
 
 --- 2
+
 ![zdj2](./_img/5.2.png)
 
 --- 3
+
 ![zdj2](./_img/5.3.png)
 
 Przygotuj indeks obejmujący te zapytania:
@@ -515,12 +519,15 @@ Sprawdź plan zapytania. Co się zmieniło?
 > Wyniki:
 
 --- 1
+
 ![zdj2](./_img/5.11.png)
 
 --- 2
+
 ![zdj2](./_img/5.22.png)
 
 --- 3
+
 ![zdj2](./_img/5.33.png)
 
 Przeprowadź ponownie analizę zapytań tym razem dla parametrów: `FirstName = ‘Angela’` `LastName = ‘Price’`. (Trzy zapytania, różna kombinacja parametrów). 
@@ -529,14 +536,18 @@ Czym różni się ten plan od zapytania o `'Osarumwense Agbonile'` . Dlaczego ta
 
 
 ---
-> Wyniki: 
+> Wyniki:
+
 --- 1
+
 ![zdj2](./_img/5.4.png)
 
 --- 2
+
 ![zdj2](./_img/5.5.png)
 
 --- 3
+
 ![zdj2](./_img/5.6.png)
 
 
