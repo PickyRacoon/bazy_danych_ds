@@ -410,9 +410,23 @@ where postalcode between '98000' and '99999'
 
 > Wyniki: 
 
-```sql
---  ...
-```
+### Bez indeksów
+
+![zdj2](./_img/4.1.png)
+
+### address_postalcode_1
+
+![zdj2](./_img/4.2.png)
+
+### address_postalcode_2
+
+![zdj2](./_img/4.3.png)
+
+| Zapytanie    | Koszt     | Czas (ms) |
+| :----------- | :----     | :-------- |
+| Bez indeksów | 0.278191 |       4.0 |
+| address_postalcode_1| 0.0284668 |       0.0 | 
+| address_postalcode_2| 0.0284668  |       0.0 | 
 
 Sprawdź rozmiar Indeksów:
 
