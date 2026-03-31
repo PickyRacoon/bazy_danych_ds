@@ -307,8 +307,11 @@ Zanotuj czas zapytania oraz jego koszt koszt:
 
 | Zapytanie    | Koszt    | Czas (ms) |
 | :----------- | :----    | :-------- |
-| 1            | 0.139158 |           |
-| 2            | 0.139158 |           |
+| 1            | 0.139158 |       1.0 |
+| 2            | 0.139158 |       1.0 | 
+
+
+![zdj2](./_img/3.1.png)
 
 Dodaj indeks:
 
@@ -318,14 +321,15 @@ create  index customer_store_cls_idx on customer(storeid)
 
 Jak zmienił się plan i czas? Czy jest możliwość optymalizacji?
 
-
 ---
-> Wyniki: 
+> Wyniki:
 
-```sql
---  ...
-```
+| Zapytanie    | Koszt    | Czas (ms) |
+| :----------- | :----    | :-------- |
+| 1            | 0.00657038 |       0.0 |
+| 2            | 0.0507122 |       0.0 | 
 
+![zdj2](./_img/3.2.png)
 
 Dodaj indeks klastrowany:
 
@@ -335,14 +339,14 @@ create clustered index customer_store_cls_idx on customer(storeid)
 
 Czy zmienił się plan/koszt/czas? Skomentuj dwa podejścia w wyszukiwaniu krotek.
 
-
 ---
 > Wyniki: 
+| Zapytanie    | Koszt    | Czas (ms) |
+| :----------- | :----    | :-------- |
+| 1            | 0.0032831 |       0.0 |
+| 2            | 0.0032996 |       0.0 | 
 
-```sql
---  ...
-```
-
+![zdj2](./_img/3.3.png)
 
 # Zadanie 4 - dodatkowe kolumny w indeksie
 
