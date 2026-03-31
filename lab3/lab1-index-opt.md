@@ -506,6 +506,8 @@ Co można o nich powiedzieć?
 
 ![zdj2](./_img/5.3.png)
 
+Serwer we wszystkich trzech przypadkach wykonuje Full Table Scan, aby odnależć wyniki zapytań.
+
 Przygotuj indeks obejmujący te zapytania:
 
 ```sql
