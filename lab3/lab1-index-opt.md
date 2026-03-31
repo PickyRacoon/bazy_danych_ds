@@ -293,20 +293,22 @@ select * into customer from adventureworks2017.sales.customer
 Wykonaj analizy zapytań:
 
 ```sql
+--- 1
 select * from customer where storeid = 594  
-  
+
+--- 2
 select * from customer where storeid between 594 and 610
 ```
 
 Zanotuj czas zapytania oraz jego koszt koszt:
 
 ---
-> Wyniki: 
+> Wyniki:
 
-```sql
---  ...
-```
-
+| Zapytanie    | Koszt    | Czas (ms) |
+| :----------- | :----    | :-------- |
+| 1            | 0.139158 |           |
+| 2            | 0.139158 |           |
 
 Dodaj indeks:
 
