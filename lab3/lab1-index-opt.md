@@ -450,11 +450,9 @@ Który jest większy? Jak można skomentować te dwa podejścia do indeksowania?
 
 > Wyniki: 
 
-```sql
---  ...
-```
+![zdj2](./_img/4.4.png)
 
-
+Większy jest address_postalcode_2. Dla niego wszystkie kolumny (addressline1, addressline2, city, stateprovinceid - one wpływają an rozmiar) są częścią klucza indeksu, czyli każda z nich jest przechowywana w strukturze B+ drzewa. W indeksie address_postalcode_1 te same kolumny są w include, czyli są dołączone tylko do liści indeksu, a nie do całej struktury drzewa - przez co indeks ma mniejszy rozmiar.
 
 # Zadanie 5  - kolejność atrybutów
 
