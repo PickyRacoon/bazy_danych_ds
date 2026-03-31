@@ -340,9 +340,10 @@ create clustered index customer_store_cls_idx on customer(storeid)
 Czy zmienił się plan/koszt/czas? Skomentuj dwa podejścia w wyszukiwaniu krotek.
 
 ---
-> Wyniki: 
-| Zapytanie    | Koszt    | Czas (ms) |
-| :----------- | :----    | :-------- |
+> Wyniki:
+> 
+| Zapytanie    | Koszt     | Czas (ms) |
+| :----------- | :----     | :-------- |
 | 1            | 0.0032831 |       0.0 |
 | 2            | 0.0032996 |       0.0 | 
 
