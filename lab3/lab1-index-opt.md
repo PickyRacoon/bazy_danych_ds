@@ -332,7 +332,9 @@ Jak zmienił się plan i czas? Czy jest możliwość optymalizacji?
 
 ![zdj2](./_img/3.2.png)
 
-Po dodaniu indeksu serwer wykorzystał go do wyszukiwania, przez co czas i koszt obu zapytań zmalał. Dla 2 zapytania koszt był troche większy, bo serwer musiał odczytać większą ilość rekordów z indeksu. Możliwością optymalizacji jest zastosowanie indeksu klastrowanego, bo serwer bezpośrednio będzie wiedział gdzie jest szukany rekord (uporządkowanie wg kolumny storeid).
+Po dodaniu indeksu serwer wykorzystał go do wyszukiwania rekordów, przez co czas i koszt obu zapytań zmalał. Dla 2 zapytania koszt był troche większy, bo serwer musiał odczytać większą ilość rekordów z indeksu. Widać również z planu, że indeks nie zawierał wszystkich kolumn potrzebnych w tym zapytaniu, dlatego reszte danych serwer musiał odczytać bezpośrednio z tabeli. 
+
+Możliwością optymalizacji jest zastosowanie indeksu klastrowanego, bo serwer bezpośrednio będzie wiedział gdzie jest szukany rekord - uporządkowanie wg kolumny storeid oraz ten typ indeksu zawiera pełne wiersze tabeli.
 
 Dodaj indeks klastrowany:
 
@@ -352,7 +354,7 @@ Czy zmienił się plan/koszt/czas? Skomentuj dwa podejścia w wyszukiwaniu krote
 
 ![zdj2](./_img/3.3.png)
 
-Dla tego indeksu koszt jeszcze bardziej zmalał, przez uporządkowanie danych w tabeli - udana optymalizacja.
+Dla indeksu klastrowanego koszt jeszcze bardziej zmalał - udana optymalizacja. Widać z planu, że wszystkie informacje zostały odczytane bezpośrednio z indeksu.
 
 # Zadanie 4 - dodatkowe kolumny w indeksie
 
