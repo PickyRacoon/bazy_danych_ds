@@ -532,6 +532,8 @@ Sprawdź plan zapytania. Co się zmieniło?
 
 ![zdj2](./_img/5.33.png)
 
+Indeks wielokolumnowy traktuje pierwszą kolumne jako najważniejszą - serwer może korzystać w pełni z indeksu dopóki lastname jest użyte w zapytaniu. W 1 i 2 zapytaniu widać Index Seek (precyzyjne wyszukiwanie w indeksie - serwer wie dokładnie, gdzie są szukane wiersze), a dla 3 mamy tylko Index Scan (przeszukiwanie całego indeksu).
+
 Przeprowadź ponownie analizę zapytań tym razem dla parametrów: `FirstName = ‘Angela’` `LastName = ‘Price’`. (Trzy zapytania, różna kombinacja parametrów). 
 
 Czym różni się ten plan od zapytania o `'Osarumwense Agbonile'` . Dlaczego tak jest?
@@ -552,7 +554,7 @@ Czym różni się ten plan od zapytania o `'Osarumwense Agbonile'` . Dlaczego ta
 
 ![zdj2](./_img/5.6.png)
 
-
+W tym przypadku indeks został wykorzystany tylko dla 2 zapytania (połączenie lastname i firstname). Dla 1 i 3 serwer użył Full Table Scan. Widać na tym przykładzie, że serwer też decyduje jakiego sposobu użyć w zależności od kosztu wyszukania. Dla danych `FirstName = ‘Angela’` `LastName = ‘Price’` mamy o wiele więcej rekordów dla pojedyńczych wyszukiwań (tylko lastname albo firstname), a w przypadku `'Osarumwense Agbonile'` istnieje tylko jeden rekord o tym imieniu oraz również jeden o tym nazwisku. Koszt okazał się mniejszy w 1 i 3 zapytaniu (`FirstName = ‘Angela’` `LastName = ‘Price’`) dla odczytu całej tabeli, niż skakaniu po indeksie oraz odwoływaniu się do tabeli dla każdego wiersza (select *).
 
 ---
 
