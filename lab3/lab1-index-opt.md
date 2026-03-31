@@ -17,6 +17,7 @@
 ---
 
 **Imiona i nazwiska:**
+Karolina Węgrzyn, Patrycja Markiewicz
 
 --- 
 
@@ -331,6 +332,8 @@ Jak zmienił się plan i czas? Czy jest możliwość optymalizacji?
 
 ![zdj2](./_img/3.2.png)
 
+Po dodaniu indeksu serwer wykorzystał go do wyszukiwania, przez co czas i koszt obu zapytań zmalał. Dla 2 zapytania koszt był troche większy, bo serwer musiał odczytać większą ilość rekordów z indeksu. Możliwością optymalizacji jest zastosowanie indeksu klastrowanego, bo serwer bezpośrednio będzie wiedział gdzie jest szukany rekord (uporządkowanie wg kolumny storeid).
+
 Dodaj indeks klastrowany:
 
 ```sql
@@ -348,6 +351,8 @@ Czy zmienił się plan/koszt/czas? Skomentuj dwa podejścia w wyszukiwaniu krote
 | 2            | 0.0032996 |       0.0 | 
 
 ![zdj2](./_img/3.3.png)
+
+Dla tego indeksu koszt jeszcze bardziej zmalał, przez uporządkowanie danych w tabeli - udana optymalizacja.
 
 # Zadanie 4 - dodatkowe kolumny w indeksie
 
