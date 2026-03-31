@@ -428,6 +428,11 @@ where postalcode between '98000' and '99999'
 | address_postalcode_1| 0.0284668 |       0.0 | 
 | address_postalcode_2| 0.0284668  |       0.0 | 
 
+W przypadku braku indeksów koszt jest najwyższy, bo serwer musi wykonać Full Table Scan, aby znaleźć pasujące wiersze do warunku.
+
+Indeksy address_postalcode_1 i address_postalcode_2 mają te same koszty (niższe niż dla zapytania bez indeksów) i plany. Dla pierwszego serwer przeszukuje indeks po postalcode, a reszta potrzebnych kolumn też znajduje się w indeksie - include. Dla drugiego indeksu wszystkie potrzebne kolumny są częścią indeksu, więc też pokrywają całe zapytanie.
+
+
 Sprawdź rozmiar Indeksów:
 
 ```sql
