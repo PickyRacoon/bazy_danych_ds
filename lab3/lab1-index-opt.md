@@ -372,6 +372,7 @@ Opisz, dlaczego dane indeksy zostały zaproponowane do zapytań:
 > Wyniki:
 
 ![reports](./_img/reports.png)
+
 Raport kosztów wskazuje na drastyczny wzrost wydajności po zastosowaniu rekomendacji. **Zapytania 1 i 3** zostały zoptymalizowane niemal perfekcyjnie, osiągając poprawę na poziomie blisko 100%. **Zapytanie 4** przyspieszyło bardzo znacząco, bo o 91.90%. **Zapytanie 2** zanotowało najmniejszy, choć wciąż istotny skok wydajności o 38.03%. Mniejsza poprawa zapewne wynika z faktu, że zapytanie to wykorzystuje funkcje agregujące oraz grupowanie.
 
 ---
