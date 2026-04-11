@@ -166,12 +166,15 @@ go
 ![zdj1.2](./_img/1.2.png)
 
 **Co sprawdza to zapytanie?**
+
 Zapytanie pobiera wszystkie dane ze złączonych za pomocą ID zamówienia tabel salesorderheader i salesorderdetail dla zamówień z dnia 2008-06-01.
 
 **Co można o nim powiedzieć?**
+
 Z planu zapytania wynika, że obie tabele nie mają zdefiniowanych żadnych indeksów ani kluczy głównych. Baza danych używa Table Scan, zmuszona do sekwencyjnego czytania całych tabel. Analiza kosztów pokazuje, że najdroższą operacją jest skanowanie tabeli salesorderdetail, co pochłania aż 51% całkowitego kosztu zapytania i zmusza silnik do przetworzenia ponad 121 tysięcy wierszy. Skanowanie tabeli salesorderheader to kolejne 25% kosztu. Do połączenia tych zbiorów wykorzystano operator Hash Match, co generuje pozostałe 24% kosztu zapytania.
 
 **Jak można je zoptymalizować?**
+
 Sam optymalizator sugeruje utworzenie indeksu nieklastrowanego na kolumnie OrderDate w tabeli salesorderheader, co według jego szacunków poprawiłoby wydajność o ponad 25%.
 
 ```sql
@@ -187,12 +190,15 @@ go
 ![zdj1.2.22](./_img/1.22.png)
 
 **Co sprawdza to zapytanie?**
+
 To samo co dla zapytania 1 ale dla zamówień z dnia 2013-01-28.
 
 **Co można o nim powiedzieć?**
+
 Plan wykonania jest niemal identyczny jak w poprzednim zapytaniu. Obie tabele nie mają indeksów, co wymusza użycie operatorów Table Scan. Skanowanie tabeli salesorderdetail pochłania 50% kosztu zapytania, a skanowanie salesorderheader 25%. Zbiory połączono za pomocą operatora Hash Match generując 24% kosztu. Ciekawostką ze statystyk na żywo jest to, że optymalizator niedoszacował liczby wynikowych wierszy przy łączeniu, gdyz zwrócono 1224 wiersze z 569 szacowanych, co daje 215% normy.
 
 **Jak można je zoptymalizować?**
+
 Identycznie jak w poprzednim przypadku optymalizator sugeruje utworzenie indeksu nieklastrowanego na kolumnie OrderDate w tabeli salesorderheader. Szacowany spadek kosztu całego zapytania po dodaniu tego indeksu to ponad 25%.
 
 ```sql
@@ -210,12 +216,15 @@ go
 ![zdj1.2.2](./_img/1.2.2.png)
 
 **Co sprawdza to zapytanie?**
+
 Zapytanie łączy tabele salesorderheader i salesorderdetail, grupuje dane po dacie zamówienia `orderdate` i ID produktu `productid`, a następnie oblicza sumy dla ilości `orderqty`, zniżek `unitpricediscount` i wartości całkowitej `linetotal`. Wynik jest filtrowany i zwraca tylko te grupy, dla których suma zamowionych sztuk wynosi co najmniej 100.
 
 **Co można o nim powiedzieć?**
+
 Z planu wynika, że ze względu na brak indeksów, silnik ponownie wykonuje Table Scany. Generuje to największe koszty, 37% dla salesorderdetail oraz 19% dla salesorderheader. Tabele połączono za pomocą operatora Hash Match generując 8% kosztu. Do pogrupowania danych i obliczenia sum użyto kolejnego operatora Hash Match (agregacja) generujac 24% kosztu. Na końcu operator Filtruj aplikuje warunek HAVING. Warto zauważyć ogromne niedoszacowanie na końcu planu, silnik spodziewał się zwrócić 1 wiersz, a zwrócił 523.
 
 **Jak można je zoptymalizować?**
+
 Optymalizator sugeruje utworzenie indeksu nieklastrowanego na tabeli salesorderdetail. Kluczem tego indeksu ma być kolumna SalesOrderID, a w klauzuli INCLUDE powinny znaleźć się następujące kolumny: OrderQty, ProductID, UnitPriceDiscount oraz LineTotal. Według wyliczeń optymalizatora, dodanie tej struktury obniży koszt zapytania o ponad 50%.
 
 ```sql
@@ -231,12 +240,15 @@ go
 ![zdj1.3.2](./_img/1.3.2.png)
 
 **Co sprawdza to zapytanie?**
+
 Zapytanie pobiera numer zamówienia, numer zakupu, datę wymaganą i datę wysyłki ze złączonych za pomocą ID zamówienia tabel salesorderheader i salesorderdetail. Wyniki są zawężone tylko do zamówień złożonych w ciągu pięciu konkretnych dni na początku czerwca 2008 roku.
 
 **Co można o nim powiedzieć?**
+
 Obie tabele nie posiadają indeksów, co wymusza operacje Table Scan. Skanowanie tabeli salesorderdetail generuje 50% kosztów, a tabeli salesorderheader kolejne 25%. Baza łączy te zbiory za pomocą operatora Hash Match, co pochłania pozostałe 25% zasobów całego zapytania.
 
 **Jak można je zoptymalizować?**
+
 Optymalizator sugeruje utworzenie indeksu nieklastrowanego na tabeli salesorderheader. Głównym kluczem wyszukiwania ma być kolumna użyta w warunku WHERE `OrderDate`. Optymalizator zaleca wrzucenie do klauzuli INCLUDE wszystkich pozostałych kolumn użytych w zapytaniu: SalesOrderID, DueDate, ShipDate, SalesOrderNumber i PurchaseOrderNumber. Według szacunków, dodanie takiego indeksu obniży koszt zapytania o niecałe 23%.
 
 ```sql
@@ -252,12 +264,15 @@ go
 ![zdj1.3.1](./_img/1.3.2.png)
 
 **Co sprawdza to zapytanie?**
+
 Zapytanie pobiera podstawowe informacje o zamówieniach, łącząc tabele salesorderheader i salesorderdetail. Wyniki są mocno odfiltrowane, szukamy tylko konkretnych paczek o dwóch podanych numerach przewozowych. Na sam koniec wynik jest sortowany rosnąco po ID zamówienia.
 
 **Co można o nim powiedzieć?**
+
 Z planu znów wynika spory problem wydajnościowy, najdroższą operacją (58% kosztu) jest skanowanie całej tabeli salesorderdetail tylko po to, by znaleźć w niej 68 wierszy pasujących do podanych numerów przewozowych. Następnie baza skanuje tabelę salesorderheader generując 29% kosztu i łączy to wszystko za pomocą Hash Match 12% kosztu. Operacja sortowania na samym końcu kosztuje zaledwie 1%, ponieważ do posortowania została już tylko garstka odfiltrowanych danych.
 
 **Jak można je zoptymalizować?**
+
 Optymalizator sugeruje utworzenie indeksu nieklastrowanego na tabeli salesorderdetail, na kolumnie CarrierTrackingNumber. Z kolei do klauzuli INCLUDE optymalizator każe dorzucić SalesOrderID, dzięki temu, gdy baza znajdzie już odpowiedni numer paczki, od razu będzie miała pod ręką ID potrzebne do zrobienia joina z drugą tabelą, bez dodatkowego skakania po dysku. Szacowany zysk z tej optymalizacji to ponad 57%.
 
 ---
