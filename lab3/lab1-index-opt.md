@@ -177,6 +177,8 @@ Z planu zapytania wynika, że obie tabele nie mają zdefiniowanych żadnych inde
 
 Sam optymalizator sugeruje utworzenie indeksu nieklastrowanego na kolumnie OrderDate w tabeli salesorderheader, co według jego szacunków poprawiłoby wydajność o ponad 25%.
 
+---
+
 ```sql
 -- zapytanie 1.1
 select *
@@ -200,6 +202,8 @@ Plan wykonania jest niemal identyczny jak w poprzednim zapytaniu. Obie tabele ni
 **Jak można je zoptymalizować?**
 
 Identycznie jak w poprzednim przypadku optymalizator sugeruje utworzenie indeksu nieklastrowanego na kolumnie OrderDate w tabeli salesorderheader. Szacowany spadek kosztu całego zapytania po dodaniu tego indeksu to ponad 25%.
+
+---
 
 ```sql
 -- zapytanie 2
@@ -227,6 +231,8 @@ Z planu wynika, że ze względu na brak indeksów, silnik ponownie wykonuje Tabl
 
 Optymalizator sugeruje utworzenie indeksu nieklastrowanego na tabeli salesorderdetail. Kluczem tego indeksu ma być kolumna SalesOrderID, a w klauzuli INCLUDE powinny znaleźć się następujące kolumny: OrderQty, ProductID, UnitPriceDiscount oraz LineTotal. Według wyliczeń optymalizatora, dodanie tej struktury obniży koszt zapytania o ponad 50%.
 
+---
+
 ```sql
 -- zapytanie 3
 select salesordernumber, purchaseordernumber, duedate, shipdate
@@ -250,6 +256,8 @@ Obie tabele nie posiadają indeksów, co wymusza operacje Table Scan. Skanowanie
 **Jak można je zoptymalizować?**
 
 Optymalizator sugeruje utworzenie indeksu nieklastrowanego na tabeli salesorderheader. Głównym kluczem wyszukiwania ma być kolumna użyta w warunku WHERE `OrderDate`. Optymalizator zaleca wrzucenie do klauzuli INCLUDE wszystkich pozostałych kolumn użytych w zapytaniu: SalesOrderID, DueDate, ShipDate, SalesOrderNumber i PurchaseOrderNumber. Według szacunków, dodanie takiego indeksu obniży koszt zapytania o niecałe 23%.
+
+---
 
 ```sql
 select sh.salesorderid, salesordernumber, purchaseordernumber, duedate, shipdate
@@ -328,9 +336,14 @@ Sprawdź zakładkę **Tuning Options**, co tam można skonfigurować?
 
 > Wyniki:
 
-```sql
---  ...
-```
+![tuning_options](./_img/tuning_options.png)
+
+W zakładce Tuning Options można określić granice działania DTA. Główne parametry, które można tam skonfigurować to:
+
+- **Limit tuning time** pozwala określić maksymalny czas, jaki doradca ma poświęcić na analizę zapytania.
+- **Physical Design Structures to use in database** określa jakich narzędzi doradca może użyć do poprawy wydajności - u nas zaznaczone są indeksy.
+- **Partitioning strategy to employ** pozwala na fizyczny podział tabel na mniejsze fragmenty - domyślnie ustawiony jest brak podziału.
+- **Physical Design Structures to keep in database** decyduje o losie obecnych obiektów w bazie. Domyślnie wybrana była opcja `Keep all existing PDS`, aby doradca jedynie sugerował nowe indeksy, bez usuwania tych utworzonych wcześniej.
 
 ---
 
@@ -358,9 +371,69 @@ Opisz, dlaczego dane indeksy zostały zaproponowane do zapytań:
 
 > Wyniki:
 
+![reports](./_img/reports.png)
+Raport kosztów wskazuje na drastyczny wzrost wydajności po zastosowaniu rekomendacji. **Zapytania 1 i 3** zostały zoptymalizowane niemal perfekcyjnie, osiągając poprawę na poziomie blisko 100%. **Zapytanie 4** przyspieszyło bardzo znacząco, bo o 91.90%. **Zapytanie 2** zanotowało najmniejszy, choć wciąż istotny skok wydajności o 38.03%. Mniejsza poprawa zapewne wynika z faktu, że zapytanie to wykorzystuje funkcje agregujące oraz grupowanie.
+
+---
+
 ```sql
---  ...
+CREATE NONCLUSTERED INDEX [_dta_index_salesorderdetail_5_1237579447__K1_2_3_4_5_6_7_8_9_10_11] ON [dbo].[salesorderdetail]
+(
+	[SalesOrderID] ASC
+)
+INCLUDE([SalesOrderDetailID],[CarrierTrackingNumber],[OrderQty],[ProductID],[SpecialOfferID],[UnitPrice],[UnitPriceDiscount],[LineTotal],[rowguid],[ModifiedDate]) WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
+go
+
+CREATE NONCLUSTERED INDEX [_dta_index_salesorderdetail_5_1237579447__K5_1_4_8_9] ON [dbo].[salesorderdetail]
+(
+	[ProductID] ASC
+)
+INCLUDE([SalesOrderID],[OrderQty],[UnitPriceDiscount],[LineTotal]) WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
+go
+
+CREATE NONCLUSTERED INDEX [_dta_index_salesorderdetail_5_1237579447__K3_K1] ON [dbo].[salesorderdetail]
+(
+	[CarrierTrackingNumber] ASC,
+	[SalesOrderID] ASC
+)WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
+go
+
+CREATE NONCLUSTERED INDEX [_dta_index_salesorderdetail_5_1237579447__K1] ON [dbo].[salesorderdetail]
+(
+	[SalesOrderID] ASC
+)WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
+go
+
+CREATE NONCLUSTERED INDEX [_dta_index_salesorderheader_5_1221579390__K3_K1_2_4_5_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_21_22_23_24_25_26] ON [dbo].[salesorderheader]
+(
+	[OrderDate] ASC,
+	[SalesOrderID] ASC
+)
+INCLUDE([RevisionNumber],[DueDate],[ShipDate],[Status],[OnlineOrderFlag],[SalesOrderNumber],[PurchaseOrderNumber],[AccountNumber],[CustomerID],[SalesPersonID],[TerritoryID],[BillToAddressID],[ShipToAddressID],[ShipMethodID],[CreditCardID],[CreditCardApprovalCode],[CurrencyRateID],[SubTotal],[TaxAmt],[Freight],[TotalDue],[Comment],[rowguid],[ModifiedDate]) WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
+go
+
+CREATE NONCLUSTERED INDEX [_dta_index_salesorderheader_5_1221579390__K1_4_5_8_9] ON [dbo].[salesorderheader]
+(
+	[SalesOrderID] ASC
+)
+INCLUDE([DueDate],[ShipDate],[SalesOrderNumber],[PurchaseOrderNumber]) WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
+go
+
+CREATE NONCLUSTERED INDEX [_dta_index_salesorderheader_5_1221579390__K3_K1] ON [dbo].[salesorderheader]
+(
+	[OrderDate] ASC,
+	[SalesOrderID] ASC
+)WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
+go
 ```
+
+Powyższe indeksy zostały zaproponowane do zapytań z następujących powodów:
+
+- **Optymalizacja złączeń `join`** - każde z czterech zapytań łączy tabele salesorderheader i salesorderdetail po kolumnie SalesOrderID. Advisor oparł większość nowych indeksów właśnie na tym kluczu, co pozwala silnikowi na błyskawiczne dopasowywanie do siebie wierszy z obu tabel.
+
+- **Szybkie filtrowanie i grupowanie** - zapytania wykorzystują klauzule WHERE i GROUP BY na konkretnych kolumnach np. orderdate, carriertrackingnumber, productid. Utworzenie indeksów na tych polach pozwala na użycie wydajnej operacji przeszukiwania jak np Index Seek zamiast czytania całych tabel.
+
+- **Zastosowanie indeksów pokrywających** - doradca rozszerzył indeksy o dodatkowe kolumny wywoływane w poleceniach SELECT np DueDate, ShipDate, LineTotal. Tworzy to tzw. covering index, w którym silnik bazy danych znajduje wszystkie wymagane przez zapytanie informacje bezpośrednio w strukturze indeksu. Eliminuje to konieczność odwoływania się do głównej tabeli bazowej, co bezpośrednio zmniejsza liczbę operacji odczytu.
 
 ---
 
@@ -371,8 +444,65 @@ Sprawdź jak zmieniły się Execution Plany. Opisz zmiany:
 > Wyniki:
 
 ```sql
---  ...
+-- zapytanie 1
+select *
+from salesorderheader sh
+inner join salesorderdetail sd on sh.salesorderid = sd.salesorderid
+where orderdate = '2008-06-01 00:00:00.000'
+go
 ```
+
+![plan1](./_img/plan1.png)
+
+Zamiast skanowania całych tabel, silnik SQL wykorzystał operację Index Seek (50% kosztu) dla obu tabel, pobierając dane bezpośrednio z nowych indeksów pokrywających. Do połączenia odnalezionych rekordów użyto Nested Loops (0% kosztu). Dzięki temu zapytanie całkowicie omija odczyt niepotrzebnych wierszy z dysku, co drastycznie obniża jego całkowity koszt.
+
+---
+
+```sql
+-- zapytanie 2
+select orderdate, productid, sum(orderqty) as orderqty,
+       sum(unitpricediscount) as unitpricediscount, sum(linetotal)
+from salesorderheader sh
+inner join salesorderdetail sd on sh.salesorderid = sd.salesorderid
+group by orderdate, productid
+having sum(orderqty) >= 100
+go
+```
+
+![plan2](./_img/plan2.png)
+
+Kosztowne operacje Table Scan zostały zastąpione przez odczyty Index Scan z nowych indeksów. Dalsza struktura planu (Parallelism, Hash Match Join/Aggregate) nie uległa zmianie. Mniejsza poprawa w porównaniu z pozostałymi zapytaniami wynika z faktu, że zapytanie wciąż musi zeskanować sporo danych i wykonać operację grupowania, która sama pochłania aż 37% całkowitego kosztu.
+
+---
+
+```sql
+-- zapytanie 3
+select salesordernumber, purchaseordernumber, duedate, shipdate
+from salesorderheader sh
+inner join salesorderdetail sd on sh.salesorderid = sd.salesorderid
+where orderdate in ('2008-06-01','2008-06-02', '2008-06-03', '2008-06-04', '2008-06-05')
+go
+```
+
+![plan3](./_img/plan3.png)
+
+Table Scany zostały wyeliminowane i zastąpione przez szybkie odczyty Index Seek z nowych indeksów. Zmienił się także fizyczny algorytm łączenia tabel z Hash Match na optymalny i bezkosztowy Nested Loops. Tłumaczy to odnotowaną poprawę wydajności o blisko 100%.
+
+---
+
+```sql
+-- zapytanie 4
+select sh.salesorderid, salesordernumber, purchaseordernumber, duedate, shipdate
+from salesorderheader sh
+inner join salesorderdetail sd on sh.salesorderid = sd.salesorderid
+where carriertrackingnumber in ('ef67-4713-bd', '6c08-4c4c-b8')
+order by sh.salesorderid
+go
+```
+
+![plan4](./_img/plan4.png)
+
+Table Scany na obu tabelach zostały zastąpione przez szybkie odczyty Index Seek z nowych indeksów. Silnik bazy danych zmienił algorytm łączenia tabel z Hash Match na optymalny Nested Loops. W planie wykonania uwidoczniła się operacja Sort niezbędna do uporządkowania wstępnie przefiltrowanych rekordów, jednak dzięki drastycznej redukcji ilości czytanych danych z dysku całkowity koszt zapytania spadł o ponad 91%.
 
 ---
 
