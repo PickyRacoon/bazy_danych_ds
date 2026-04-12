@@ -268,8 +268,8 @@ order by sh.salesorderid
 go
 ```
 
-![zdj1.3.1](./_img/1.3.1.png)
-![zdj1.3.1](./_img/1.3.2.png)
+![zdj1.4.1](./_img/1.4.1.png)
+![zdj1.4.1](./_img/1.4.2.png)
 
 **Co sprawdza to zapytanie?**
 
@@ -471,8 +471,7 @@ go
 ```
 
 ![plan2](./_img/plan2.png)
-
-Kosztowne operacje Table Scan zostały zastąpione przez odczyty Index Scan z nowych indeksów. Dalsza struktura planu (Parallelism, Hash Match Join/Aggregate) nie uległa zmianie. Mniejsza poprawa w porównaniu z pozostałymi zapytaniami wynika z faktu, że zapytanie wciąż musi zeskanować sporo danych i wykonać operację grupowania, która sama pochłania aż 37% całkowitego kosztu.
+Table Scany zostały zastąpione przez odczyty Index Scan z nowych indeksów. Dalsza struktura planu (Parallelism, Hash Match Join/Aggregate) nie uległa zmianie. Mniejsza poprawa w porównaniu z pozostałymi zapytaniami wynika z faktu, że zapytanie wciąż musi zeskanować sporo danych i wykonać operację grupowania, która sama pochłania aż 37% całkowitego kosztu.
 
 ---
 
@@ -487,7 +486,7 @@ go
 
 ![plan3](./_img/plan3.png)
 
-Table Scany zostały wyeliminowane i zastąpione przez szybkie odczyty Index Seek z nowych indeksów. Zmienił się także fizyczny algorytm łączenia tabel z Hash Match na optymalny i bezkosztowy Nested Loops. Tłumaczy to odnotowaną poprawę wydajności o blisko 100%.
+Table Scany zostały wyeliminowane i zastąpione przez szybkie odczyty Index Seek z nowych indeksów. Zmienił się także fizyczny algorytm łączenia tabel z Hash Match na bezkosztowy Nested Loops. Tłumaczy to odnotowaną poprawę wydajności o blisko 100%.
 
 ---
 
@@ -503,7 +502,7 @@ go
 
 ![plan4](./_img/plan4.png)
 
-Table Scany na obu tabelach zostały zastąpione przez szybkie odczyty Index Seek z nowych indeksów. Silnik bazy danych zmienił algorytm łączenia tabel z Hash Match na optymalny Nested Loops. W planie wykonania uwidoczniła się operacja Sort niezbędna do uporządkowania wstępnie przefiltrowanych rekordów, jednak dzięki drastycznej redukcji ilości czytanych danych z dysku całkowity koszt zapytania spadł o ponad 91%.
+Table Scany na obu tabelach zostały zastąpione przez szybkie odczyty Index Seek z nowych indeksów. Silnik bazy danych zmienił algorytm łączenia tabel z Hash Match na Nested Loops. W planie wykonania uwidoczniła się operacja Sort niezbędna do uporządkowania wstępnie przefiltrowanych rekordów. Dzięki drastycznej redukcji ilości czytanych danych z dysku całkowity koszt zapytania spadł o ponad 91%.
 
 ---
 
