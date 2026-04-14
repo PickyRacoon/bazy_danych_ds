@@ -151,11 +151,11 @@ where id between 999000 and 10000000
 ### b)
 
 ```sql
-select count(*) from product_history
+select * from product_history
 where id = 1000000
  
 
-select count(*) from product_history
+select * from product_history
 where id between 999000 and 10000000
 ```
 
