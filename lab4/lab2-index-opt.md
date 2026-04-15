@@ -358,6 +358,17 @@ where p.categoryid = 8
 ```
 
 
+| Zapytanie | Koszt    | Czas (ms) | Odczytane strony  |
+| :-------- | :------- | :-------- | :---------------- |
+| 1         | 20.5734   | 102.0       |       42       |
+| 2         | 23.8679  | 295.0       |          44     | 
+
+
+
+![zdj2](./wyniki/1_f.png)
+
+![zdj2](./wyniki/2_f.png)
+
 ### dodatkowo
 
 możesz sprawdzić strukturę indeksu
