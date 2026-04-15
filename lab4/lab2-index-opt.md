@@ -361,7 +361,7 @@ where p.categoryid = 8
 | Zapytanie | Koszt    | Czas (ms) | Odczytane strony  |
 | :-------- | :------- | :-------- | :---------------- |
 | 1         | 20.5734   | 102.0       |       42       |
-| 2         | 23.8679  | 295.0       |          44     | 
+| 2         | 23.8679  | 295.0       |          44     | (2 physical reads)
 
 
 
@@ -394,6 +394,10 @@ where i.object_id = object_id('dbo.product_history')
   and i.name = 'product_history_date_idx';
 ```
 
+![zdj2](./wyniki/1_dod.png)
+
+![zdj2](./wyniki/2_dod.png)
+
 jeśli chcesz zaobserwować odczyty logiczne/fizyczne możesz zwolnić pulę buforów przed wykonaniem polecenia
 
 ```sql
@@ -406,6 +410,10 @@ i teraz porównaj liczby czytanych stron np. wykonując dwukrotnie polecenie
 ```sql
 select * from product_history
 ```
+
+1 odczyt - logical reads 12, physical reads 1
+
+2 odczyt - logical reads 12, physical reads 0
 
 # Zadanie 2 
 
