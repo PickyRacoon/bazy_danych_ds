@@ -145,9 +145,11 @@ porównaj zapytania
 ###  a)
 
 ```sql
+--- 1
 select count(*) from product_history
 where id = 1000000
 
+--- 2
 select count(*) from product_history
 where id between 999000 and 10000000
 ```
@@ -165,10 +167,11 @@ where id between 999000 and 10000000
 ### b)
 
 ```sql
+--- 3
 select * from product_history
 where id = 1000000
  
-
+--- 4
 select * from product_history
 where id between 999000 and 10000000
 ```
@@ -180,8 +183,8 @@ where id between 999000 and 10000000
 
 | Zapytanie | Koszt    | Czas (ms) | Odczytane strony  |
 | :-------- | :------- | :-------- | :---------------- |
-| 1         | 19.659   | 70.0       |       25266       |
-| 2         | 21.2591  | 848.0       |          8520     |
+| 3        | 19.659   | 70.0       |       25266       |
+| 4         | 21.2591  | 848.0       |          8520     |
 
 
 ### c)
@@ -203,6 +206,41 @@ drop index product_history_idx on product_history
 ```
 
 po zakończeniu pozostaw indeks klastrowy
+
+- klastrowy
+
+| Zapytanie | Koszt    | Czas (ms) | Odczytane strony  |
+| :-------- | :------- | :-------- | :---------------- |
+| 1         | 0.0032842   | 0.0       |       3       |
+| 2         | 11.2587  | 42.0       |          14800     |
+| 3        | 0.0032831   | 0.0       |       3       |
+| 4         | 12.3069  | 864.0       |          14     |
+
+![zdj2](./wyniki/1_c.png)
+
+![zdj2](./wyniki/2_c.png)
+
+![zdj2](./wyniki/3_c.png)
+
+![zdj2](./wyniki/4_c.png)
+
+- nieklastrowy
+
+| Zapytanie | Koszt    | Czas (ms) | Odczytane strony  |
+| :-------- | :------- | :-------- | :---------------- |
+| 1         | 0.0032842   | 5.0       |       3       |
+| 2         | 4.39569  | 127.0       |          2935     |
+| 3        | 0.006570   | 6.0       |       4       |
+| 4         | 21.6821  | 891.0       |          6     |
+
+![zdj2](./wyniki/1_cc.png)
+
+![zdj2](./wyniki/2_cc.png)
+
+![zdj2](./wyniki/3_cc.png)
+
+![zdj2](./wyniki/4_cc.png)
+
 
 ### d)
 
