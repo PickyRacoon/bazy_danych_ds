@@ -96,6 +96,8 @@ sprawdź liczbę wierszy w tabeli
 select count(*) from product_history
 ```
 
+Jest 2310000 wierszy.
+
 Sprawdź jakie indeksy istnieją dla tej tabeli
 
 ```sql
@@ -121,6 +123,7 @@ where i.object_id = object_id('dbo.product_history')
 order by i.name, ic.key_ordinal;
 ```
 
+Brak indeksów dla tej tabeli.
 
 
 włącz statystyki  IO i TIME 
@@ -149,6 +152,16 @@ select count(*) from product_history
 where id between 999000 and 10000000
 ```
 
+![zdj2](./wyniki/1_a.png)
+
+![zdj2](./wyniki/2_a.png)
+
+
+| Zapytanie | Koszt    | Czas (ms) | Odczytane strony  |
+| :-------- | :------- | :-------- | :---------------- |
+| 1         | 19.659   | 72.0       |       25266       |
+| 2         | 19.895  | 70.0       |          25266     |
+
 ### b)
 
 ```sql
@@ -159,6 +172,17 @@ where id = 1000000
 select * from product_history
 where id between 999000 and 10000000
 ```
+
+![zdj2](./wyniki/1_b.png)
+
+![zdj2](./wyniki/2_b.png)
+
+
+| Zapytanie | Koszt    | Czas (ms) | Odczytane strony  |
+| :-------- | :------- | :-------- | :---------------- |
+| 1         | 19.659   | 70.0       |       25266       |
+| 2         | 21.2591  | 848.0       |          8520     |
+
 
 ### c)
 
