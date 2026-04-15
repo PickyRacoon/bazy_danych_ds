@@ -256,18 +256,22 @@ drop index product_history_date_idx on product_history
 porównaj polecenia
 
 ```sql
+--- 1
 select id, productid, productname, date  
 from product_history  
-where date >= '2001-01-01' and date <= '2001-01-31'  
-  
+where date >= '2001-01-01' and date <= '2001-01-31'
+
+--- 2
 select id, productid, productname, date  
 from product_history  
-where year(date) = 2001 and month(date) = 1  
-  
+where year(date) = 2001 and month(date) = 1
+
+--- 3
 select id, productid, productname, date  
 from product_history  
 where date >= '2001-01-01' and date <= '2001-12-31'  
-  
+
+--- 4 
 select id, productid, productname, date  
 from product_history  
 where year(date) = 2001
@@ -282,6 +286,22 @@ podczas analiz sprawdzaj jak zachowują się zapytania, zwróć uwagę na
 
 spróbuj skomentować wyniki tych analiz, dlaczego tak się dzieje 
 
+| Zapytanie | Koszt    | Czas (ms) | Odczytane strony  |
+| :-------- | :------- | :-------- | :---------------- |
+| 1         | 7.51795   | 7.0       |       1547       |
+| 2         | 20.3818  | 81.0       |          26067     |
+| 3        | 20.3513   | 70.0       |       19235       |
+| 4         | 20.1782  | 79.0       |          26067     |
+
+
+![zdj2](./wyniki/1_d.png)
+
+![zdj2](./wyniki/2_d.png)
+
+![zdj2](./wyniki/3_d.png)
+
+![zdj2](./wyniki/4_d.png)
+
 ### e)  
 
 powtórz eksperymenty z pkt d) , ale tym razem użyj indeksu zawierającego dodatkowe kolumny
@@ -295,6 +315,23 @@ drop index product_history_date_incl_idx on product_history
 ```
 
 co się zmieniło?
+
+| Zapytanie | Koszt    | Czas (ms) | Odczytane strony  |
+| :-------- | :------- | :-------- | :---------------- |
+| 1         | 0.0140558   | 0.0       |       7       |
+| 2         | 9.58029  | 63.0       |          11410     |
+| 3        | 0.134938   | 9.0       |       8       |
+| 4         | 9.37673  | 56.0       |          11410     |
+
+
+![zdj2](./wyniki/1_e.png)
+
+![zdj2](./wyniki/2_e.png)
+
+![zdj2](./wyniki/3_e.png)
+
+![zdj2](./wyniki/4_e.png)
+
 
 ### f) 
 
