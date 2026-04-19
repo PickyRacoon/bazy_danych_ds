@@ -161,10 +161,10 @@ where id between 999000 and 10000000
 
 | Zapytanie | Koszt    | Czas (ms) | Odczytane strony  |
 | :-------- | :------- | :-------- | :---------------- |
-| 1         | 19.659   | 72.0       |       25266       |
-| 2         | 19.895  | 70.0       |          25266     |
+| 1         | 19.659   | 36       |       25266       |
+| 2         | 19.895  | 118       |          25266     |
 
-Oba zapytania wykonują pełny skan tabeli product_history i agregują dane, co wpływa na identyczną liczbę odczytanych stron oraz bardzo podobny koszt i czas wykonania.
+Oba zapytania wykonują pełny skan tabeli product_history i agregują dane, co wpływa na identyczną liczbę odczytanych stron oraz bardzo podobny koszt wykonania. Czas jest jednak wiekszy dla 2 zapytania.
 
 ### b)
 
@@ -185,7 +185,7 @@ where id between 999000 and 10000000
 
 | Zapytanie | Koszt    | Czas (ms) | Odczytane strony  |
 | :-------- | :------- | :-------- | :---------------- |
-| 3        | 19.659   | 70.0       |       25266       |
+| 3        | 19.659   | 85      |       25266       |
 | 4         | 21.2591  | 848.0       |          8520     |
 
 Dla tego przykładu już zauważamy różnicę, bo BETWEEN generuje większy wynik (nie jak w przykładzie a), gdzie tylko chcieliśmy liczbę konkretnych wierszy). Zapytanie 4 już generuje większy czas i koszt, ale liczba odczytanych stron jest mniejsza od 3.
@@ -226,6 +226,8 @@ po zakończeniu pozostaw indeks klastrowy
 ![zdj2](./wyniki/3_c.png)
 
 ![zdj2](./wyniki/4_c.png)
+
+Dla wszytkich zapytań SQL Server wykorzystuje indeks klastrowy. W rezultacie zapytania 1 i 3 (punktowe) wykonują się bardzo szybko, a liczba odczytanych stron jest minimalna. Mimo użycia indeksu, zapytanie 2 nadal wymaga dużej liczby odczytów (14800 stron), natomiast zapytanie 4 odczytuje znacznie mniej stron, ale czas jego jednak nie zmalał.
 
 - nieklastrowy
 
