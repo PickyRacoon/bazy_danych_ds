@@ -164,6 +164,8 @@ where id between 999000 and 10000000
 | 1         | 19.659   | 72.0       |       25266       |
 | 2         | 19.895  | 70.0       |          25266     |
 
+Oba zapytania wykonują pełny skan tabeli product_history i agregują dane, co wpływa na identyczną liczbę odczytanych stron oraz bardzo podobny koszt i czas wykonania.
+
 ### b)
 
 ```sql
@@ -186,6 +188,7 @@ where id between 999000 and 10000000
 | 3        | 19.659   | 70.0       |       25266       |
 | 4         | 21.2591  | 848.0       |          8520     |
 
+Dla tego przykładu już zauważamy różnicę, bo BETWEEN generuje większy wynik (nie jak w przykładzie a), gdzie tylko chcieliśmy liczbę konkretnych wierszy). Zapytanie 4 już generuje większy czas i koszt, ale liczba odczytanych stron jest mniejsza od 3.
 
 ### c)
 
