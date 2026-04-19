@@ -164,7 +164,7 @@ where id between 999000 and 10000000
 | 1         | 19.659   | 72       |       25837       |
 | 2         | 19.895  | 91       |          25837     |
 
-Oba zapytania wykonują pełny skan tabeli product_history i agregują dane, co wpływa na identyczną liczbę odczytanych stron oraz bardzo podobny koszt wykonania. Czas jest jednak wiekszy dla 2 zapytania.
+Oba zapytania wykonują pełny skan tabeli, odczytując identyczną ilość stron. Warunek WHERE nie ma tu żadnego znaczenia – agregacja przy COUNT(*) wymaga przejścia przez całą tabelę. Odrobinę wyższy czas zapytania 2 wynika z szerszego zakresu filtrowania.
 
 ### b)
 
@@ -188,7 +188,7 @@ where id between 999000 and 10000000
 | 3        | 19.659   | 67      |       25837       |
 | 4         | 21.2591  | 9       |          70     |
 
-Mimo że oba zapytania wykonystyją skanowania tabeli, zapytanie z warunkiem BETWEEN jest bardziej efektywne pod względem przetwarzania danych - mniejsza liczba odczytanych stron, przez to krótszy czas. Koszt większy dla zapytania 4.
+Zapytanie 3 skanuje całe 25837 stron – bez indeksu SQL Server nie wie gdzie szukać konkretnej wartości. Zapytanie 4 odczytuje tylko 70 stron prawdopodobnie dzięki temu, że kolumna id może być fizycznie skorelowana z kolejnością wstawiania wierszy (wiersze były wstawiane sekwencyjnie). Przez co silnik natrafiając na górną granicę zakresu, kończy skan wcześniej. Wyższy koszt zapytania 4 wynika z konieczności zwrócenia wszystkich kolumn dla większej liczby wierszy.
 
 ### c)
 
@@ -227,7 +227,7 @@ po zakończeniu pozostaw indeks klastrowy
 
 ![zdj2](./wyniki/4_c.png)
 
-Zapytania 1 i 3 (punktowe) mają minimalny koszt i czas, przy małej ilości odczytach stron. Dla 2 i 4 zapytania czas oraz koszt sie zmniejszyły w porównaniu z brakiem indeksu. Liczba odczytów również zmalała, ale dla 2 zapytania dalej została dość duża.
+Indeks klastrowy porządkuje fizycznie dane według id, co daje znaczną poprawę dla zapytań punktowych (1 i 3) oraz dla SELECT * z BETWEEN (14 stron, czyta tylko strony z danymi, które faktycznie istnieją). Dla COUNT(*) z szerokim zakresem poprawa jest mniejsza – nadal musi przejść przez wszystkie 14800 stron należących do zakresu, bo każdy wiersz musi zostać policzony (czy istnieje czy nie).
 
 - nieklastrowy
 
@@ -246,7 +246,7 @@ Zapytania 1 i 3 (punktowe) mają minimalny koszt i czas, przy małej ilości odc
 
 ![zdj2](./wyniki/4_cc.png)
 
-Dla 1 i 3 zapytania wyniki podobne jak przy indeksie klastrowym. 
+Indeks nieklastrowy sprawdza się dobrze dla COUNT(*) z zakresem – wykonuje Index Seek (odczytuje 2935 stron), a nie Index Scan jak dla indeksu klastrowego, ale ma dłuższy czas wykonania. Natomiast dla SELECT * z zakresem indeks zostaje zignorowany, bo koszt odwołań do tabeli (żeby zwrócić całe wiersze) po przeszukaniu indeksu byłby wyższy niż Full Table Scan, więc silnik wybiera skan tabeli.
 
 ### d)
 
@@ -294,10 +294,10 @@ spróbuj skomentować wyniki tych analiz, dlaczego tak się dzieje
 
 | Zapytanie | Koszt    | Czas (ms) | Odczytane strony  |
 | :-------- | :------- | :-------- | :---------------- |
-| 1         | 7.51795   | 7.0       |       1547       |
-| 2         | 20.3818  | 81.0       |          26067     |
-| 3        | 20.3513   | 70.0       |       19235       |
-| 4         | 20.1782  | 79.0       |          26067     |
+| 1         | 7.51795   | 1       |       1547       |
+| 2         | 20.3818  | 79      |          26067     |
+| 3        | 20.3513   | 151       |       19234       |
+| 4         | 20.1782  | 77       |          26067     |
 
 
 ![zdj2](./wyniki/1_d.png)
@@ -307,6 +307,8 @@ spróbuj skomentować wyniki tych analiz, dlaczego tak się dzieje
 ![zdj2](./wyniki/3_d.png)
 
 ![zdj2](./wyniki/4_d.png)
+
+Tutaj porównujemy sposoby filtrowania danych. Dla 1 zapytania został wykorzystany Index Seek - najlepsza wydajność, a dla reszty on nie mógł zostać użyty z powodu zastosowania funkcji na kolumnie indeksowanej lub dużego zakresu danych. Przez co widzimy tam większą liczbę odczytów oraz większy koszt i czas wykonania.
 
 ### e)  
 
@@ -324,10 +326,10 @@ co się zmieniło?
 
 | Zapytanie | Koszt    | Czas (ms) | Odczytane strony  |
 | :-------- | :------- | :-------- | :---------------- |
-| 1         | 0.0140558   | 0.0       |       7       |
-| 2         | 9.58029  | 63.0       |          11410     |
-| 3        | 0.134938   | 9.0       |       8       |
-| 4         | 9.37673  | 56.0       |          11410     |
+| 1         | 0.0140558   | 0      |       7       |
+| 2         | 9.58029  | 59       |          11413     |
+| 3        | 0.134938   | 1       |       7       |
+| 4         | 9.37673  | 71       |          11413     |
 
 
 ![zdj2](./wyniki/1_e.png)
@@ -338,6 +340,7 @@ co się zmieniło?
 
 ![zdj2](./wyniki/4_e.png)
 
+Zastosowanie indeksu z kolumnami w INCLUDE poprawiło wydajność zapytań wykorzystujących warunek zakresowy na kolumnie date, bo indeks stał się pokrywający i nie wymagał dodatkowych odwołań do tabeli. W efekcie zmniejszyła się liczba odczytanych stron oraz koszt zapytań. Jednak dla zapytań wykorzystujących funkcje na kolumnie indeksowanej, indeks nie został efektywnie użyty, dlatego wydajność nie uległa znaczącej poprawie.
 
 ### f) 
 
@@ -366,14 +369,15 @@ where p.categoryid = 8
 
 | Zapytanie | Koszt    | Czas (ms) | Odczytane strony  |
 | :-------- | :------- | :-------- | :---------------- |
-| 1         | 20.5734   | 102.0       |       42       |
-| 2         | 23.8679  | 295.0       |          44     | (2 physical reads)
-
+| 1         | 20.5734   | 7       |       42       |
+| 2         | 23.8679  | 14       |          44     | 
 
 
 ![zdj2](./wyniki/1_f.png)
 
 ![zdj2](./wyniki/2_f.png)
+
+Zastosowanie indeksu na kolumnie categoryid umożliwiło wykorzystanie indeksu w obu zapytaniach, co znacząco ograniczyło liczbę odczytanych stron. W zapytaniu z JOIN dodatkowy koszt wynika z konieczności połączenia tabel, jednak łączenie odbywa się na kolumnie indeksowanej, wpływ na wydajność jest niewielka.
 
 ### dodatkowo
 
