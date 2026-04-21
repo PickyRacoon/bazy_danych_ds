@@ -135,6 +135,9 @@ from (select count(*) as count
 
 ![zdj2](./_img/3_ch_diff.png)
 
+Wyniki zapytań są takie same dla obu baz. 
+Rozkład wygląda na stabilny, bo różnica miedzy maksymalną liczą zdarzeń a minimalną wynosi zaledwie 412. Nie widać wyraźnych dni odstających.
+
 ### 5. KPI w przekrojach biznesowych
 
 - PostgreSQL
