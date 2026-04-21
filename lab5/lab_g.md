@@ -185,14 +185,71 @@ W przypadku urządzeń tablet ma najwyższy przychód, przy czym desktop znajduj
 ### 7. Benchmark zapytań w PostgreSQL i ClickHouse
 
 - A
-  
-  
-  - B
+ 
+```sql
+SELECT
+    count(*) AS n,
+    min(event_time) AS min_time,
+    max(event_time) AS max_time
+FROM events;
+```
 
+| Baza    | Pomiar 1    | Pomiar 2 | Pomiar 3   |      Średnia | 
+| :-------- | :------- | :-------- | :-------- | :-------- |
+| PostgreSQL    | 80   | 75      |       75    |         |
+|  ClickHouse  |  10 | 8       |          8     |          |
+
+```sql
+select min(p.count) as min, max(p.count) as max, max(p.count) - min(p.count) as diff
+from (select count(*) as count
+      from events
+      group by date(event_time)) as p;
+```
+
+| Baza    | Pomiar 1    | Pomiar 2 | Pomiar 3      | Średnia | 
+| :-------- | :------- | :-------- | :------------- | :-------- |
+| PostgreSQL    | 156   | 153      |       152       |         |
+|  ClickHouse  | 32     | 13       |          13     |          |
+  
+- B
+
+```sql
+--- PostgreSQL
+SELECT
+    DATE(event_time) AS day,
+    country,
+    device,
+    event_type,
+    count(*) AS events_cnt,
+    count(DISTINCT user_id) AS users_cnt,
+    count(DISTINCT session_id) AS sessions_cnt,
+    sum(CASE
+            WHEN event_type = 'purchase' THEN price * quantity
+            ELSE 0
+        END) AS revenue
+FROM events
+where event_type = 'purchase'
+GROUP BY
+    DATE(event_time),
+    country,
+    device,
+    event_type
+ORDER BY revenue DESC
+LIMIT 20;
+```
+
+![zdj2](./_img/7b_p_not.png)
+
+
+
+| Baza    | Pomiar 1    | Pomiar 2 | Pomiar 3      | Średnia | 
+| :-------- | :------- | :-------- | :------------- | :-------- |
+| PostgreSQL    | 167   | 144      |       150       |         |
+|  ClickHouse  | 80  | 66       |          59     |          |
 
 - C
 
-| Zapytanie | Koszt    | Czas (ms) | Odczytane strony  |
-| :-------- | :------- | :-------- | :---------------- |
-| 3        | 19.659   | 67      |       25837       |
-| 4         | 21.2591  | 9       |          70     |
+| Baza    | Pomiar 1    | Pomiar 2 | Pomiar 3 | Średnia | 
+| :-------- | :------- | :-------- | :---------------- | :-------- |
+| PostgreSQL    | 19.659   | 67      |       25837       |         |
+|  ClickHouse  | 21.2591  | 9       |          70     |          |
