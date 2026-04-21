@@ -257,7 +257,7 @@ Indeks klastrowy porządkuje fizycznie dane według id, co daje znaczną popraw�
 4.
 ![zdj2](./wyniki/4_cc.png)
 
-Indeks nieklastrowy sprawdza się dobrze dla COUNT(*) z zakresem – wykonuje Index Seek (odczytuje 2935 stron), a nie Index Scan jak dla indeksu klastrowego, ale ma dłuższy czas wykonania. Natomiast dla SELECT * z zakresem indeks zostaje zignorowany, bo koszt odwołań do tabeli (żeby zwrócić całe wiersze) po przeszukaniu indeksu byłby wyższy niż Full Table Scan, więc silnik wybiera skan tabeli.
+Indeks nieklastrowy sprawdza się dobrze dla COUNT(*) z zakresem – wykonuje Index Seek (odczytuje 2935 stron), a nie Index Scan jak dla indeksu klastrowego, ale ma dłuższy czas wykonania. Natomiast dla SELECT * z zakresem indeks zostaje zignorowany, bo koszt odwołań do tabeli (żeby zwrócić całe wiersze) po przeszukaniu indeksu byłby wyższy niż Full Table Scan.
 
 ### d)
 
