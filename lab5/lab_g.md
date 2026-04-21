@@ -96,7 +96,7 @@ from (select count(*) as count
       group by date(event_time)) as p
 ```
 
-![zdj2](./_img/3_pp_diff.png)
+![zdj2](./_img/3_p_diff.png)
 
 - ClickHouse
 
