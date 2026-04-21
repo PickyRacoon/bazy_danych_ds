@@ -143,7 +143,35 @@ Rozkład wygląda na stabilny, bo różnica miedzy maksymalną liczą zdarzeń a
 - PostgreSQL
 
 
+```sql
+SELECT
+    country,
+    sum(price * quantity) AS revenue
+FROM events
+WHERE event_type = 'purchase'
+GROUP BY country
+ORDER BY revenue DESC;
+```
+
+![zdj2](./_img/5_p_not.png)
+
+```sql
+SELECT
+    device,
+    sum(price * quantity) AS revenue
+FROM events
+WHERE event_type = 'purchase'
+GROUP BY device
+ORDER BY revenue DESC;
+```
+
+![zdj2](./_img/5_p_yes.png)
+
 - ClickHouse
+
+![zdj2](./_img/5_ch_not.png)
+
+![zdj2](./_img/5_ch_yes.png)
 
 ### 7. Benchmark zapytań w PostgreSQL i ClickHouse
 
