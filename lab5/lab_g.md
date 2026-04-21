@@ -248,7 +248,7 @@ ORDER BY revenue DESC
 LIMIT 20;
 ```
 
-![zdj2](./_img/7b_p_not.png)
+![zdj2](./_img/7b_p.png)
 
 ```sql
 --- ClickHouse
@@ -274,7 +274,7 @@ ORDER BY revenue DESC
 LIMIT 20;
 ```
 
-![zdj2](./_img/7b_ch_not.png)
+![zdj2](./_img/7b_ch.png)
 
 
 | Baza    | Pomiar 1    | Pomiar 2 | Pomiar 3      | Średnia | 
@@ -306,7 +306,7 @@ ORDER BY revenue DESC
 LIMIT 30;
 ```
 
-![zdj2](./_img/7c_p_not.png)
+![zdj2](./_img/7c_p.png)
 
 ```sql
 --- ClickHouse
@@ -330,7 +330,7 @@ ORDER BY revenue DESC
 LIMIT 30;
 ```
 
-![zdj2](./_img/7c_ch_not.png)
+![zdj2](./_img/7c_ch.png)
 
 
 | Baza    | Pomiar 1    | Pomiar 2 | Pomiar 3      | Średnia | 
