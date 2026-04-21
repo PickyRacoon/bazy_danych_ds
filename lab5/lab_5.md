@@ -11,7 +11,7 @@ Karolina Węgrzyn, Patrycja Markiewicz
 
 **Parametry sprzętów:**
 - zadania parzyste - 
-- zadania nieparzyste -
+- zadania nieparzyste - 8 rdzeni i 16 GB RAM
 ---
 
 ### 1. Pierwsze poznanie tabeli events 
