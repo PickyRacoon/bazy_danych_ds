@@ -142,8 +142,8 @@ Rozkład wygląda na stabilny, bo różnica miedzy maksymalną liczą zdarzeń a
 
 - PostgreSQL
 
-
 ```sql
+--- wedlug kraju
 SELECT
     country,
     sum(price * quantity) AS revenue
@@ -156,6 +156,7 @@ ORDER BY revenue DESC;
 ![zdj2](./_img/5_p_not.png)
 
 ```sql
+--- wedlug urzadzenia
 SELECT
     device,
     sum(price * quantity) AS revenue
@@ -169,9 +170,17 @@ ORDER BY revenue DESC;
 
 - ClickHouse
 
+Te same polecenia zostału użyte jak dla PostgreSQL.
+
 ![zdj2](./_img/5_ch_not.png)
 
 ![zdj2](./_img/5_ch_yes.png)
+
+Wyniki dla obu baz są takie same, różnią się jedynie przybliżeniem obliczeń.
+
+W przekroju krajów Francja generuje najwyższy przychód, natomiast Niemcy najniższy.
+
+W przypadku urządzeń tablet ma najwyższy przychód, przy czym desktop znajduje się na bardzo zbliżonym poziomie. Mobile generuje najniższy przychód.
 
 ### 7. Benchmark zapytań w PostgreSQL i ClickHouse
 
