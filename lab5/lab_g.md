@@ -197,8 +197,8 @@ FROM events;
 
 | Baza    | Pomiar 1    | Pomiar 2 | Pomiar 3   |      Średnia | 
 | :-------- | :------- | :-------- | :-------- | :-------- |
-| PostgreSQL    | 80   | 75      |       75    |         |
-|  ClickHouse  |  10 | 8       |          8     |          |
+| PostgreSQL    | 80   | 75      |       75    |   76.67      |
+|  ClickHouse  |  10 | 8       |          8     |      8.67    |
 
 ```sql
 --- PostgreSQL
@@ -218,8 +218,8 @@ from (select count(*) as count
 
 | Baza    | Pomiar 1    | Pomiar 2 | Pomiar 3      | Średnia | 
 | :-------- | :------- | :-------- | :------------- | :-------- |
-| PostgreSQL    | 156   | 153      |       152       |         |
-|  ClickHouse  | 32     | 13       |          13     |          |
+| PostgreSQL    | 156   | 153      |       152       |     153.67    |
+|  ClickHouse  | 32     | 13       |          13     |    19.3     |
   
 - B
 
@@ -276,11 +276,10 @@ LIMIT 20;
 
 ![zdj2](./_img/7b_ch.png)
 
-
 | Baza    | Pomiar 1    | Pomiar 2 | Pomiar 3      | Średnia | 
 | :-------- | :------- | :-------- | :------------- | :-------- |
-| PostgreSQL    | 167   | 144      |       150       |         |
-|  ClickHouse  | 80  | 66       |          59     |          |
+| PostgreSQL    | 167   | 144      |       150       |     153.67    |
+|  ClickHouse  | 80  | 66       |          59     |  68.3        |
 
 - C
 
@@ -296,7 +295,7 @@ SELECT
     SUM(price * quantity) AS revenue
 FROM events
 WHERE event_type = 'purchase'
-  AND country = 'PL'
+  AND country = 'US'
   AND event_time >= NOW() - INTERVAL '300 days'
 GROUP BY
     DATE(event_time),
@@ -320,7 +319,7 @@ SELECT
     sum(price * quantity) AS revenue
 FROM events
 WHERE event_type = 'purchase'
-  AND country = 'PL'
+  AND country = 'US'
   AND event_time >= now() - INTERVAL 300 DAY
 GROUP BY
     day,
@@ -332,8 +331,11 @@ LIMIT 30;
 
 ![zdj2](./_img/7c_ch.png)
 
-
 | Baza    | Pomiar 1    | Pomiar 2 | Pomiar 3      | Średnia | 
 | :-------- | :------- | :-------- | :------------- | :-------- |
-| PostgreSQL    | 80   | 78      |       92       |         |
-|  ClickHouse  | 14  | 12      |        13    |          |
+| PostgreSQL    | 80   | 78      |       92       |   83.3      |
+|  ClickHouse  | 14  | 12      |        13    |    13      |
+
+Wyniki wszystkich zapytań były zgodne między PostgreSQL a ClickHouse. ClickHouse był konsekwentnie szybszy we wszystkich przypadkach z wyraźnymi różnicami w czasie wykonania. Największa różnica wystąpiła w zapytaniu A dla drugiego wybranego przykładu, gdzie PostgreSQL potrzebował średnio 153.67 ms wobec 19.3 ms w ClickHouse. Po tym ćwiczeniu można postawić wstępny wniosek, że ClickHouse jest znacznie lepiej przystosowany do agregacji analitycznych na dużych zbiorach danych - jego kolumnowy model przechowywania danych pozwala przetwarzać tylko niezbędne kolumny, co przekłada się na wyraźną przewagę wydajnościową szczególnie przy złożonych zapytaniach agregujących.
+
+
