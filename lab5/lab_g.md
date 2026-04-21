@@ -43,15 +43,21 @@ FROM events;
 
 - ClickHouse
 
-Te same zapytania zostały użyte dla ClickHouse.
+```sql
+DESCRIBE TABLE events;
+```
 
 ![zdj2](./_img/1_ch_opis.png)
+
+Pozaostałe zapytanie były takie same dla ClickHouse jak dla PostgreSQL.
 
 ![zdj2](./_img/1_ch_limit.png)
 
 ![zdj2](./_img/1_ch_min.png)
 
 ![zdj2](./_img/1_ch_null.png)
+
+Dla obu baz sprawdzane elementy są takie same - kolumny tabel, liczba rekordów, zakres czasu, brak wartości NULL dla kolumn price i quantity.
 
 ### 3. Aktywność w czasie
 
