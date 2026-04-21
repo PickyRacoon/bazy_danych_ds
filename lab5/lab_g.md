@@ -69,7 +69,7 @@ from events
 group by date(event_time);
 ```
 
-![zdj2](./_img/3_p_all.png)
+![zdj2](./_img/3_p_day.png)
 
 ```sql
 select count(*), date(event_time)
