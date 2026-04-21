@@ -187,6 +187,7 @@ W przypadku urządzeń tablet ma najwyższy przychód, przy czym desktop znajduj
 - A
  
 ```sql
+--- PostgreSQL i ClickHouse
 SELECT
     count(*) AS n,
     min(event_time) AS min_time,
@@ -200,10 +201,19 @@ FROM events;
 |  ClickHouse  |  10 | 8       |          8     |          |
 
 ```sql
+--- PostgreSQL
 select min(p.count) as min, max(p.count) as max, max(p.count) - min(p.count) as diff
 from (select count(*) as count
       from events
       group by date(event_time)) as p;
+```
+
+```sql
+--- ClickHouse
+select min(p.count) as min, max(p.count) as max, max(p.count) - min(p.count) as diff
+from (select count(*) as count
+      from events
+      group by toDate(event_time)) as p;
 ```
 
 | Baza    | Pomiar 1    | Pomiar 2 | Pomiar 3      | Średnia | 
@@ -240,6 +250,31 @@ LIMIT 20;
 
 ![zdj2](./_img/7b_p_not.png)
 
+```sql
+--- ClickHouse
+SELECT
+    toDate(event_time) AS day,
+    country,
+    device,
+    event_type,
+    count() AS events_cnt,
+    count(DISTINCT user_id) AS users_cnt,
+    count(DISTINCT session_id) AS sessions_cnt,
+    sum(CASE
+            WHEN event_type = 'purchase' THEN price * quantity
+            ELSE 0
+        END) AS revenue
+FROM events
+GROUP BY
+    day,
+    country,
+    device,
+    event_type
+ORDER BY revenue DESC
+LIMIT 20;
+```
+
+![zdj2](./_img/7b_ch_not.png)
 
 
 | Baza    | Pomiar 1    | Pomiar 2 | Pomiar 3      | Średnia | 
@@ -249,7 +284,56 @@ LIMIT 20;
 
 - C
 
-| Baza    | Pomiar 1    | Pomiar 2 | Pomiar 3 | Średnia | 
-| :-------- | :------- | :-------- | :---------------- | :-------- |
-| PostgreSQL    | 19.659   | 67      |       25837       |         |
-|  ClickHouse  | 21.2591  | 9       |          70     |          |
+```sql
+--- PostgreSQL
+SELECT
+    DATE(event_time) AS day,
+    country,
+    event_type,
+    COUNT(*) AS events_cnt,
+    COUNT(DISTINCT user_id) AS users_cnt,
+    COUNT(DISTINCT session_id) AS sessions_cnt,
+    SUM(price * quantity) AS revenue
+FROM events
+WHERE event_type = 'purchase'
+  AND country = 'PL'
+  AND event_time >= NOW() - INTERVAL '300 days'
+GROUP BY
+    DATE(event_time),
+    country,
+    event_type
+ORDER BY revenue DESC
+LIMIT 30;
+```
+
+![zdj2](./_img/7c_p_not.png)
+
+```sql
+--- ClickHouse
+SELECT
+    toDate(event_time) AS day,
+    country,
+    event_type,
+    count() AS events_cnt,
+    countDistinct(user_id) AS users_cnt,
+    countDistinct(session_id) AS sessions_cnt,
+    sum(price * quantity) AS revenue
+FROM events
+WHERE event_type = 'purchase'
+  AND country = 'PL'
+  AND event_time >= now() - INTERVAL 300 DAY
+GROUP BY
+    day,
+    country,
+    event_type
+ORDER BY revenue DESC
+LIMIT 30;
+```
+
+![zdj2](./_img/7c_ch_not.png)
+
+
+| Baza    | Pomiar 1    | Pomiar 2 | Pomiar 3      | Średnia | 
+| :-------- | :------- | :-------- | :------------- | :-------- |
+| PostgreSQL    | 80   | 78      |       92       |         |
+|  ClickHouse  | 14  | 12      |        13    |          |
