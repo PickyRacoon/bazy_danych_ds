@@ -395,7 +395,7 @@ where p.categoryid = 8
 2.
 ![zdj2](./wyniki/2_f.png)
 
-Zastosowanie indeksu na kolumnie categoryid umożliwiło wykorzystanie indeksu w obu zapytaniach, co znacząco ograniczyło liczbę odczytanych stron. W zapytaniu z JOIN dodatkowy koszt i czas wynika z konieczności połączenia tabel, jednak łączenie odbywa po kolumnie indeksowanej - wpływ na wydajność jest niewielki.
+Wyniki obu zapytań są bardzo podobne. W zapytaniu z JOIN pojawia się dodatkowy koszt związany z koniecznością łączenia tabel, jednak dzięki wcześniejszemu odfiltrowaniu rekordów z wykorzystaniem indeksu liczba przetwarzanych danych jest niewielka, dlatego wpływ tej operacji na wydajność jest niewielki.
 
 ### dodatkowo
 
