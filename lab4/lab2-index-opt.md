@@ -426,9 +426,9 @@ where i.object_id = object_id('dbo.product_history')
 
 ![zdj2](./wyniki/2_dod.png)
 
-Każdy indeks ma głębokość 3, co oznacza że każde wyszukiwanie punktowe wymaga przejścia przez dokładnie trzy poziomy, stąd wyniki 3 odczytanych stron dla zapytań punktowych.
+Każdy indeks ma głębokość 3, co oznacza że każde wyszukiwanie punktowe wymaga przejścia przez 3 poziomy, stąd wyniki 3 odczytanych stron dla zapytań punktowych.
 Największą liczbę stron liści zajmuje indeks klastrowy (25837), bo jego liście to bezpośrednio strony danych tabeli. Indeks nieklastrowy na tej samej kolumnie id zajmuje 2856 stron liści, bo przechowuje wyłącznie klucze ze wskaźnikami, bez reszty danych wiersza.
-Indeks pokrywający date_incl_idx zajmuje 11253 strony liści - trzykrotnie więcej niż zwykły date_idx (3720 stron). Różnica wynika z dodatkowych kolumn przechowywanych w liściach, ale przez to możemy uniknąć odwołań do tabeli podczas zapytań.
+Indeks pokrywający date_incl_idx zajmuje 11253 stron liści - trzykrotnie więcej niż zwykły date_idx (3720 stron). Różnica wynika z dodatkowych kolumn przechowywanych w liściach, ale przez to możemy uniknąć odwołań do tabeli podczas zapytań.
 
 jeśli chcesz zaobserwować odczyty logiczne/fizyczne możesz zwolnić pulę buforów przed wykonaniem polecenia
 
