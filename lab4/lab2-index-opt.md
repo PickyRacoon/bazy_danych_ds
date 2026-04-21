@@ -422,10 +422,8 @@ where i.object_id = object_id('dbo.product_history')
   and i.name = 'product_history_date_idx';
 ```
 
-1.
 ![zdj2](./wyniki/1_dod.png)
 
-2.
 ![zdj2](./wyniki/2_dod.png)
 
 Każdy indeks ma głębokość 3, co oznacza że każde wyszukiwanie punktowe wymaga przejścia przez dokładnie trzy poziomy, stąd wyniki 3 odczytanych stron dla zapytań punktowych.
