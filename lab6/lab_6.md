@@ -142,8 +142,6 @@ FROM session_flags;
 
 ![zdj2](./screeny/1_not.png)
 
-Największy odpływ w lejku występuje między pierwszym a drugim etapem. Prawie połowe klientów (46%) sklep traci zaraz po pierwszej interakcji, czyli po oglądnięciu produktu klient nie dodaje go do koszyka.
-
 ```sql
 WITH session_flags AS (
     SELECT
@@ -170,10 +168,6 @@ GROUP BY device;
 
 ![zdj2](./screeny/1_group.png)
 
-Lejek między urządzeniami jest bardzo podobny. Współczynniki przejścia dla poszczególnych etapów różnią się tylko kilkoma procentami między sobą. Może to wynikać z drobnych różnic w wygodzie korzystania z interfejsu, wielkości ekranu lub sposobie przeglądania strony, ale ogólnie zachowanie użytkowników jest podobne.
-
-countIf w ClickHouse pozwala bezpośrednio policzyć liczbę wierszy spełniających dany warunek w funkcji agregującej. W standardowym SQL stosuje się SUM/MAX(CASE WHEN warunek THEN 1 ELSE 0 END), aby najpierw zamienić warunek na wartości 0 lub 1, a dopiero potem je zagregować. W ClickHouse podejście jest krótsze i czytelniejsze, bo warunek można bezpośrednio przekazać do countIf.
-
 Zbuduj analogicznie wersję z GROUP BY device.
 
 **W komentarzu napisz**
@@ -181,12 +175,18 @@ Zbuduj analogicznie wersję z GROUP BY device.
 - Na którym etapie lejka odpływ jest największy i co to oznacza dla
   biznesu — gdzie sklep traci klientów?
 
+Największy odpływ w lejku występuje między pierwszym a drugim etapem. Prawie połowe klientów (46%) sklep traci zaraz po pierwszej interakcji, czyli po oglądnięciu produktu klient nie dodaje go do koszyka.
+
 - Czy lejek różni się między urządzeniami? Jeśli tak, co może być tego
   przyczyną?
+
+Lejek między urządzeniami jest bardzo podobny. Współczynniki przejścia dla poszczególnych etapów różnią się tylko kilkoma procentami między sobą. Może to wynikać z drobnych różnic w wygodzie korzystania z interfejsu, wielkości ekranu lub sposobie przeglądania strony, ale ogólnie zachowanie użytkowników jest podobne.
 
 - countIf zastępuje klasyczny wzorzec MAX(CASE WHEN ... THEN 1 ELSE 0
   END) ze standardowego SQL. W 2–3 zdaniach wyjaśnij, na czym polega
   różnica w podejściu i dlaczego wersja ClickHouse jest krótsza.
+
+countIf w ClickHouse pozwala bezpośrednio policzyć liczbę wierszy spełniających dany warunek w funkcji agregującej. W standardowym SQL stosuje się SUM/MAX(CASE WHEN warunek THEN 1 ELSE 0 END), aby najpierw zamienić warunek na wartości 0 lub 1, a dopiero potem je zagregować. W ClickHouse podejście jest krótsze i czytelniejsze, bo warunek można bezpośrednio przekazać do countIf.
 
 **2. Funkcje okna: rankingi i trend przychodów 2 pkt**
 
@@ -423,16 +423,25 @@ ORDER BY segment_revenue DESC;
 
 ![zdj2](./screeny/3_3.png)
 
+
 **W komentarzu napisz**
 
 - Jak dobrałeś progi i dlaczego - co konkretnie w danych na to wskazało?
 
+Progi segmentów zostały dobrane na podstawie wartości monetary. Ustalono próg 300 jako granicę między klientami o niskiej i średniej wartości zakupów, natomiast próg 1500 (około 3× średnia) wyznacza grupę klientów o najwyższej wartości, stanowiących najbardziej dochodowy segment (premium). Rozkład danych jest skośny, dlatego zastosowano progi oparte o obserwację rozkładu, a nie równe przedziały.
+
 - Czy mała grupa użytkowników generuje dużą część przychodu - jaki
   procent użytkowników i jaki procent przychodu?
 
+Najmniejsza grupa (premium), która stanowi tylko około 7% użytkowników, generuje prawie 25% przychodu.
+
 - Czy widzisz coś zbliżonego do zasady Pareto?
 
+Można zauważyć trend podobny do zasady Pareto (80/20), ale nie jest on idealny. Około 65% użytkowników (segment standard + premium) generuje prawie 90% przychodu, co pokazuje silną koncentrację wartości w bardziej aktywnych klientach.
+
 - Co wyniki mówią o lojalności klientów tego sklepu?
+
+Wyniki sugerują, że sklep ma niewielką, ale bardzo wartościową grupę lojalnych klientów (premium), którzy generują znaczną część przychodów. Jednocześnie duża liczba klientów jest okazjonalna, co oznacza potencjał do zwiększenia przychodów poprzez działania zwiększające powtarzalność zakupów (np. programy lojalnościowe lub personalizowane oferty).
 
 **4. Benchmark i wnioski końcowe - 4 pkt**
 
