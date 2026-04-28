@@ -282,75 +282,60 @@ Zaznacz w sprawozdaniu, którą bazę wybrałeś.
 
 **Krok 1 — oblicz R, F, M dla każdego użytkownika**
 
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<thead>
-<tr>
-<th>-- Wersja PostgreSQL<br />
--- Dla ClickHouse: zamień DATE_PART na dateDiff('day', ...)<br />
--- patrz ściąga<br />
-WITH ref AS (<br />
-SELECT MAX(event_time) AS ref_time<br />
-FROM events<br />
-),<br />
-purchases AS (<br />
-SELECT<br />
-user_id,<br />
-COUNT(*) AS frequency,<br />
-SUM(price * quantity) AS monetary,<br />
-MAX(event_time) AS last_purchase_time<br />
-FROM events<br />
-WHERE event_type = 'purchase'<br />
-GROUP BY user_id<br />
-)<br />
-SELECT<br />
-p.user_id,<br />
-DATE_PART('day', ref.ref_time - p.last_purchase_time) AS recency,<br />
-p.frequency,<br />
-p.monetary<br />
-FROM purchases p<br />
-CROSS JOIN ref<br />
-ORDER BY monetary DESC;</th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
+
+```sql
+WITH ref AS (
+    SELECT max(event_time) AS ref_time
+    FROM events
+),
+     purchases AS (
+         SELECT
+             user_id,
+             count(*) AS frequency,
+             sum(price * quantity) AS monetary,
+             max(event_time) AS last_purchase_time
+         FROM events
+         WHERE event_type = 'purchase'
+         GROUP BY user_id
+     )
+
+SELECT
+    p.user_id,
+    dateDiff('day', p.last_purchase_time, ref.ref_time) AS recency,
+    p.frequency,
+    p.monetary
+FROM purchases p
+         CROSS JOIN ref
+ORDER BY monetary DESC;
+```
+
+![zdj2](./screeny/3_0.png)
 
 Zanim przejdziesz dalej — sprawdź zakres wartości, żeby świadomie dobrać
 progi:
 
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<thead>
-<tr>
-<th>-- Poznaj rozkład danych przed doborem progów<br />
-WITH purchases AS (<br />
-SELECT<br />
-user_id,<br />
-COUNT(*) AS frequency,<br />
-SUM(price * quantity) AS monetary<br />
-FROM events<br />
-WHERE event_type = 'purchase'<br />
-GROUP BY user_id<br />
-)<br />
-SELECT<br />
-COUNT(*) AS users_count,<br />
-MIN(monetary) AS min_m,<br />
-MAX(monetary) AS max_m,<br />
-AVG(monetary) AS avg_m,<br />
-MIN(frequency) AS min_f,<br />
-MAX(frequency) AS max_f<br />
-FROM purchases;</th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
+```sql
+WITH purchases AS (
+    SELECT
+        user_id,
+        count() AS frequency,
+        sum(price * quantity) AS monetary
+    FROM events
+    WHERE event_type = 'purchase'
+    GROUP BY user_id
+)
+
+SELECT
+    count() AS users_count,
+    min(monetary) AS min_m,
+    max(monetary) AS max_m,
+    avg(monetary) AS avg_m,
+    min(frequency) AS min_f,
+    max(frequency) AS max_f
+FROM purchases;
+```
+
+![zdj2](./screeny/3_1.png)
 
 **Krok 2 — podziel użytkowników na segmenty**
 
@@ -358,24 +343,28 @@ Na podstawie wyników z kroku 1 zbuduj trzy segmenty według kolumny
 monetary. Progi dobierz samodzielnie na podstawie rozkładu danych z
 powyższego kroku.
 
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<thead>
-<tr>
-<th>-- Przykładowy fragment segmentacji<br />
--- Dostosuj progi do swoich danych<br />
-CASE<br />
-WHEN monetary &gt;= &lt;twój_próg_wysoki&gt; THEN 'premium'<br />
-WHEN monetary &gt;= &lt;twój_próg_średni&gt; THEN 'standard'<br />
-ELSE 'okazjonalny'<br />
-END AS segment</th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
+```sql
+WITH purchases AS (
+    SELECT
+        user_id,
+        count() AS frequency,
+        sum(price * quantity) AS monetary
+    FROM events
+    WHERE event_type = 'purchase'
+    GROUP BY user_id
+)
+
+SELECT
+    user_id,
+    frequency,
+    monetary,
+    CASE
+        WHEN monetary >= 1500 THEN 'premium'
+        WHEN monetary >= 300 THEN 'standard'
+        ELSE 'okazjonalny'
+        END AS segment
+FROM purchases;
+```
 
 Dla każdego segmentu policz:
 
@@ -384,6 +373,55 @@ Dla każdego segmentu policz:
 - łączny przychód segmentu,
 
 - udział procentowy w całkowitym przychodzie wszystkich użytkowników.
+
+
+```sql
+WITH purchases AS (
+    SELECT
+        user_id,
+        sum(price * quantity) AS monetary
+    FROM events
+    WHERE event_type = 'purchase'
+    GROUP BY user_id
+),
+
+     segmented AS (
+         SELECT
+             user_id,
+             monetary,
+             CASE
+                 WHEN monetary >= 1500 THEN 'premium'
+                 WHEN monetary >= 300 THEN 'standard'
+                 ELSE 'okazjonalny'
+                 END AS segment
+         FROM purchases
+     ),
+
+     segment_stats AS (
+         SELECT
+             segment,
+             count() AS users_count,
+             sum(monetary) AS segment_revenue
+         FROM segmented
+         GROUP BY segment
+     ),
+
+     total AS (
+         SELECT sum(monetary) AS total_revenue
+         FROM purchases
+     )
+
+SELECT
+    s.segment,
+    s.users_count,
+    s.segment_revenue,
+    round(s.segment_revenue / t.total_revenue * 100, 2) AS revenue_share_pct
+FROM segment_stats s
+         CROSS JOIN total t
+ORDER BY segment_revenue DESC;
+```
+
+![zdj2](./screeny/3_3.png)
 
 **W komentarzu napisz**
 
