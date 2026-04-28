@@ -407,18 +407,21 @@ WITH purchases AS (
      ),
 
      total AS (
-         SELECT sum(monetary) AS total_revenue
+         SELECT
+             count() AS total_users,
+             sum(monetary) AS total_revenue
          FROM purchases
      )
 
 SELECT
     s.segment,
     s.users_count,
+    round(s.users_count / t.total_users * 100, 2) AS users_share_pct,
     s.segment_revenue,
     round(s.segment_revenue / t.total_revenue * 100, 2) AS revenue_share_pct
 FROM segment_stats s
          CROSS JOIN total t
-ORDER BY segment_revenue DESC;
+ORDER BY s.segment_revenue DESC;
 ```
 
 ![zdj2](./screeny/3_3.png)
@@ -428,7 +431,7 @@ ORDER BY segment_revenue DESC;
 
 - Jak dobrałeś progi i dlaczego - co konkretnie w danych na to wskazało?
 
-Progi segmentów zostały dobrane na podstawie wartości monetary. Ustalono próg 300 jako granicę między klientami o niskiej i średniej wartości zakupów, natomiast próg 1500 (około 3× średnia) wyznacza grupę klientów o najwyższej wartości, stanowiących najbardziej dochodowy segment (premium). Rozkład danych jest skośny, dlatego zastosowano progi oparte o obserwację rozkładu, a nie równe przedziały.
+Progi segmentów zostały dobrane na podstawie wartości monetary. Ustalono próg 300 jako granicę między klientami o niskiej i średniej wartości zakupów, natomiast próg 1500 (około 3×średnia) wyznacza grupę klientów o najwyższej wartości, stanowiących najbardziej dochodowy segment (premium). Rozkład danych jest prawoskośny, dlatego progi oparte zostały o obserwację rozkładu, a nie przez równe przedziały.
 
 - Czy mała grupa użytkowników generuje dużą część przychodu - jaki
   procent użytkowników i jaki procent przychodu?
@@ -441,7 +444,7 @@ Można zauważyć trend podobny do zasady Pareto (80/20), ale nie jest on idealn
 
 - Co wyniki mówią o lojalności klientów tego sklepu?
 
-Wyniki sugerują, że sklep ma niewielką, ale bardzo wartościową grupę lojalnych klientów (premium), którzy generują znaczną część przychodów. Jednocześnie duża liczba klientów jest okazjonalna, co oznacza potencjał do zwiększenia przychodów poprzez działania zwiększające powtarzalność zakupów (np. programy lojalnościowe lub personalizowane oferty).
+Wyniki sugerują, że sklep ma niewielką, ale bardzo wartościową grupę lojalnych klientów (premium), którzy generują znaczną część przychodów. Jednocześnie duża liczba klientów jest okazjonalna, co oznacza potencjał do zwiększenia przychodów poprzez działania zwiększające powtarzalność zakupów (np. programy lojalnościowe, personalizowane oferty).
 
 **4. Benchmark i wnioski końcowe - 4 pkt**
 
