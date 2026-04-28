@@ -440,7 +440,7 @@ Najmniejsza grupa (premium), która stanowi tylko około 7% użytkowników, gene
 
 - Czy widzisz coś zbliżonego do zasady Pareto?
 
-Można zauważyć trend podobny do zasady Pareto (80/20), ale nie jest on idealny. Około 65% użytkowników (segment standard + premium) generuje prawie 90% przychodu, co pokazuje silną koncentrację wartości w bardziej aktywnych klientach.
+Można zauważyć trend podobny do zasady Pareto (80/20 - około 80% efektów wynika z 20% przyczyn), ale nie jest on idealny. Około 65% użytkowników (segment standard + premium) generuje prawie 90% przychodu, co pokazuje silną koncentrację wartości w bardziej aktywnych klientach.
 
 - Co wyniki mówią o lojalności klientów tego sklepu?
 
