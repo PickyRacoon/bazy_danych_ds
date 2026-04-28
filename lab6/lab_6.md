@@ -3,9 +3,9 @@
 **Zaawansowana analityka i dowód wydajności**
 
 **Imię i nazwisko:**
-\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+Karolina Węgrzyn, Patrycja Markiewicz
 
-**Grupa:** \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+**Grupa:** 1
 
 **Cel ćwiczenia**
 
@@ -119,38 +119,54 @@ Następnie powtórz analizę w przekroju device.
 
 **Zapytanie startowe**
 
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<thead>
-<tr>
-<th>-- Krok 1: flagi na poziomie sesji<br />
-WITH session_flags AS (<br />
-SELECT<br />
-session_id,<br />
-countIf(event_type = 'view') &gt; 0 AS has_view,<br />
-countIf(event_type = 'cart') &gt; 0 AS has_cart,<br />
-countIf(event_type = 'purchase') &gt; 0 AS has_purchase<br />
-FROM events<br />
-GROUP BY session_id<br />
-)<br />
--- Krok 2: agregacja do poziomu całego zbioru<br />
-SELECT<br />
-countIf(has_view) AS view_sessions,<br />
-countIf(has_cart) AS cart_sessions,<br />
-countIf(has_purchase) AS purchase_sessions,<br />
-countIf(has_cart) / nullIf(countIf(has_view), 0) AS cart_per_view,<br />
-countIf(has_purchase) / nullIf(countIf(has_cart), 0) AS
-purchase_per_cart,<br />
-countIf(has_purchase) / nullIf(countIf(has_view), 0) AS
-purchase_per_view<br />
-FROM session_flags;</th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
+```sql
+WITH session_flags AS (
+    SELECT
+        session_id,
+        countIf(event_type = 'view') > 0 AS has_view,
+        countIf(event_type = 'add_to_cart') > 0 AS has_cart,
+        countIf(event_type = 'purchase') > 0 AS has_purchase
+    FROM events
+    GROUP BY session_id
+)
+-- Krok 2: agregacja do poziomu całego zbioru
+SELECT
+    countIf(has_view) AS view_sessions,
+    countIf(has_cart) AS cart_sessions,
+    countIf(has_purchase) AS purchase_sessions,
+    countIf(has_cart) / nullIf(countIf(has_view), 0) AS cart_per_view,
+    countIf(has_purchase) / nullIf(countIf(has_cart), 0) AS purchase_per_cart,
+    countIf(has_purchase) / nullIf(countIf(has_view), 0) AS purchase_per_view
+FROM session_flags;
+```
+
+![zdj2](./screeny/1_not.png)
+
+```sql
+WITH session_flags AS (
+    SELECT
+        session_id,
+        any(device) AS device,
+        countIf(event_type = 'view') > 0 AS has_view,
+        countIf(event_type = 'add_to_cart') > 0 AS has_cart,
+        countIf(event_type = 'purchase') > 0 AS has_purchase
+    FROM events
+    GROUP BY session_id
+)
+
+SELECT
+    device,
+    countIf(has_view) AS view_sessions,
+    countIf(has_cart) AS cart_sessions,
+    countIf(has_purchase) AS purchase_sessions,
+    countIf(has_cart) / nullIf(countIf(has_view), 0) AS cart_per_view,
+    countIf(has_purchase) / nullIf(countIf(has_cart), 0) AS purchase_per_cart,
+    countIf(has_purchase) / nullIf(countIf(has_view), 0) AS purchase_per_view
+FROM session_flags
+GROUP BY device;
+```
+
+![zdj2](./screeny/1_group.png)
 
 Zbuduj analogicznie wersję z GROUP BY device.
 
