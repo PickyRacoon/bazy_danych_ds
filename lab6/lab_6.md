@@ -190,8 +190,17 @@ Wynik powinien zawierać kolumny: country, revenue, rank_no.
 agregacji - nie musisz pisać podzapytania ani CTE.
 
 ```sql
-
+select
+    country,
+    sum(price * quantity) as revenue,
+    rank() over (order by sum(price * quantity) desc) as rank_no
+from events
+where event_type = 'purchase'
+group by country
+order by rank_no;
 ```
+
+![img](/screeny/2.A.png)
 
 **Część B - Narastający przychód i zmiana dzień do dnia**
 
