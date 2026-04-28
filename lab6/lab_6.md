@@ -175,18 +175,18 @@ Zbuduj analogicznie wersję z GROUP BY device.
 - Na którym etapie lejka odpływ jest największy i co to oznacza dla
   biznesu — gdzie sklep traci klientów?
 
-Największy odpływ w lejku występuje między pierwszym a drugim etapem. Prawie połowe klientów (46%) sklep traci zaraz po pierwszej interakcji, czyli po oglądnięciu produktu klient nie dodaje go do koszyka.
+Największy odpływ w lejku występuje między pierwszym a drugim etapem. Prawie połowe klientów (46%) sklep traci zaraz po pierwszej interakcji - po oglądnięciu produktu klient nie dodaje go do koszyka.
 
 - Czy lejek różni się między urządzeniami? Jeśli tak, co może być tego
   przyczyną?
 
-Lejek między urządzeniami jest bardzo podobny. Współczynniki przejścia dla poszczególnych etapów różnią się tylko kilkoma procentami między sobą. Może to wynikać z drobnych różnic w wygodzie korzystania z interfejsu, wielkości ekranu lub sposobie przeglądania strony, ale ogólnie zachowanie użytkowników jest podobne.
+Lejek między urządzeniami jest bardzo podobny. Współczynniki przejścia dla poszczególnych etapów różnią się tylko o kilka procent między sobą. Może to wynikać z drobnych różnic w wygodzie korzystania z interfejsu, wielkości ekranu lub sposobie przeglądania strony, ale ogólnie zachowanie użytkowników jest podobne.
 
 - countIf zastępuje klasyczny wzorzec MAX(CASE WHEN ... THEN 1 ELSE 0
   END) ze standardowego SQL. W 2–3 zdaniach wyjaśnij, na czym polega
   różnica w podejściu i dlaczego wersja ClickHouse jest krótsza.
 
-countIf w ClickHouse pozwala bezpośrednio policzyć liczbę wierszy spełniających dany warunek w funkcji agregującej. W standardowym SQL stosuje się SUM/MAX(CASE WHEN warunek THEN 1 ELSE 0 END), aby najpierw zamienić warunek na wartości 0 lub 1, a dopiero potem je zagregować. W ClickHouse podejście jest krótsze i czytelniejsze, bo warunek można bezpośrednio przekazać do countIf.
+countIf w ClickHouse pozwala bezpośrednio policzyć liczbę wierszy spełniających dany warunek w funkcji agregującej. W standardowym SQL stosuje się MAX(CASE WHEN warunek THEN 1 ELSE 0 END), aby najpierw zamienić warunek na wartości 0 lub 1, a dopiero potem je zagregować. W ClickHouse podejście jest krótsze i czytelniejsze, bo warunek można bezpośrednio przekazać do countIf.
 
 **2. Funkcje okna: rankingi i trend przychodów 2 pkt**
 
