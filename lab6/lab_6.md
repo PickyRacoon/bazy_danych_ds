@@ -142,6 +142,8 @@ FROM session_flags;
 
 ![zdj2](./screeny/1_not.png)
 
+Największy odpływ w lejku występuje między pierwszym a drugim etapem. Prawie połowe klientów (46%) sklep traci zaraz po pierwszej interakcji, czyli po oglądnięciu produktu klient nie dodaje go do koszyka.
+
 ```sql
 WITH session_flags AS (
     SELECT
@@ -167,6 +169,10 @@ GROUP BY device;
 ```
 
 ![zdj2](./screeny/1_group.png)
+
+Lejek między urządzeniami jest bardzo podobny. Współczynniki przejścia dla poszczególnych etapów różnią się tylko kilkoma procentami między sobą. Może to wynikać z drobnych różnic w wygodzie korzystania z interfejsu, wielkości ekranu lub sposobie przeglądania strony, ale ogólnie zachowanie użytkowników jest podobne.
+
+countIf w ClickHouse pozwala bezpośrednio policzyć liczbę wierszy spełniających dany warunek w funkcji agregującej. W standardowym SQL stosuje się SUM/MAX(CASE WHEN warunek THEN 1 ELSE 0 END), aby najpierw zamienić warunek na wartości 0 lub 1, a dopiero potem je zagregować. W ClickHouse podejście jest krótsze i czytelniejsze, bo warunek można bezpośrednio przekazać do countIf.
 
 Zbuduj analogicznie wersję z GROUP BY device.
 
