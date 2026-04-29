@@ -1,13 +1,13 @@
-**Kolumnowe bazy danych cz. II**
+# **Kolumnowe bazy danych cz. II**
 
-**Zaawansowana analityka i dowód wydajności**
+## **Zaawansowana analityka i dowód wydajności**
 
 **Imię i nazwisko:**
 Karolina Węgrzyn, Patrycja Markiewicz
 
 **Grupa:** 1
 
-**Cel ćwiczenia**
+## **Cel ćwiczenia**
 
 Po tym laboratorium będziesz potrafił:
 
@@ -77,7 +77,7 @@ nazwy:
 
 - ds_lab.events w ClickHouse.
 
-**0. Gotowość do zajęć — warunek konieczny (0 pkt)**
+# **0. Gotowość do zajęć — warunek konieczny (0 pkt)**
 
 Pokaż, że środowisko działa: kontenery postgres i clickhouse mają status
 Up, tabela events jest widoczna w obu bazach, połączenie z klienta SQL
@@ -85,7 +85,9 @@ działa.
 
 **Brak gotowości środowiska** uniemożliwia wykonanie dalszych zadań.
 
-**1. Lejek konwersji — 2 pkt**
+<div style="page-break-after: always;"></div>
+
+# **1. Lejek konwersji — 2 pkt**
 
 **Dlaczego to robimy**
 
@@ -170,7 +172,7 @@ GROUP BY device;
 
 Zbuduj analogicznie wersję z GROUP BY device.
 
-**W komentarzu napisz**
+### **W komentarzu napisz**
 
 - Na którym etapie lejka odpływ jest największy i co to oznacza dla
   biznesu — gdzie sklep traci klientów?
@@ -188,7 +190,9 @@ Lejek między urządzeniami jest bardzo podobny. Współczynniki przejścia dla 
 
 countIf w ClickHouse pozwala bezpośrednio policzyć liczbę wierszy spełniających dany warunek w funkcji agregującej. W standardowym SQL stosuje się MAX(CASE WHEN warunek THEN 1 ELSE 0 END), aby najpierw zamienić warunek na wartości 0 lub 1, a dopiero potem je zagregować. W ClickHouse podejście jest krótsze i czytelniejsze, bo warunek można bezpośrednio przekazać do countIf.
 
-**2. Funkcje okna: rankingi i trend przychodów 2 pkt**
+<div style="page-break-after: always;"></div>
+
+# **2. Funkcje okna: rankingi i trend przychodów 2 pkt**
 
 **Dlaczego to robimy**
 
@@ -201,7 +205,7 @@ zagnieżdżonych podzapytań.
 
 Zaznacz w sprawozdaniu, którą bazę wybrałeś.
 
-**Część A - Ranking krajów**
+### **Część A - Ranking krajów**
 
 Policz łączny przychód z zakupów dla każdego kraju i nadaj krajom
 ranking według przychodu. Użyj RANK() albo DENSE_RANK().
@@ -222,9 +226,9 @@ group by country
 order by rank_no;
 ```
 
-![img](/screeny/2.A.png)
+![img](./screeny/2_A.png)
 
-**Część B - Narastający przychód i zmiana dzień do dnia**
+### **Część B - Narastający przychód i zmiana dzień do dnia**
 
 Policz dzienny przychód ze zdarzeń purchase. Następnie w tym samym
 zapytaniu oblicz:
@@ -240,7 +244,7 @@ prev_day_revenue, pct_change.
 
 **Wskazówki składniowe**
 
-| **Element**        | **PostgreSQL**                | **ClickHouse**                                                              |
+| Element            | PostgreSQL                    | ClickHouse                                                                  |
 | ------------------ | ----------------------------- | --------------------------------------------------------------------------- |
 | Data               | DATE(event_time)              | toDate(event_time)                                                          |
 | Suma narastająca   | SUM(x) OVER (ORDER BY day)    | sum(x) OVER (ORDER BY day ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) |
@@ -250,17 +254,83 @@ prev_day_revenue, pct_change.
 dziennym przychodem (GROUP BY day), a dopiero do niego dołącz funkcje
 okna.
 
-**W komentarzu napisz**
+```sql
+with daily as (
+    select
+        toDate(event_time) as day,
+        sum(quantity * price) as daily_revenue
+    from events
+    where event_type = 'purchase'
+    group by day
+),
+daily_with_lag as (
+    select
+        day,
+        round(daily_revenue, 2) as daily_revenue,
+        round(sum(daily_revenue) over (order by day rows between unbounded preceding and current row), 2) as cumulative_revenue,
+        lagInFrame(daily_revenue, 1) over (order by day rows between unbounded preceding and current row) as prev_day_revenue
+    from daily
+)
+select
+    day,
+    daily_revenue,
+    cumulative_revenue,
+    prev_day_revenue,
+    round(((daily_revenue / prev_day_revenue) - 1) * 100, 2) as pct_change
+from daily_with_lag
+order by day;
+```
+
+### **W komentarzu napisz**
 
 - Czy suma narastająca rośnie równomiernie czy skokowo?
+
+![img](./screeny/2_B_1.png)
+
+![img](./screeny/2_B_2.png)
+
+Suma narastająca rośnie równomiernie. Wykres ma kształt niemal idealnie
+prostej linii, bez widocznych skoków. Dzienny przychód
+oscyluje wokół stałego poziomu ~90-105 tys, co przekłada się na
+równomierne tempo narastania.
 
 - Czy widać konkretny dzień z wyraźną zmianą - ile wyniósł wzrost lub
   spadek w procentach?
 
+Żeby znaleźć skrajne wartości, posortowałam wyniki po `pct_change`.
+
+Największy spadek:
+
+```sql
+order by pct_change
+```
+
+![img](./screeny/2_B_3.png)
+
+Największy spadek: 2025-02-01, pct_change = -29.03%
+
+Największy wzrost:
+
+```sql
+order by pct_change desc
+```
+
+![img](./screeny/2_B_4.png)
+
+Największy wzrost: 2025-03-31, pct_change = +41.13%
+
 - Co było dla Ciebie nowe w funkcjach okna i co sprawiło największą
   trudność?
 
-**3. Segmentacja użytkowników - metoda RFM - 2 pkt**
+Nowe było zagnieżdżanie funkcji okna na wyniku agregacji, intuicyjnie
+chcialam pisać wszystko w jednym SELECT, a dopiero wskazówka uświadomiła
+mi, że agregacja musi być gotowa zanim zastosujemy okno. Trudniejsza
+okazała się składnia ClickHouse np dla `lagInFrame` z jawną ramką ROWS,
+której PostgreSQL nie wymaga.
+
+<div style="page-break-after: always;"></div>
+
+# **3. Segmentacja użytkowników - metoda RFM - 2 pkt**
 
 **Dlaczego to robimy**
 
@@ -280,8 +350,7 @@ uśpionych reaktywujesz, nowych zachęcasz do kolejnego zakupu.
 
 Zaznacz w sprawozdaniu, którą bazę wybrałeś.
 
-**Krok 1 — oblicz R, F, M dla każdego użytkownika**
-
+### **Krok 1 — oblicz R, F, M dla każdego użytkownika**
 
 ```sql
 WITH ref AS (
@@ -337,7 +406,7 @@ FROM purchases;
 
 ![zdj2](./screeny/3_1.png)
 
-**Krok 2 — podziel użytkowników na segmenty**
+### **Krok 2 — podziel użytkowników na segmenty**
 
 Na podstawie wyników z kroku 1 zbuduj trzy segmenty według kolumny
 monetary. Progi dobierz samodzielnie na podstawie rozkładu danych z
@@ -373,7 +442,6 @@ Dla każdego segmentu policz:
 - łączny przychód segmentu,
 
 - udział procentowy w całkowitym przychodzie wszystkich użytkowników.
-
 
 ```sql
 WITH purchases AS (
@@ -426,8 +494,7 @@ ORDER BY s.segment_revenue DESC;
 
 ![zdj2](./screeny/3_3.png)
 
-
-**W komentarzu napisz**
+### **W komentarzu napisz**
 
 - Jak dobrałeś progi i dlaczego - co konkretnie w danych na to wskazało?
 
@@ -446,7 +513,9 @@ Można zauważyć trend podobny do zasady Pareto (80/20 - około 80% efektów wy
 
 Wyniki sugerują, że sklep ma niewielką, ale bardzo wartościową grupę lojalnych klientów (premium), którzy generują znaczną część przychodów. Jednocześnie duża liczba klientów jest okazjonalna, co oznacza potencjał do zwiększenia przychodów poprzez działania zwiększające powtarzalność zakupów (np. programy lojalnościowe, personalizowane oferty).
 
-**4. Benchmark i wnioski końcowe - 4 pkt**
+<div style="page-break-after: always;"></div>
+
+# **4. Benchmark i wnioski końcowe - 4 pkt**
 
 **Dlaczego to robimy**
 
@@ -467,65 +536,181 @@ Dla każdego zapytania w każdej bazie:
 
 - oblicz średnią.
 
-<img src="media/image2.svg" style="width:0.272in;height:0.272in"
-alt="Megafon 1 z wypełnieniem pełnym" /> **ClickHouse cache -
-krytyczne:** przed każdą serią pomiarów uruchom SET use_query_cache = 0.
+**ClickHouse cache - krytyczne:** przed każdą serią pomiarów uruchom SET use_query_cache = 0.
 Bez tego kolejne wykonania identycznego zapytania mogą zwrócić wynik z
 pamięci podręcznej zamiast policzyć go od nowa — czasy będą sztucznie
 niskie i nieporównywalne.
 
-**Trzy zapytania do zmierzenia**
+### **Trzy zapytania do zmierzenia**
 
 Użyj zapytań, które już napisałeś w zadaniach 1–3 . Nie pisz nowych,
 benchmark ma sens tylko wtedy, gdy mierzysz coś, co już rozumiesz.
 
-**B1 - proste** - proste zapytanie agregujące z jednym GROUP BY, np.
+#### B1 - proste - proste zapytanie agregujące z jednym GROUP BY, np.
+
 przychód per kraj albo liczba zdarzeń per dzień – **może to być zadanie
 z wcześniejszych laboratoriów**
 
-**B2 - średnie** - zapytanie z lejkiem konwersji z zadania 1
+ClickHouse
 
-**B3 - złożone** - zapytanie z funkcją okna z zadania 2 lub segmentacja
+```sql
+select
+    country,
+    sum(price * quantity) as revenue,
+    rank() over (order by sum(price * quantity) desc) as rank_no
+from events
+where event_type = 'purchase'
+group by country
+order by rank_no;
+```
+
+PostgreSQL
+
+```sql
+select
+    country,
+    sum(price * quantity) as revenue,
+    rank() over (order by sum(price * quantity) desc) as rank_no
+from events
+where event_type = 'purchase'
+group by country
+order by rank_no;
+```
+
+#### B2 - średnie - zapytanie z lejkiem konwersji z zadania 1
+
+```sql
+with session_flags as (
+    select
+        session_id,
+        countIf(event_type = 'view') > 0 as has_view,
+        countIf(event_type = 'cart') > 0 as has_cart,
+        countIf(event_type = 'purchase') > 0 as has_purchase
+    from events
+    group by session_id
+)
+select
+    countIf(has_view) as view_sessions,
+    countIf(has_cart) as cart_sessions,
+    countIf(has_purchase) as purchase_sessions,
+    countIf(has_cart) / nullIf(countIf(has_view), 0) as cart_per_view,
+    countIf(has_purchase) / nullIf(countIf(has_cart), 0) as purchase_per_cart,
+    countIf(has_purchase) / nullIf(countIf(has_view), 0) as purchase_per_view
+from session_flags;
+```
+
+PostgreSQL
+
+```sql
+with session_flags as (
+    select
+        session_id,
+        sum(case when event_type = 'view' then 1 else 0 end) > 0 as has_view,
+        sum(case when event_type = 'cart' then 1 else 0 end) > 0 as has_cart,
+        sum(case when event_type = 'purchase' then 1 else 0 end) > 0 as has_purchase
+    from events
+    group by session_id
+)
+select
+    sum(case when has_view then 1 else 0 end) as view_sessions,
+    sum(case when has_cart then 1 else 0 end) as cart_sessions,
+    sum(case when has_purchase then 1 else 0 end) as purchase_sessions,
+    sum(case when has_cart then 1 else 0 end) / nullif(sum(case when has_view then 1 else 0 end), 0) as cart_per_view,
+    sum(case when has_purchase then 1 else 0 end) / nullif(sum(case when has_cart then 1 else 0 end), 0) as purchase_per_cart,
+    sum(case when has_purchase then 1 else 0 end) / nullif(sum(case when has_view then 1 else 0 end), 0) as purchase_per_view
+from session_flags;
+```
+
+#### B3 - złożone - zapytanie z funkcją okna z zadania 2 lub segmentacja
+
 RFM z zadania 3.
+
+ClickHouse
+
+```sql
+with daily as (
+    select
+        toDate(event_time) as day,
+        sum(quantity * price) as daily_revenue
+    from events
+    where event_type = 'purchase'
+    group by day
+),
+daily_with_lag as (
+    select
+        day,
+        round(daily_revenue, 2) as daily_revenue,
+        round(sum(daily_revenue) over (order by day rows between unbounded preceding and current row), 2) as cumulative_revenue,
+        lagInFrame(daily_revenue, 1) over (order by day rows between unbounded preceding and current row) as prev_day_revenue
+    from daily
+)
+select
+    day,
+    daily_revenue,
+    cumulative_revenue,
+    prev_day_revenue,
+    round(((daily_revenue / prev_day_revenue) - 1) * 100, 2) as pct_change
+from daily_with_lag
+order by day;
+```
+
+PostgreSQL
+
+```sql
+with daily as (
+    select
+        date(event_time) as day,
+        sum(quantity * price) as daily_revenue
+    from events
+    where event_type = 'purchase'
+    group by day
+),
+daily_with_lag as (
+    select
+        day,
+        round(daily_revenue::numeric, 2) as daily_revenue,
+        round(sum(daily_revenue) over (order by day)::numeric, 2) as cumulative_revenue,
+        lag(daily_revenue, 1) over (order by day) as prev_day_revenue
+    from daily
+)
+select
+    day,
+    daily_revenue,
+    cumulative_revenue,
+    prev_day_revenue,
+    round((((daily_revenue / prev_day_revenue) - 1) * 100)::numeric, 2) as pct_change
+from daily_with_lag
+order by day;
+```
 
 **Uwaga:** jeśli zadania 2 lub 3 pisałeś tylko w ClickHouse, dostosuj
 zapytanie B3 do PostgreSQL przed pomiarem. Różnice składniowe znajdziesz
 w ściądze. To jest celowe zobaczysz, że logika jest taka sama, zmienia
 się tylko dialekt.
 
-**Tabela wyników**
+### **Tabela wyników**
 
 Wypełnij poniższą tabelę. Czasy podaj w milisekundach.
 
-| **Zapytanie** | **Charakt.** | **PG p.1** | **PG p.2** | **PG p.3** | **PG śr.** | **CH p.1** | **CH p.2** | **CH p.3** | **CH śr.** |
-| ------------- | ------------ | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-| B1 — proste   |              |            |            |            |            |            |            |            |            |
-| B2 — średnie  |              |            |            |            |            |            |            |            |            |
-| B3 — złożone  |              |            |            |            |            |            |            |            |            |
+| Zapytanie    | Charakt.                                                           | PG p.1 | PG p.2 | PG p.3 | PG śr. | CH p.1 | CH p.2 | CH p.3 | CH śr. |
+| ------------ | ------------------------------------------------------------------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+| B1 — proste  | agregacja SUM z GROUP BY po kraju i funkcja okna RANK()            | 100    | 103    | 83     | 95,33  | 66     | 39     | 28     | 44,33  |
+| B2 — średnie | CTE, GROUP BY po session_id, agregacje warunkowe countIf/CASE WHEN | 635    | 595    | 579    | 603    | 83     | 55     | 54     | 64     |
+| B3 — złożone | dwa CTE, GROUP BY po dniu, funkcje okna SUM i LAG/lagInFrame       | 117    | 85     | 86     | 96     | 26     | 30     | 32     | 29,33  |
 
 W kolumnie „Charakterystyka" wpisz jednym zdaniem, co zapytanie robi:
 ile kolumn czyta czy używa GROUP BY, COUNT(DISTINCT), funkcji okna, CTE.
 
-**Analiza planu wykonania**
+### **Analiza planu wykonania**
 
 Dla zapytania **B1** i **B3** uruchom:
 
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<thead>
-<tr>
-<th>-- PostgreSQL — wykonuje zapytanie i pokazuje realne czasy<br />
-EXPLAIN ANALYZE &lt;zapytanie&gt;;<br />
-<br />
--- ClickHouse — pokazuje plan bez wykonania<br />
-EXPLAIN &lt;zapytanie&gt;;</th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
+```sql
+-- PostgreSQL — wykonuje zapytanie i pokazuje realne czasy
+EXPLAIN ANALYZE <zapytanie>;
+-- ClickHouse — pokazuje plan bez wykonania
+EXPLAIN <zapytanie>;
+```
 
 Nie jest wymagana pełna analiza techniczna. Napisz po **2–3 zdania** dla
 każdego z czterech planów (B1 w PG, B1 w CH, B3 w PG, B3 w CH):
@@ -537,22 +722,83 @@ każdego z czterech planów (B1 w PG, B1 w CH, B3 w PG, B3 w CH):
 - czym plan ClickHouse różni się od planu PostgreSQL - na co zwróciłeś
   uwagę.
 
-**Refleksja końcowa – obowiązkowa**
+#### **B1 - PostgreSQL**
+
+![img](./screeny/4_p_B1.png)
+
+Agregacja jest w Partial HashAggregate i Finalize GroupAggregate (wiersze 18, 8),
+sortowanie w Sort (wiersze 5, 13). PostgreSQL przeskanował całą tabelę wierszowo
+(Parallel Seq Scan, wiersz 23), dopiero po odczycie odfiltrował rekordy z event_type = 'purchase'.
+Żeby przyspieszyć skan, podzielił pracę między dwóch workerów, których wyniki scalił w Gather Merge (wiersz 10).
+
+#### **B1 - ClickHouse**
+
+![img](./screeny/4_ch_B1.png)
+
+Agregacja jest w Aggregating (wiersz 7), sortowanie w Sorting (wiersze 2, 5).
+ClickHouse czyta tylko potrzebne kolumny bezpośrednio z ReadFromMergeTree (wiersz 10),
+filtrowanie WHERE odbywa się już podczas odczytu (wiersz 9), nie po nim.
+Plan jest krótszy i płaski w porównaniu do postgresa.
+
+#### **B3 - PostgreSQL**
+
+![img](./screeny/4_p_B3.png)
+
+Agregacja jest w Partial GroupAggregate i Finalize GroupAggregate (wiersze 8, 3),
+funkcja okna w WindowAgg (wiersz 2), sortowanie w Sort (wiersz 10).
+Plan jest wyraźnie bardziej rozbudowany niż B1, pojawia się tam Subquery Scan on daily_with_lag
+odpowiadający CTE, a zużycie pamięci na sortowanie wzrosło do 1507 kB wobec 25 kB w B1.
+Podobnie jak w B1, postgres skanuje całą tabelę wierszowo i filtruje po odczycie.
+
+#### **B3 - ClickHouse**
+
+![img](./screeny/4_ch_B3.png)
+
+Agregacja jest w Aggregating (wiersz 8), funkcja okna w Window (wiersz 4),
+sortowanie w Sorting (wiersze 2, 6). Plan jest dłuższy niż B1 o kilka kroków,
+ale struktura pozostaje podobna. ClickHouse nadal czyta tylko potrzebne kolumny
+z ReadFromMergeTree i filtruje podczas odczytu.
+
+---
+
+### **Refleksja końcowa – obowiązkowa**
 
 Na podstawie pomiarów i planów napisz **5–8 zdań** odpowiadając na
 poniższe pytania. To jest najważniejszy element całego laboratorium.
 
 - Czy różnica czasu między bazami rosła wraz ze złożonością zapytania?
 
+Różnica czasu między bazami rosła wraz ze złożonością, ale nie liniowo. Najwieksza przewaga
+ClickHouse ujawniła się przy B2, gdzie postgres potrzebował średnio 603 ms,
+a ClickHouse tylko 64 ms, czyli prawie 10x szybciej. Przy B1 i B3 przewaga była mniejsza, odpowiednio ok 2x i 3x. Zaskakujące jest że B3 z dwoma CTE i funkcjami okna okazało się szybsze
+niż B1 zarówno w PostgreSQL jak i ClickHouse, może byc to spowodowane tym, że B3 agreguje dane
+do poziomu dziennego przed zastosowaniem funkcji okna, co redukuje liczbę przetwarzanych wierszy.
+
 - Przy którym zapytaniu przewaga ClickHouse była największa i jak to
   tłumaczysz?
+
+Największa przewaga ClickHouse przy zapytaniu B2 wynika z tego, że lejek wymaga
+przeskanowania całej tabeli i agregacji po session_id, co w postgresie oznacza pełny Seq Scan
+przez wszystkie kolumny. ClickHouse czyta tylko te kolumny których potrzebuje (session_id i event_type)
+i filtruje dane już podczas odczytu z dysku, zanim trafią do pamięci.
 
 - Co plany wykonania mówią o tym, dlaczego ClickHouse jest szybszy dla
   tego rodzaju zapytań?
 
+Plany wykonania potwierdzają tę różnicę. PostgreSQL zawsze zaczyna od Parallel Seq Scan,
+czyli czyta wszystkie kolumny wiersz po wierszu i filtruje dopiero po odczycie. Clickhouse
+zaczyna od ReadFromMergeTree i filtruje podczas odczytu, operując na danych kolumnowych
+co przy zapytaniach agregujących kilka kolumn z milionów wierszy daje ogromną przewagę.
+
 - Gdybyś był architektem systemu danych w firmie e-commerce obsługującej
   miliony zdarzeń dziennie - dla jakich zadań wybrałbyś ClickHouse, a
   dla jakich PostgreSQL? Uzasadnij konkretnie.
+
+Jako architekt systemu e-commerce wybrałabym ClickHouse do wszystkich zapytań analitycznych czyli
+raportowanie przychodow, lejki konwersji, segmentacja użytkowników, szczególnie gdy dane
+liczone są w milionach wierszy dziennie. PostgreSQL zostawiłabym do operacji transakcyjnych
+gdzie liczy się spójność danych czyli np. rejestrowanie zamówień, aktualizacja stanów magazynowych,
+obsluga płatności, bo tam model wierszowy i gwarancje ACID są ważniejsze niż szybkość odczytu.
 
 **Refleksja jest oceniana jako osobny punkt (1 pkt).** Oczekujemy
 własnego rozumowania opartego na zmierzonych danych - nie powtórzenia
