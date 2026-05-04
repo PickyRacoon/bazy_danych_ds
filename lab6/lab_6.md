@@ -205,6 +205,8 @@ zagnieżdżonych podzapytań.
 
 Zaznacz w sprawozdaniu, którą bazę wybrałeś.
 
+**Wybrałam ClickHouse**
+
 ### **Część A - Ranking krajów**
 
 Policz łączny przychód z zakupów dla każdego kraju i nadaj krajom
