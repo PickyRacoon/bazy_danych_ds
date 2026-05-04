@@ -696,9 +696,9 @@ Wypełnij poniższą tabelę. Czasy podaj w milisekundach.
 
 | Zapytanie    | Charakt.                                                           | PG p.1 | PG p.2 | PG p.3 | PG śr. | CH p.1 | CH p.2 | CH p.3 | CH śr. |
 | ------------ | ------------------------------------------------------------------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
-| B1 — proste  | agregacja SUM z GROUP BY po kraju i funkcja okna RANK()            | 100    | 103    | 83     | 95,33  | 66     | 39     | 28     | 44,33  |
-| B2 — średnie | CTE, GROUP BY po session_id, agregacje warunkowe countIf/CASE WHEN | 635    | 595    | 579    | 603    | 83     | 55     | 54     | 64     |
-| B3 — złożone | dwa CTE, GROUP BY po dniu, funkcje okna SUM i LAG/lagInFrame       | 117    | 85     | 86     | 96     | 26     | 30     | 32     | 29,33  |
+| B1 — proste  | czyta 4 kolumny, agregacja SUM z GROUP BY po kraju i funkcja okna RANK()            | 100    | 103    | 83     | 95,33  | 66     | 39     | 28     | 44,33  |
+| B2 — średnie | czyta 2 kolumny, CTE, GROUP BY po session_id, agregacje warunkowe countIf/CASE WHEN | 635    | 595    | 579    | 603    | 83     | 55     | 54     | 64     |
+| B3 — złożone | czyta 4 kolumny, dwa CTE, GROUP BY po dniu, funkcje okna SUM i LAG/lagInFrame       | 117    | 85     | 86     | 96     | 26     | 30     | 32     | 29,33  |
 
 W kolumnie „Charakterystyka" wpisz jednym zdaniem, co zapytanie robi:
 ile kolumn czyta czy używa GROUP BY, COUNT(DISTINCT), funkcji okna, CTE.
