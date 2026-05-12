@@ -15,11 +15,11 @@ są dostępne.
 bucket → scope → collection
 ```
 
-bucket - database
+bucket - odpowiednik bazy danych w SQL
 
-scope - schema
+scope - odpowiednik schematu w SQL
 
-collection - table
+collection - odpowiednik tabeli w SQL
 
 2. W Query Workbench policz liczbę dokumentów w kolekcjach:
 
@@ -297,17 +297,17 @@ Przykład zapytania liczącego dokumenty:
 
 
 ```sql
-  SELECT COUNT(1) AS orders_count\
-  FROM \`north0\`.\_default.orders\
+  SELECT COUNT(1) AS orders_count
+  FROM `north0`._default.orders
   WHERE OrderID IS NOT MISSING;
 ```
 
 Przykład podejrzenia dokumentu:
 
 ```sql
-  SELECT o\
-  FROM \`north0\`.\_default.orders AS o\
-  WHERE o.OrderID IS NOT MISSING\
+  SELECT o
+  FROM `north0`._default.orders AS o
+  WHERE o.OrderID IS NOT MISSING
   LIMIT 3;
 ```
 
