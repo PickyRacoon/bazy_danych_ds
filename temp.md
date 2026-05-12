@@ -15,11 +15,11 @@ są dostępne.
 bucket → scope → collection
 ```
 
-bucket - odpowiednik bazy danych w SQL
+bucket - odpowiednik bazy danych w SQL, główny kontener danych, który zawiera w sobie scope'y
 
-scope - odpowiednik schematu w SQL
+scope - odpowiednik schematu w SQL, logiczna grupa kolekcji
 
-collection - odpowiednik tabeli w SQL
+collection - odpowiednik tabeli w SQL, zawiera dokumenty JSON z danymi
 
 2. W Query Workbench policz liczbę dokumentów w kolekcjach:
 
@@ -42,47 +42,47 @@ collection - odpowiednik tabeli w SQL
 | orders_nested  | 830               |
 
 ```sql
-  SELECT COUNT(1) AS orders_count
-  FROM `north0`._default.orders
-  WHERE OrderID IS NOT MISSING;
+SELECT COUNT(1) AS orders_count
+FROM `north0`._default.orders
+FHERE OrderID IS NOT MISSING;
 ```
 
 ```sql
- SELECT COUNT(1) AS orderdetails_count
-  FROM `north0`._default.orderdetails
-  WHERE OrderID IS NOT MISSING;
+SELECT COUNT(1) AS orderdetails_count
+FROM `north0`._default.orderdetails
+WHERE OrderID IS NOT MISSING;
 ```
 
 ```sql
-  SELECT COUNT(1) AS customers_count
-  FROM `north0`._default.customers
-  WHERE CustomerID IS NOT MISSING;
+SELECT COUNT(1) AS customers_count
+FROM `north0`._default.customers
+WHERE CustomerID IS NOT MISSING;
 ```
 
 ```sql
-  CREATE INDEX idx_products_productid
-  ON `north0`._default.products(ProductID);
+CREATE INDEX idx_products_productid
+ON `north0`._default.products(ProductID);
 ```
 
 ```sql
-  SELECT COUNT(1) AS products_count
-  FROM `north0`._default.products
-  WHERE ProductID IS NOT MISSING;
+SELECT COUNT(1) AS products_count
+FROM `north0`._default.products
+WHERE ProductID IS NOT MISSING;
 ```
 
 ```sql
-  SELECT COUNT(1) AS orders_nested_count
-  FROM `north0`._default.orders_nested
-  WHERE OrderID IS NOT MISSING;
+SELECT COUNT(1) AS orders_nested_count
+FROM `north0`._default.orders_nested
+WHERE OrderID IS NOT MISSING;
 ```
   
 3. Podejrzyj kilka dokumentów z kolekcji orders.
 
 ```sql
-  SELECT o
-  FROM `north0`._default.orders AS o
-  WHERE o.OrderID IS NOT MISSING
-  LIMIT 3;
+SELECT o
+FROM `north0`._default.orders AS o
+WHERE o.OrderID IS NOT MISSING
+LIMIT 3;
 ```
 
 ```json
@@ -174,10 +174,10 @@ collection - odpowiednik tabeli w SQL
 4. Podejrzyj jeden dokument z kolekcji orders_nested.
 
 ```sql
-  SELECT o
-  FROM `north0`._default.orders_nested AS o
-  WHERE o.OrderID IS NOT MISSING
-  LIMIT 3;
+SELECT o
+FROM `north0`._default.orders_nested AS o
+WHERE o.OrderID IS NOT MISSING
+LIMIT 3;
 ```
 
 ```json
@@ -289,6 +289,8 @@ collection - odpowiednik tabeli w SQL
 ]
 ```
 
+Dokumenty z kolekcji orders i orders_nested różnią się sposobem modelowania danych.
+Dokumenty z orders zawierają tylko dane nagłówkowe zamównienia - nie mają listy produktów składających sie na nie. Informacje te znajdują się w innej kolekcji, podejscie podobne do tego z SQL'a. Dokumenty z orders_nested zawierają całe zamówienie w jednym dokumencie - tablica iteams zawiera te dane w sobie. Nie trzeba więc łączyć danych jak w przypadku orders, żeby zobaczyc np. skład zamówienia, podejscie NoSQL. 
 
 
 **Wskazówki**
@@ -297,18 +299,18 @@ Przykład zapytania liczącego dokumenty:
 
 
 ```sql
-  SELECT COUNT(1) AS orders_count
-  FROM `north0`._default.orders
-  WHERE OrderID IS NOT MISSING;
+SELECT COUNT(1) AS orders_count
+FROM `north0`._default.orders
+WHERE OrderID IS NOT MISSING;
 ```
 
 Przykład podejrzenia dokumentu:
 
 ```sql
-  SELECT o
-  FROM `north0`._default.orders AS o
-  WHERE o.OrderID IS NOT MISSING
-  LIMIT 3;
+SELECT o
+FROM `north0`._default.orders AS o
+WHERE o.OrderID IS NOT MISSING
+LIMIT 3;
 ```
 
 **W komentarzu napisz**
@@ -357,7 +359,7 @@ indeksie. W takiej sytuacji przejdź do kolejnego kroku.
 Następnie przygotuj zapytanie łączące orders z customers.
 
 ```sql
-  SELECT 
+SELECT 
     o.OrderID,
     o.OrderDate,
     o.CustomerID,
@@ -397,7 +399,7 @@ trzeba ich zakładać ręcznie. Jeżeli mimo to spróbujesz je utworzyć,
 Couchbase poinformuje, że indeks już istnieje -- to nie jest błąd.
 
 ```sql
-  SELECT
+SELECT
     o.OrderID,
     o.CustomerID,
     od.ProductID,
@@ -415,7 +417,7 @@ Policz wartość zamówienia według wzoru:
 
 
 ```sql
-  wartość pozycji = UnitPrice * Quantity * (1 - Discount)
+wartość pozycji = UnitPrice * Quantity * (1 - Discount)
 ```
 
 Brak rabatu traktuj jako 0.
@@ -439,7 +441,7 @@ Pokaż 10 zamówień o najwyższej wartości.
 
 
 ```sql
-  SELECT
+SELECT
     o.OrderID,
     o.CustomerID,
     SUM(
@@ -461,13 +463,21 @@ LIMIT 10;
 
 - Czy JOIN w Couchbase przypomina składnię znaną z SQL?
 
+Tak, bardzo są podobne obie składnie.
+
 - Czym różni się takie łączenie od relacji w klasycznej bazie relacyjnej
   (np. czy baza wymusza klucze obce i spójność relacji tak jak w typowym
   modelu relacyjnym)?
 
+W SQL relacje są wymuszone przez klucze obce i baza pilnuje spójności danych. W Couchbase nie ma kluczy obcych i wymuszania relacji. JOIN działa na poziomie zapytania łącząc dokumenty, ale nie muszą być one spójne - baza nie  pilnuje spójności danych.
+
 - Dlaczego indeks po stronie dołączanej kolekcji jest ważny?
 
+Indeks po stronie dołączanej kolekcji jest ważny, bo decyduje on czy JOIN szybko wyszuka pasujących dokumentów, czy wykona pełne skanowanie. 
+
 - Czy największe zamówienia mają zawsze największą liczbę pozycji?
+
+Nie, największe zamówienia maja 1-2 pozycje, a mniejsze posiadają nawet 5 pozycji - wyniki tylko z pierwszych 10 dokumentów. 
 
   ---
 
@@ -504,10 +514,11 @@ Przed zapytaniem może być potrzebny indeks:
 
 
 ```sql
- CREATE INDEX idx_products_productid
-  ON `north0`._default.products(ProductID);
-  CREATE INDEX idx_orderdetails_productid
-  ON `north0`._default.orderdetails(ProductID);
+CREATE INDEX idx_products_productid
+ON `north0`._default.products(ProductID);
+
+CREATE INDEX idx_orderdetails_productid
+ON `north0`._default.orderdetails(ProductID);
 ```
 
 Jeżeli indeks już istnieje, Couchbase zwróci komunikat o istniejącym
@@ -515,7 +526,7 @@ indeksie --- to nie jest błąd.
 
 
 ```sql
- SELECT
+SELECT
     p.ProductID,
     p.ProductName,
     SUM(od.Quantity) AS total_quantity_sold,
@@ -536,8 +547,13 @@ ORDER BY total_sales_value DESC;
 
 - Który produkt albo klient ma najwyższą wartość sprzedaży?
 
+Najwyższą wartość sprzedaży ma Côte de Blaye.
+
 - Czy wynik jest łatwy do biznesowej interpretacji?
+
+Wynik jest łatwy do interpretacji biznesowej, bo przedstawia ranking produktów według sprzedaży, ale w formie tabeli byłby jeszcze bardziej czytelny niż jako JSON.
 
 - Czy zapytanie bardziej przypomina klasyczny SQL/BI, czy pracę z
   dokumentami JSON?
-
+  
+Zapytanie bardziej przypomina klasyczny SQL, mimo, że dane są dokumentowe.
