@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: retail_lab_postgres
+    environment:
+      POSTGRES_USER: student
+      POSTGRES_PASSWORD: student
+      POSTGRES_DB: retail_lab
+    ports:
+      - "15432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./data:/data:ro
+      - ./init/postgres:/docker-entrypoint-initdb.d:ro
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:25.3
+    container_name: retail_lab_clickhouse
+    environment:
+      CLICKHOUSE_USER: student
+      CLICKHOUSE_PASSWORD: student
+      CLICKHOUSE_DB: retail
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ./data:/var/lib/clickhouse/user_files/data
+      - ./init/clickhouse:/docker-entrypoint-initdb.d:ro
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
+volumes:
+  postgres_data:
+  clickhouse_data:

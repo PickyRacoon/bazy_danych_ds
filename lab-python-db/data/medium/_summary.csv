@@ -1,0 +1,9 @@
+table_name,rows,columns
+categories,15,2
+customers,3000,7
+products,250,5
+orders,30000,8
+order_items,102097,6
+fact_sales,102097,18
+customers_dirty,3090,7
+orders_dirty,10100,8

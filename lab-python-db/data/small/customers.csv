@@ -1,0 +1,501 @@
+customer_id,company_name,country,city,customer_type,registration_date,phone
+1,Urban Restaurant 00001,Germany,Frankfurt,retail,2021-01-01,+39 348 578 422
+2,Royal Deli 00002,United Kingdom,Bristol,wholesale,2021-01-02,+34 413 571 963
+3,West Cafe 00003,Spain,Bilbao,retail,2021-01-03,+34 241 217 690
+4,Baltic Deli 00004,Italy,Turin,horeca,2021-01-07,+33 174 868 391
+5,Amber Distribution 00005,Poland,Wroclaw,retail,2021-01-08,+44 145 073 670
+6,Central Gourmet 00006,Poland,Gdansk,wholesale,2021-01-21,+1 433 790 294
+7,Green Gourmet 00007,Germany,Cologne,retail,2021-01-30,+44 405 443 273
+8,North Foods 00008,Sweden,Uppsala,wholesale,2021-02-02,+44 906 875 500
+9,Central Restaurant 00009,Spain,Barcelona,wholesale,2021-02-03,+49 111 080 762
+10,Green Cafe 00010,Poland,Gdansk,online,2021-02-04,+34 933 928 517
+11,Alfa Deli 00011,France,Toulouse,retail,2021-02-06,+49 459 861 063
+12,West Foods 00012,Sweden,Stockholm,horeca,2021-02-12,+34 741 031 162
+13,Beta Market 00013,Italy,Florence,wholesale,2021-02-21,+49 319 670 137
+14,Fresh Stores 00014,Netherlands,Eindhoven,wholesale,2021-02-22,+49 470 808 737
+15,Urban Restaurant 00015,Spain,Seville,horeca,2021-02-26,+48 272 229 073
+16,Urban Partners 00016,Sweden,Uppsala,retail,2021-03-06,+33 380 686 040
+17,East Market 00017,France,Lyon,wholesale,2021-03-07,+39 162 824 060
+18,Gamma Deli 00018,Sweden,Malmo,retail,2021-03-10,+1 901 458 101
+19,Prime Distribution 00019,USA,Denver,wholesale,2021-03-17,+44 697 361 589
+20,Delta Foods 00020,Netherlands,Rotterdam,wholesale,2021-03-19,+33 027 694 074
+21,Baltic Foods 00021,Canada,Vancouver,online,2021-03-19,+39 866 973 548
+22,Alfa Gourmet 00022,USA,New York,horeca,2021-03-19,+33 005 735 506
+23,Baltic Kitchen 00023,USA,Chicago,horeca,2021-03-23,+48 644 909 518
+24,Silver Foods 00024,Poland,Warsaw,retail,2021-03-26,+39 944 983 685
+25,Delta Group 00025,Netherlands,Amsterdam,horeca,2021-03-26,+48 741 461 647
+26,Urban Kitchen 00026,USA,Chicago,distributor,2021-03-29,+34 689 227 913
+27,East Market 00027,Poland,Krakow,retail,2021-03-30,+34 710 066 657
+28,Green Market 00028,USA,Chicago,horeca,2021-03-31,+49 723 078 237
+29,Gamma Trading 00029,USA,Chicago,retail,2021-04-06,+44 828 492 611
+30,North Supplies 00030,Germany,Frankfurt,retail,2021-04-06,+49 111 066 794
+31,Euro Cafe 00031,Canada,Montreal,retail,2021-04-07,+39 848 295 323
+32,Euro Cafe 00032,United Kingdom,Manchester,retail,2021-04-11,+39 883 294 850
+33,Central Wholesale 00033,USA,Seattle,retail,2021-04-15,+1 996 443 249
+34,Euro Cafe 00034,Canada,Vancouver,horeca,2021-04-17,+1 899 918 339
+35,Global Market 00035,USA,Seattle,online,2021-04-18,+48 369 353 029
+36,Central Cafe 00036,Germany,Cologne,online,2021-05-07,+49 343 290 417
+37,North Gourmet 00037,Spain,Valencia,horeca,2021-05-13,+48 367 989 690
+38,Euro Wholesale 00038,Netherlands,Amsterdam,retail,2021-05-14,+48 799 563 765
+39,Gamma Kitchen 00039,Poland,Wroclaw,online,2021-05-17,+44 556 555 746
+40,Prime Partners 00040,Italy,Florence,retail,2021-05-19,+1 372 700 019
+41,Central Foods 00041,Germany,Hamburg,retail,2021-05-26,+44 563 921 104
+42,Delta Deli 00042,Poland,Lodz,retail,2021-05-26,+44 663 891 573
+43,West Restaurant 00043,Germany,Frankfurt,retail,2021-05-27,+1 533 314 706
+44,Green Cafe 00044,Spain,Madrid,horeca,2021-05-29,+1 506 854 671
+45,Baltic Gourmet 00045,Netherlands,Rotterdam,retail,2021-05-30,+34 140 018 533
+46,Beta Partners 00046,Germany,Hamburg,wholesale,2021-05-31,+39 787 752 666
+47,North Group 00047,France,Paris,retail,2021-06-08,+49 106 759 339
+48,Urban Cafe 00048,USA,Denver,wholesale,2021-06-11,+49 913 563 194
+49,Gamma Foods 00049,Canada,Montreal,horeca,2021-06-13,+49 700 857 292
+50,Royal Partners 00050,Poland,Wroclaw,distributor,2021-06-13,+49 685 707 364
+51,Nova Market 00051,Austria,Graz,wholesale,2021-06-15,+1 968 113 780
+52,Nova Market 00052,Canada,Vancouver,retail,2021-06-17,+48 454 157 241
+53,Baltic Deli 00053,Czech Republic,Ostrava,distributor,2021-06-18,+1 181 258 242
+54,East Group 00054,France,Marseille,distributor,2021-06-21,+33 168 996 978
+55,North Kitchen 00055,USA,Seattle,online,2021-06-22,+49 374 865 924
+56,Central Cafe 00056,Poland,Poznan,wholesale,2021-06-23,+39 936 894 622
+57,Central Partners 00057,United Kingdom,Manchester,horeca,2021-06-26,+1 796 042 297
+58,Alfa Wholesale 00058,Czech Republic,Ostrava,horeca,2021-06-28,+33 022 455 577
+59,North Trading 00059,Austria,Salzburg,wholesale,2021-07-02,+49 284 578 363
+60,Silver Market 00060,Netherlands,Eindhoven,wholesale,2021-07-11,+48 740 995 147
+61,Amber Cafe 00061,Poland,Wroclaw,retail,2021-07-12,+33 078 799 486
+62,West Market 00062,Poland,Lodz,retail,2021-07-14,+34 736 710 014
+63,Urban Distribution 00063,Netherlands,Eindhoven,online,2021-07-30,+48 203 705 429
+64,Royal Stores 00064,Poland,Wroclaw,retail,2021-07-30,+33 806 148 869
+65,East Supplies 00065,Austria,Salzburg,horeca,2021-07-31,+34 799 350 626
+66,Euro Distribution 00066,Spain,Valencia,horeca,2021-08-01,+44 877 472 085
+67,Nova Stores 00067,Poland,Wroclaw,retail,2021-08-03,+34 471 123 794
+68,Euro Stores 00068,USA,Austin,wholesale,2021-08-05,+48 012 756 822
+69,Alfa Gourmet 00069,United Kingdom,Bristol,retail,2021-08-05,+39 079 811 629
+70,West Stores 00070,Spain,Madrid,retail,2021-08-09,+49 606 449 295
+71,Beta Market 00071,Canada,Vancouver,horeca,2021-08-10,+44 635 482 131
+72,Beta Cafe 00072,France,Paris,online,2021-08-12,+33 551 997 906
+73,Central Trading 00073,USA,Denver,distributor,2021-08-16,+49 657 992 435
+74,Alfa Partners 00074,Italy,Rome,online,2021-08-28,+44 981 490 217
+75,Blue Trading 00075,Austria,Salzburg,retail,2021-09-06,+49 561 396 075
+76,East Wholesale 00076,Spain,Bilbao,online,2021-09-17,+49 493 890 084
+77,Alfa Deli 00077,Spain,Madrid,distributor,2021-09-17,+48 519 482 788
+78,Urban Market 00078,United Kingdom,London,retail,2021-09-20,+44 756 781 346
+79,Amber Trading 00079,Italy,Naples,retail,2021-09-23,+49 270 249 625
+80,North Market 00080,USA,Austin,horeca,2021-10-01,+33 912 202 979
+81,Delta Restaurant 00081,Germany,Munich,wholesale,2021-10-02,+33 224 272 041
+82,Silver Distribution 00082,Germany,Berlin,retail,2021-10-06,+33 753 222 148
+83,East Partners 00083,United Kingdom,Manchester,wholesale,2021-10-07,+49 646 625 143
+84,Fresh Kitchen 00084,USA,Seattle,wholesale,2021-10-12,+44 677 816 731
+85,Fresh Group 00085,United Kingdom,London,horeca,2021-10-12,+1 324 724 868
+86,Alfa Distribution 00086,France,Lyon,online,2021-10-16,+1 636 555 259
+87,Nova Distribution 00087,Austria,Graz,horeca,2021-10-16,+39 269 772 102
+88,Baltic Trading 00088,Norway,Stavanger,horeca,2021-10-18,+39 709 485 972
+89,Delta Cafe 00089,Italy,Florence,retail,2021-10-21,+49 081 594 733
+90,Urban Distribution 00090,Italy,Naples,distributor,2021-10-25,+33 505 020 467
+91,Alfa Foods 00091,Poland,Lodz,retail,2021-10-31,+33 837 376 724
+92,Euro Group 00092,Austria,Vienna,retail,2021-11-02,+34 035 726 274
+93,Global Trading 00093,Canada,Vancouver,online,2021-11-03,+49 318 517 585
+94,Blue Partners 00094,Czech Republic,Brno,wholesale,2021-11-05,+48 789 075 278
+95,East Trading 00095,Italy,Florence,online,2021-11-07,+48 549 439 598
+96,North Restaurant 00096,Germany,Cologne,retail,2021-11-08,+44 950 409 934
+97,Delta Foods 00097,Poland,Gdansk,wholesale,2021-11-17,+33 511 720 957
+98,Royal Wholesale 00098,France,Paris,retail,2021-11-21,+34 117 241 462
+99,North Supplies 00099,Canada,Vancouver,distributor,2021-11-26,+39 697 585 854
+100,Nova Stores 00100,Netherlands,Utrecht,distributor,2021-11-26,+48 923 240 587
+101,Gamma Partners 00101,Poland,Lodz,retail,2021-11-30,+49 215 779 237
+102,Delta Cafe 00102,Poland,Poznan,wholesale,2021-12-10,+39 037 397 431
+103,Royal Stores 00103,Poland,Gdansk,wholesale,2021-12-16,+34 238 663 437
+104,Baltic Stores 00104,United Kingdom,London,retail,2021-12-19,+49 125 615 271
+105,Royal Foods 00105,Czech Republic,Pilsen,wholesale,2021-12-20,+44 836 288 769
+106,Baltic Partners 00106,Spain,Bilbao,online,2021-12-24,+34 037 894 982
+107,Prime Deli 00107,Italy,Turin,wholesale,2021-12-24,+44 934 822 149
+108,Baltic Deli 00108,United Kingdom,Bristol,retail,2021-12-27,+33 493 426 309
+109,West Deli 00109,Spain,Bilbao,wholesale,2021-12-27,+33 713 698 258
+110,West Supplies 00110,USA,Boston,horeca,2021-12-28,+48 549 323 891
+111,Beta Deli 00111,Spain,Bilbao,retail,2021-12-29,+34 495 043 278
+112,Beta Market 00112,USA,Chicago,online,2021-12-30,+44 160 443 156
+113,Amber Kitchen 00113,Germany,Frankfurt,online,2021-12-31,+39 570 619 356
+114,Silver Deli 00114,Spain,Bilbao,wholesale,2022-01-01,+44 509 877 776
+115,East Cafe 00115,USA,Denver,wholesale,2022-01-02,+34 583 441 791
+116,Beta Trading 00116,Spain,Barcelona,distributor,2022-01-18,+1 300 610 485
+117,Alfa Restaurant 00117,France,Nice,online,2022-01-19,+39 150 896 203
+118,Fresh Group 00118,Germany,Frankfurt,wholesale,2022-01-22,+44 227 627 249
+119,Green Kitchen 00119,Italy,Milan,wholesale,2022-01-22,+44 875 520 695
+120,Royal Restaurant 00120,Netherlands,Utrecht,wholesale,2022-02-01,+34 738 458 717
+121,Gamma Wholesale 00121,Austria,Vienna,wholesale,2022-02-04,+1 009 814 036
+122,Prime Deli 00122,Poland,Krakow,online,2022-02-12,+34 712 998 768
+123,North Cafe 00123,Sweden,Uppsala,online,2022-02-17,+34 173 605 622
+124,East Market 00124,United Kingdom,Liverpool,retail,2022-02-20,+48 762 244 597
+125,Amber Kitchen 00125,Netherlands,Eindhoven,wholesale,2022-02-23,+1 230 068 841
+126,Global Kitchen 00126,Spain,Barcelona,wholesale,2022-02-25,+39 319 403 929
+127,Fresh Wholesale 00127,France,Paris,wholesale,2022-02-26,+33 417 680 632
+128,Delta Restaurant 00128,Spain,Seville,retail,2022-03-02,+49 150 523 483
+129,Central Cafe 00129,Sweden,Stockholm,retail,2022-03-03,+48 203 782 105
+130,Fresh Group 00130,Poland,Wroclaw,online,2022-03-04,+1 699 963 095
+131,North Restaurant 00131,Spain,Seville,retail,2022-03-07,+34 688 321 401
+132,Amber Kitchen 00132,Netherlands,Utrecht,wholesale,2022-03-08,+33 232 630 491
+133,East Trading 00133,United Kingdom,Liverpool,online,2022-03-14,+1 407 685 168
+134,Silver Restaurant 00134,Germany,Cologne,wholesale,2022-03-20,+44 684 967 065
+135,East Stores 00135,Netherlands,Amsterdam,horeca,2022-03-21,+44 523 171 332
+136,Euro Cafe 00136,Netherlands,Amsterdam,retail,2022-03-21,+1 189 153 563
+137,Prime Group 00137,USA,Austin,wholesale,2022-03-23,+33 749 008 241
+138,Euro Market 00138,Italy,Florence,online,2022-03-26,+44 507 835 871
+139,Alfa Trading 00139,Spain,Valencia,horeca,2022-03-26,+34 550 623 028
+140,Nova Distribution 00140,Germany,Berlin,horeca,2022-03-29,+1 074 490 027
+141,Euro Partners 00141,Spain,Madrid,retail,2022-04-05,+1 776 900 498
+142,Beta Deli 00142,Czech Republic,Brno,online,2022-04-06,+34 462 079 301
+143,Blue Wholesale 00143,USA,New York,retail,2022-04-10,+49 699 621 193
+144,East Wholesale 00144,Spain,Barcelona,horeca,2022-04-10,+39 107 705 450
+145,Nova Cafe 00145,Poland,Lodz,wholesale,2022-04-11,+44 314 231 786
+146,Gamma Market 00146,Germany,Hamburg,online,2022-04-15,+39 952 837 266
+147,Blue Cafe 00147,Austria,Linz,online,2022-04-24,+39 831 381 801
+148,Royal Supplies 00148,Germany,Berlin,online,2022-05-04,+39 877 749 522
+149,Royal Kitchen 00149,USA,Chicago,retail,2022-05-04,+1 174 956 906
+150,Royal Market 00150,Sweden,Malmo,horeca,2022-05-06,+34 334 003 859
+151,Royal Foods 00151,Germany,Hamburg,retail,2022-05-11,+39 359 756 557
+152,Central Restaurant 00152,Sweden,Gothenburg,retail,2022-05-19,+34 090 359 715
+153,Beta Supplies 00153,Norway,Bergen,distributor,2022-05-20,+48 724 786 629
+154,Urban Market 00154,France,Marseille,wholesale,2022-05-29,+49 005 002 249
+155,Prime Cafe 00155,Spain,Madrid,horeca,2022-05-31,+48 775 805 828
+156,West Trading 00156,France,Nice,online,2022-06-02,+1 124 482 393
+157,Nova Supplies 00157,Germany,Cologne,wholesale,2022-06-11,+1 044 702 677
+158,Urban Kitchen 00158,USA,New York,retail,2022-06-12,+49 151 243 661
+159,Global Deli 00159,United Kingdom,Liverpool,online,2022-06-14,+44 059 725 310
+160,Amber Restaurant 00160,United Kingdom,Manchester,retail,2022-06-15,+34 884 988 546
+161,Alfa Cafe 00161,Netherlands,Eindhoven,horeca,2022-06-21,+34 737 888 525
+162,Nova Gourmet 00162,Poland,Lodz,horeca,2022-06-22,+44 477 740 552
+163,Fresh Deli 00163,Spain,Madrid,online,2022-06-25,+34 786 919 138
+164,North Kitchen 00164,Netherlands,Eindhoven,horeca,2022-06-28,+1 227 825 669
+165,Amber Partners 00165,Netherlands,Eindhoven,distributor,2022-06-28,+44 989 334 399
+166,Prime Market 00166,USA,Seattle,wholesale,2022-07-03,+34 225 373 862
+167,Global Market 00167,USA,Chicago,wholesale,2022-07-03,+39 507 555 791
+168,Euro Wholesale 00168,Canada,Calgary,retail,2022-07-05,+33 690 095 530
+169,Central Supplies 00169,Austria,Linz,horeca,2022-07-09,+44 630 813 669
+170,Delta Foods 00170,Netherlands,Utrecht,online,2022-07-15,+33 799 271 226
+171,Central Cafe 00171,Poland,Gdansk,horeca,2022-07-18,+39 199 266 753
+172,Prime Cafe 00172,Norway,Trondheim,online,2022-07-19,+34 037 045 931
+173,Blue Foods 00173,Germany,Hamburg,wholesale,2022-07-20,+48 601 632 513
+174,Alfa Group 00174,United Kingdom,Bristol,retail,2022-07-21,+49 592 861 179
+175,East Foods 00175,Austria,Salzburg,distributor,2022-07-26,+44 919 603 317
+176,North Trading 00176,Germany,Cologne,distributor,2022-07-26,+49 666 460 222
+177,Gamma Restaurant 00177,Germany,Hamburg,retail,2022-07-29,+44 115 717 397
+178,Blue Kitchen 00178,United Kingdom,Liverpool,retail,2022-08-01,+1 043 039 833
+179,Royal Wholesale 00179,USA,Denver,online,2022-08-12,+48 370 455 881
+180,Urban Partners 00180,Sweden,Uppsala,horeca,2022-08-19,+39 634 059 038
+181,Delta Group 00181,Germany,Munich,wholesale,2022-08-19,+39 535 553 948
+182,North Wholesale 00182,Canada,Ottawa,online,2022-08-20,+39 181 144 266
+183,Prime Deli 00183,Austria,Salzburg,horeca,2022-08-21,+48 233 117 919
+184,Alfa Distribution 00184,Germany,Berlin,wholesale,2022-08-24,+33 318 683 517
+185,Royal Distribution 00185,Spain,Barcelona,online,2022-08-28,+48 787 148 496
+186,Silver Foods 00186,Netherlands,Eindhoven,horeca,2022-08-30,+44 406 372 623
+187,Baltic Restaurant 00187,Germany,Berlin,retail,2022-09-03,+1 809 896 424
+188,Royal Stores 00188,Poland,Gdansk,horeca,2022-09-03,+39 609 830 492
+189,East Stores 00189,France,Lyon,online,2022-09-06,+33 105 530 511
+190,Nova Stores 00190,USA,Boston,retail,2022-09-08,+34 358 803 690
+191,Amber Restaurant 00191,USA,Seattle,wholesale,2022-09-10,+1 229 343 331
+192,Global Kitchen 00192,Poland,Gdansk,retail,2022-09-10,+44 418 891 752
+193,Fresh Gourmet 00193,USA,Denver,retail,2022-09-15,+1 496 092 612
+194,Global Cafe 00194,Poland,Krakow,retail,2022-09-18,+33 736 024 111
+195,Delta Deli 00195,Canada,Ottawa,horeca,2022-09-25,+48 688 680 282
+196,Delta Wholesale 00196,Germany,Hamburg,retail,2022-09-25,+34 119 075 223
+197,West Stores 00197,Germany,Munich,wholesale,2022-09-27,+34 841 480 687
+198,Euro Cafe 00198,Poland,Gdansk,horeca,2022-09-27,+44 790 991 993
+199,Fresh Partners 00199,Norway,Bergen,horeca,2022-09-29,+1 814 813 198
+200,East Market 00200,Spain,Bilbao,horeca,2022-10-01,+34 443 316 497
+201,Silver Gourmet 00201,United Kingdom,Manchester,wholesale,2022-10-01,+1 002 554 399
+202,Nova Deli 00202,Poland,Gdansk,horeca,2022-10-02,+49 043 788 828
+203,Alfa Market 00203,Austria,Salzburg,retail,2022-10-08,+34 494 885 835
+204,Royal Cafe 00204,Poland,Gdansk,online,2022-10-18,+33 921 210 179
+205,Central Market 00205,Poland,Wroclaw,wholesale,2022-10-27,+48 091 206 617
+206,North Group 00206,Germany,Hamburg,horeca,2022-10-28,+48 304 621 012
+207,Baltic Gourmet 00207,USA,Chicago,horeca,2022-10-28,+49 076 371 691
+208,Royal Partners 00208,Norway,Trondheim,retail,2022-10-30,+44 799 287 276
+209,Central Group 00209,United Kingdom,Manchester,horeca,2022-10-30,+44 311 576 480
+210,Global Supplies 00210,USA,Austin,distributor,2022-11-10,+1 256 878 342
+211,Beta Kitchen 00211,Poland,Poznan,online,2022-11-11,+48 235 944 122
+212,Green Partners 00212,France,Paris,online,2022-11-13,+44 822 495 048
+213,North Market 00213,USA,Chicago,distributor,2022-11-13,+39 380 391 861
+214,Beta Gourmet 00214,Austria,Linz,online,2022-11-20,+49 451 390 982
+215,North Cafe 00215,Italy,Milan,retail,2022-11-21,+39 835 181 301
+216,Prime Kitchen 00216,Poland,Krakow,wholesale,2022-12-04,+33 105 143 041
+217,Royal Stores 00217,Germany,Munich,online,2022-12-07,+48 498 256 440
+218,Baltic Partners 00218,Poland,Gdansk,online,2022-12-08,+39 231 107 155
+219,Gamma Partners 00219,Netherlands,Amsterdam,horeca,2022-12-08,+1 888 329 562
+220,Beta Foods 00220,United Kingdom,Leeds,retail,2022-12-09,+1 789 843 946
+221,Euro Trading 00221,Germany,Frankfurt,retail,2022-12-09,+39 939 659 115
+222,Gamma Restaurant 00222,USA,Seattle,retail,2022-12-19,+44 641 278 568
+223,Silver Foods 00223,Germany,Berlin,wholesale,2022-12-19,+34 810 564 593
+224,Global Foods 00224,Spain,Barcelona,horeca,2022-12-19,+44 741 836 831
+225,Beta Deli 00225,Czech Republic,Pilsen,online,2022-12-20,+1 373 096 272
+226,Royal Cafe 00226,France,Nice,distributor,2022-12-21,+34 147 223 770
+227,Alfa Market 00227,Germany,Frankfurt,distributor,2022-12-23,+1 080 201 831
+228,Urban Distribution 00228,Austria,Linz,retail,2022-12-25,+33 498 731 775
+229,Beta Foods 00229,Spain,Madrid,wholesale,2022-12-27,+1 823 761 648
+230,West Partners 00230,Sweden,Malmo,online,2022-12-27,+39 816 922 188
+231,Green Wholesale 00231,Sweden,Stockholm,distributor,2023-01-04,+39 557 247 915
+232,Central Wholesale 00232,United Kingdom,Bristol,retail,2023-01-10,+48 436 519 701
+233,Beta Distribution 00233,Poland,Gdansk,online,2023-01-16,+33 036 764 527
+234,West Foods 00234,United Kingdom,Bristol,distributor,2023-01-18,+33 590 633 318
+235,Amber Wholesale 00235,Italy,Turin,retail,2023-01-18,+49 622 462 450
+236,Silver Partners 00236,Canada,Calgary,horeca,2023-01-21,+34 919 268 840
+237,North Cafe 00237,Poland,Krakow,wholesale,2023-01-23,+1 165 690 178
+238,Euro Gourmet 00238,Germany,Hamburg,horeca,2023-01-29,+48 365 130 915
+239,Nova Wholesale 00239,Canada,Toronto,online,2023-01-30,+44 887 158 791
+240,Global Cafe 00240,France,Lyon,retail,2023-02-01,+34 212 225 379
+241,West Wholesale 00241,USA,New York,retail,2023-02-01,+33 915 674 008
+242,Euro Stores 00242,Norway,Oslo,retail,2023-02-02,+33 576 864 220
+243,Gamma Wholesale 00243,Germany,Berlin,wholesale,2023-02-11,+48 072 720 222
+244,Central Supplies 00244,Germany,Frankfurt,wholesale,2023-02-19,+33 014 298 788
+245,Royal Market 00245,Germany,Berlin,distributor,2023-02-24,+34 025 099 290
+246,Delta Trading 00246,United Kingdom,Leeds,wholesale,2023-03-10,+34 259 465 044
+247,Global Wholesale 00247,Germany,Hamburg,retail,2023-03-12,+49 622 536 647
+248,Urban Supplies 00248,Poland,Wroclaw,retail,2023-03-27,+48 504 448 327
+249,Alfa Supplies 00249,Poland,Lodz,online,2023-03-30,+1 734 079 463
+250,Beta Market 00250,Czech Republic,Pilsen,wholesale,2023-03-31,+39 658 456 993
+251,Delta Partners 00251,United Kingdom,Bristol,horeca,2023-04-12,+1 195 403 173
+252,Prime Restaurant 00252,Netherlands,Amsterdam,online,2023-04-14,+44 123 461 508
+253,West Restaurant 00253,Germany,Hamburg,retail,2023-04-19,+33 766 393 056
+254,Urban Foods 00254,USA,Chicago,horeca,2023-04-19,+44 948 238 947
+255,Euro Cafe 00255,Austria,Graz,wholesale,2023-05-13,+49 684 204 712
+256,Fresh Restaurant 00256,USA,Chicago,retail,2023-05-14,+49 042 951 288
+257,Royal Trading 00257,France,Marseille,horeca,2023-05-20,+1 303 021 189
+258,Beta Market 00258,Netherlands,Eindhoven,distributor,2023-05-25,+49 018 010 342
+259,Global Gourmet 00259,USA,Boston,wholesale,2023-05-26,+44 519 362 034
+260,Euro Restaurant 00260,Norway,Oslo,wholesale,2023-05-28,+34 862 831 947
+261,Gamma Deli 00261,Canada,Toronto,retail,2023-05-31,+1 657 354 431
+262,Silver Stores 00262,Poland,Lodz,retail,2023-06-02,+48 218 809 431
+263,Delta Group 00263,Germany,Cologne,horeca,2023-06-04,+44 750 251 587
+264,Silver Market 00264,United Kingdom,London,retail,2023-06-09,+49 462 383 723
+265,Central Distribution 00265,Poland,Krakow,online,2023-06-11,+44 489 744 684
+266,Central Supplies 00266,Norway,Oslo,retail,2023-06-18,+44 730 168 080
+267,Urban Group 00267,Germany,Munich,wholesale,2023-07-04,+48 906 987 993
+268,Nova Restaurant 00268,Netherlands,Rotterdam,retail,2023-07-09,+1 146 181 908
+269,Baltic Kitchen 00269,Norway,Bergen,wholesale,2023-07-24,+39 165 137 626
+270,Royal Kitchen 00270,France,Lyon,retail,2023-07-25,+48 570 767 261
+271,Alfa Stores 00271,USA,Chicago,horeca,2023-07-26,+48 678 336 699
+272,Alfa Kitchen 00272,Germany,Munich,distributor,2023-08-03,+49 293 862 810
+273,East Wholesale 00273,Austria,Linz,retail,2023-08-04,+44 533 744 326
+274,Nova Foods 00274,United Kingdom,London,online,2023-08-08,+48 635 878 439
+275,Global Restaurant 00275,Germany,Berlin,retail,2023-08-26,+1 233 311 702
+276,East Foods 00276,Italy,Florence,wholesale,2023-09-06,+1 206 669 635
+277,Gamma Stores 00277,Poland,Poznan,wholesale,2023-09-08,+49 553 934 050
+278,Delta Supplies 00278,USA,Chicago,retail,2023-09-09,+34 027 264 222
+279,Euro Wholesale 00279,Austria,Salzburg,wholesale,2023-09-10,+44 866 907 335
+280,Royal Stores 00280,United Kingdom,Liverpool,wholesale,2023-09-11,+49 817 059 364
+281,West Kitchen 00281,France,Paris,online,2023-09-19,+44 463 741 906
+282,Urban Partners 00282,Germany,Cologne,wholesale,2023-09-27,+33 775 462 848
+283,Amber Stores 00283,Poland,Lodz,wholesale,2023-09-28,+39 639 152 822
+284,Gamma Partners 00284,United Kingdom,Liverpool,retail,2023-10-03,+1 135 828 669
+285,Green Supplies 00285,Austria,Linz,retail,2023-10-03,+39 325 670 510
+286,Nova Trading 00286,Spain,Bilbao,wholesale,2023-10-06,+44 222 406 626
+287,Royal Wholesale 00287,France,Nice,retail,2023-10-08,+48 687 282 817
+288,Delta Partners 00288,Italy,Florence,wholesale,2023-10-09,+1 815 182 994
+289,Nova Distribution 00289,United Kingdom,Liverpool,wholesale,2023-10-09,+34 631 663 425
+290,Global Trading 00290,Austria,Vienna,online,2023-10-11,+44 333 226 901
+291,Royal Partners 00291,United Kingdom,Bristol,wholesale,2023-10-14,+49 333 113 339
+292,Fresh Restaurant 00292,Spain,Valencia,retail,2023-10-16,+49 692 409 290
+293,Fresh Cafe 00293,Poland,Poznan,online,2023-10-17,+33 388 470 658
+294,Central Group 00294,Germany,Berlin,horeca,2023-10-20,+39 576 458 224
+295,Prime Partners 00295,USA,Chicago,wholesale,2023-10-22,+49 181 914 778
+296,Silver Wholesale 00296,United Kingdom,Bristol,wholesale,2023-10-22,+49 031 983 473
+297,Prime Group 00297,Czech Republic,Ostrava,horeca,2023-10-24,+1 159 982 648
+298,Blue Group 00298,USA,Boston,wholesale,2023-11-01,+34 612 568 709
+299,Baltic Group 00299,USA,Boston,retail,2023-11-03,+1 798 705 625
+300,Amber Gourmet 00300,Netherlands,Eindhoven,retail,2023-11-04,+39 916 267 277
+301,Green Trading 00301,France,Paris,wholesale,2023-11-05,+39 706 906 791
+302,Silver Market 00302,Canada,Ottawa,online,2023-11-06,+33 838 819 945
+303,Euro Market 00303,Italy,Turin,retail,2023-11-07,+44 101 031 195
+304,Euro Trading 00304,USA,Austin,online,2023-11-10,+33 358 979 201
+305,Central Wholesale 00305,France,Marseille,retail,2023-11-11,+34 054 314 932
+306,Green Kitchen 00306,Czech Republic,Ostrava,horeca,2023-11-12,+39 877 663 589
+307,Amber Supplies 00307,USA,Boston,horeca,2023-11-13,+49 301 606 663
+308,Urban Supplies 00308,Canada,Toronto,retail,2023-11-13,+48 128 974 979
+309,Delta Group 00309,France,Toulouse,online,2023-11-14,+49 817 964 363
+310,Central Group 00310,Poland,Lodz,retail,2023-11-19,+48 274 218 747
+311,Baltic Gourmet 00311,Germany,Berlin,retail,2023-11-24,+1 470 898 134
+312,Euro Restaurant 00312,France,Marseille,retail,2023-11-24,+1 533 213 400
+313,Nova Restaurant 00313,Czech Republic,Ostrava,wholesale,2023-11-24,+34 733 103 025
+314,Euro Gourmet 00314,Sweden,Gothenburg,distributor,2023-11-24,+1 526 762 292
+315,Urban Restaurant 00315,Canada,Ottawa,horeca,2023-11-29,+44 177 107 556
+316,West Trading 00316,Austria,Graz,retail,2023-12-03,+39 616 312 897
+317,Delta Group 00317,Norway,Bergen,wholesale,2023-12-05,+39 665 528 445
+318,West Deli 00318,Poland,Warsaw,wholesale,2023-12-10,+44 478 932 410
+319,Central Kitchen 00319,Italy,Milan,online,2023-12-10,+48 981 980 584
+320,Royal Kitchen 00320,Italy,Florence,retail,2023-12-10,+1 636 971 905
+321,Amber Kitchen 00321,France,Paris,horeca,2023-12-14,+34 851 009 020
+322,Silver Group 00322,United Kingdom,Bristol,retail,2023-12-15,+48 680 280 691
+323,Central Gourmet 00323,Czech Republic,Ostrava,wholesale,2023-12-17,+1 898 351 208
+324,Nova Distribution 00324,Czech Republic,Ostrava,horeca,2023-12-23,+33 454 476 963
+325,East Group 00325,Netherlands,Eindhoven,wholesale,2023-12-26,+34 708 841 267
+326,Blue Partners 00326,Poland,Poznan,wholesale,2023-12-30,+44 620 775 979
+327,Global Restaurant 00327,Italy,Turin,retail,2023-12-30,+48 086 841 754
+328,Nova Kitchen 00328,United Kingdom,Liverpool,wholesale,2024-01-01,+34 512 206 384
+329,Silver Restaurant 00329,Poland,Wroclaw,wholesale,2024-01-06,+49 295 274 063
+330,Urban Trading 00330,Spain,Seville,horeca,2024-01-06,+1 722 433 570
+331,West Gourmet 00331,Poland,Poznan,wholesale,2024-01-08,+33 202 146 724
+332,Green Gourmet 00332,Spain,Madrid,retail,2024-01-11,+34 417 339 855
+333,Amber Wholesale 00333,United Kingdom,London,online,2024-01-12,+1 029 959 911
+334,Blue Distribution 00334,USA,New York,retail,2024-01-17,+44 785 935 005
+335,Green Deli 00335,Italy,Milan,online,2024-01-20,+1 983 892 933
+336,Green Stores 00336,Poland,Poznan,online,2024-01-21,+44 506 962 143
+337,Royal Market 00337,Canada,Toronto,wholesale,2024-01-23,+33 761 381 933
+338,Baltic Gourmet 00338,United Kingdom,Liverpool,wholesale,2024-02-02,+44 140 118 455
+339,Prime Gourmet 00339,Spain,Valencia,online,2024-02-07,+44 954 179 735
+340,North Foods 00340,Austria,Vienna,retail,2024-02-12,+49 634 066 106
+341,Royal Stores 00341,Italy,Rome,retail,2024-02-13,+49 388 832 103
+342,Alfa Stores 00342,United Kingdom,Manchester,retail,2024-02-20,+33 794 365 894
+343,Delta Wholesale 00343,Poland,Gdansk,retail,2024-02-20,+34 416 530 690
+344,Delta Distribution 00344,Czech Republic,Ostrava,retail,2024-02-21,+44 938 800 681
+345,Euro Market 00345,Poland,Gdansk,retail,2024-02-28,+44 991 944 819
+346,Nova Distribution 00346,Italy,Milan,retail,2024-02-29,+49 140 864 230
+347,West Partners 00347,Canada,Ottawa,wholesale,2024-03-02,+44 595 106 224
+348,Royal Stores 00348,United Kingdom,Manchester,retail,2024-03-07,+44 628 134 066
+349,Central Cafe 00349,Poland,Lodz,wholesale,2024-03-11,+39 068 763 523
+350,Euro Stores 00350,Germany,Munich,wholesale,2024-03-12,+34 918 963 364
+351,Prime Cafe 00351,Italy,Florence,wholesale,2024-03-13,+44 682 436 508
+352,Euro Partners 00352,Poland,Krakow,online,2024-03-15,+44 700 027 447
+353,Alfa Distribution 00353,Czech Republic,Pilsen,online,2024-03-16,+48 358 686 804
+354,North Supplies 00354,USA,Denver,retail,2024-03-25,+48 536 805 449
+355,Alfa Trading 00355,Germany,Hamburg,horeca,2024-03-30,+34 743 232 741
+356,Urban Deli 00356,Poland,Poznan,horeca,2024-03-31,+48 550 860 956
+357,Gamma Stores 00357,Italy,Turin,horeca,2024-04-02,+39 423 441 848
+358,Central Market 00358,Italy,Rome,retail,2024-04-02,+34 803 193 380
+359,North Partners 00359,France,Paris,retail,2024-04-04,+33 886 097 414
+360,Silver Kitchen 00360,United Kingdom,Bristol,retail,2024-04-17,+34 289 858 723
+361,East Group 00361,United Kingdom,Leeds,wholesale,2024-04-18,+49 219 928 614
+362,Baltic Gourmet 00362,United Kingdom,Leeds,wholesale,2024-04-24,+49 911 475 560
+363,Amber Stores 00363,United Kingdom,Manchester,horeca,2024-04-25,+1 888 419 245
+364,Central Foods 00364,Sweden,Uppsala,retail,2024-04-28,+39 990 774 985
+365,Urban Market 00365,Sweden,Uppsala,horeca,2024-05-14,+48 846 178 445
+366,Royal Kitchen 00366,Spain,Valencia,horeca,2024-05-15,+1 603 388 467
+367,Nova Deli 00367,Spain,Bilbao,online,2024-05-16,+34 219 960 798
+368,Nova Kitchen 00368,Poland,Gdansk,distributor,2024-05-17,+48 878 954 603
+369,North Trading 00369,Czech Republic,Brno,wholesale,2024-05-24,+49 689 478 824
+370,Beta Wholesale 00370,Germany,Munich,wholesale,2024-05-30,+49 357 130 066
+371,Urban Restaurant 00371,France,Paris,wholesale,2024-06-02,+44 707 059 374
+372,East Wholesale 00372,United Kingdom,Manchester,wholesale,2024-06-03,+34 154 951 651
+373,Gamma Partners 00373,United Kingdom,Bristol,wholesale,2024-06-04,+34 580 243 589
+374,Royal Gourmet 00374,USA,New York,wholesale,2024-06-05,+33 826 019 204
+375,Alfa Gourmet 00375,Germany,Hamburg,retail,2024-06-06,+44 354 338 991
+376,North Stores 00376,USA,Boston,horeca,2024-06-08,+39 380 569 249
+377,Prime Gourmet 00377,France,Marseille,retail,2024-06-09,+39 098 260 197
+378,East Partners 00378,Italy,Rome,retail,2024-06-12,+49 688 504 995
+379,Prime Gourmet 00379,Netherlands,Amsterdam,retail,2024-06-13,+44 047 903 934
+380,Prime Gourmet 00380,Netherlands,Rotterdam,online,2024-06-13,+48 987 654 033
+381,Nova Restaurant 00381,Sweden,Malmo,online,2024-06-20,+49 288 791 450
+382,Alfa Foods 00382,Sweden,Stockholm,retail,2024-06-22,+44 584 997 003
+383,Blue Foods 00383,Italy,Rome,retail,2024-06-22,+44 286 990 960
+384,Baltic Foods 00384,Norway,Oslo,retail,2024-06-23,+44 561 583 847
+385,Beta Deli 00385,Poland,Poznan,retail,2024-06-28,+33 649 617 454
+386,Baltic Foods 00386,France,Marseille,retail,2024-07-01,+39 863 674 764
+387,Green Wholesale 00387,Spain,Bilbao,wholesale,2024-07-01,+48 126 548 914
+388,Urban Group 00388,Sweden,Uppsala,retail,2024-07-03,+49 965 951 007
+389,Royal Kitchen 00389,USA,Seattle,wholesale,2024-07-04,+49 551 843 398
+390,Silver Restaurant 00390,Czech Republic,Pilsen,retail,2024-07-06,+48 283 091 495
+391,Blue Foods 00391,Germany,Berlin,horeca,2024-07-12,+48 057 305 549
+392,East Kitchen 00392,United Kingdom,Bristol,horeca,2024-07-17,+48 253 505 828
+393,Prime Partners 00393,Spain,Valencia,retail,2024-07-18,+1 536 596 530
+394,Blue Group 00394,Canada,Calgary,wholesale,2024-07-18,+1 341 873 326
+395,Green Trading 00395,Spain,Seville,retail,2024-07-18,+48 734 979 254
+396,Prime Restaurant 00396,United Kingdom,Manchester,retail,2024-07-22,+33 803 824 701
+397,Alfa Wholesale 00397,Poland,Warsaw,online,2024-07-24,+39 351 559 786
+398,Royal Group 00398,Poland,Wroclaw,wholesale,2024-07-28,+48 431 190 467
+399,Amber Gourmet 00399,Poland,Poznan,retail,2024-07-29,+44 494 735 961
+400,Euro Deli 00400,Poland,Poznan,online,2024-08-01,+44 509 908 271
+401,Euro Restaurant 00401,France,Toulouse,horeca,2024-08-02,+39 851 434 051
+402,North Stores 00402,Spain,Barcelona,horeca,2024-08-02,+33 634 934 593
+403,Global Deli 00403,Poland,Gdansk,online,2024-08-04,+49 883 351 501
+404,Delta Trading 00404,Poland,Warsaw,horeca,2024-08-14,+49 966 379 855
+405,Delta Wholesale 00405,Netherlands,Amsterdam,horeca,2024-08-18,+33 932 598 090
+406,Alfa Stores 00406,United Kingdom,Liverpool,retail,2024-08-24,+34 334 189 374
+407,Delta Market 00407,Germany,Cologne,retail,2024-08-25,+48 687 837 022
+408,Central Stores 00408,USA,Austin,retail,2024-08-25,+34 771 846 809
+409,Prime Restaurant 00409,USA,Austin,retail,2024-08-28,+34 566 702 643
+410,Central Kitchen 00410,Netherlands,Rotterdam,online,2024-09-09,+49 430 632 529
+411,North Market 00411,France,Lyon,retail,2024-09-09,+34 222 165 651
+412,North Stores 00412,Germany,Cologne,online,2024-09-09,+1 226 456 602
+413,Green Cafe 00413,Germany,Hamburg,horeca,2024-09-19,+34 747 938 838
+414,Nova Market 00414,United Kingdom,Leeds,retail,2024-09-20,+34 881 956 730
+415,Central Distribution 00415,Poland,Lodz,retail,2024-09-26,+44 606 748 664
+416,Nova Distribution 00416,Germany,Hamburg,retail,2024-09-26,+44 511 551 362
+417,Urban Kitchen 00417,Italy,Naples,retail,2024-09-30,+49 444 343 913
+418,Nova Group 00418,United Kingdom,Liverpool,retail,2024-10-08,+49 889 727 907
+419,Prime Foods 00419,Germany,Cologne,retail,2024-10-09,+48 570 478 659
+420,Silver Partners 00420,Poland,Krakow,horeca,2024-10-13,+44 478 032 648
+421,Delta Restaurant 00421,Poland,Warsaw,retail,2024-10-17,+34 660 440 588
+422,Alfa Market 00422,Spain,Seville,wholesale,2024-10-18,+34 265 002 064
+423,Green Market 00423,Spain,Barcelona,distributor,2024-10-18,+48 194 733 822
+424,Euro Wholesale 00424,United Kingdom,Bristol,retail,2024-10-18,+48 749 936 641
+425,Prime Deli 00425,Czech Republic,Prague,wholesale,2024-10-22,+48 964 372 629
+426,Central Group 00426,France,Marseille,retail,2024-10-22,+33 976 586 589
+427,Alfa Wholesale 00427,Spain,Barcelona,retail,2024-10-22,+33 768 800 424
+428,Royal Wholesale 00428,Poland,Gdansk,retail,2024-11-04,+1 087 405 921
+429,Central Deli 00429,Netherlands,Rotterdam,horeca,2024-11-07,+1 887 243 714
+430,Alfa Foods 00430,Germany,Hamburg,horeca,2024-11-10,+34 698 004 438
+431,Nova Restaurant 00431,USA,Boston,online,2024-11-11,+34 403 241 234
+432,Beta Kitchen 00432,Poland,Wroclaw,wholesale,2024-11-11,+34 644 375 628
+433,Delta Wholesale 00433,Sweden,Gothenburg,online,2024-11-17,+34 045 458 574
+434,Nova Foods 00434,Sweden,Gothenburg,wholesale,2024-11-18,+33 580 126 762
+435,Beta Supplies 00435,USA,Denver,online,2024-11-23,+39 359 759 101
+436,Beta Stores 00436,Italy,Florence,wholesale,2024-11-25,+44 394 178 132
+437,West Group 00437,Poland,Lodz,online,2024-11-28,+48 524 654 906
+438,Prime Group 00438,Germany,Munich,retail,2024-11-29,+39 047 233 960
+439,Fresh Group 00439,Germany,Berlin,online,2024-11-29,+1 019 679 215
+440,Prime Wholesale 00440,Netherlands,Rotterdam,online,2024-12-03,+1 020 944 091
+441,Royal Group 00441,France,Nice,online,2024-12-04,+1 751 797 921
+442,Alfa Gourmet 00442,USA,Denver,online,2024-12-05,+34 968 965 676
+443,Amber Group 00443,Spain,Bilbao,distributor,2024-12-05,+33 544 381 196
+444,Gamma Group 00444,Netherlands,Rotterdam,horeca,2024-12-13,+49 971 017 421
+445,Global Distribution 00445,Canada,Calgary,horeca,2024-12-14,+39 113 143 675
+446,East Partners 00446,United Kingdom,Leeds,distributor,2024-12-14,+39 054 626 292
+447,Prime Distribution 00447,United Kingdom,Bristol,distributor,2024-12-15,+49 864 991 699
+448,Baltic Partners 00448,Czech Republic,Ostrava,retail,2024-12-15,+48 534 491 408
+449,Beta Partners 00449,Poland,Krakow,wholesale,2024-12-16,+39 529 072 892
+450,Blue Distribution 00450,Poland,Wroclaw,wholesale,2024-12-18,+33 837 820 791
+451,Blue Wholesale 00451,Italy,Naples,wholesale,2024-12-22,+44 535 371 820
+452,Green Kitchen 00452,Italy,Florence,horeca,2024-12-28,+1 513 957 824
+453,Prime Kitchen 00453,United Kingdom,Manchester,distributor,2024-12-31,+49 637 212 232
+454,Amber Trading 00454,Poland,Warsaw,online,2025-01-04,+33 435 423 510
+455,Euro Stores 00455,USA,Austin,retail,2025-01-04,+48 891 180 330
+456,Alfa Supplies 00456,Netherlands,Utrecht,retail,2025-01-08,+48 229 588 693
+457,Delta Foods 00457,United Kingdom,London,retail,2025-01-12,+33 248 167 356
+458,Silver Partners 00458,Netherlands,Amsterdam,wholesale,2025-01-13,+48 754 567 252
+459,Amber Stores 00459,Italy,Naples,retail,2025-01-13,+1 004 001 483
+460,Amber Deli 00460,USA,Denver,horeca,2025-01-14,+48 920 638 788
+461,Prime Trading 00461,Italy,Turin,horeca,2025-01-15,+48 234 084 370
+462,Urban Stores 00462,Spain,Barcelona,wholesale,2025-01-17,+48 875 981 352
+463,West Gourmet 00463,Spain,Madrid,wholesale,2025-02-12,+1 923 292 631
+464,Nova Supplies 00464,Spain,Barcelona,wholesale,2025-02-13,+48 547 546 463
+465,Green Gourmet 00465,France,Paris,online,2025-02-17,+44 216 549 765
+466,Central Trading 00466,United Kingdom,Bristol,retail,2025-02-19,+1 590 977 190
+467,Blue Restaurant 00467,Poland,Warsaw,wholesale,2025-03-05,+33 330 634 911
+468,Prime Kitchen 00468,France,Nice,horeca,2025-03-07,+48 399 127 158
+469,Euro Market 00469,Germany,Frankfurt,wholesale,2025-03-09,+39 943 811 655
+470,East Foods 00470,USA,Chicago,retail,2025-03-16,+49 913 428 860
+471,Blue Deli 00471,Norway,Bergen,online,2025-03-19,+1 868 114 858
+472,Silver Wholesale 00472,Czech Republic,Brno,wholesale,2025-03-25,+34 565 911 780
+473,Baltic Partners 00473,United Kingdom,Leeds,distributor,2025-03-27,+48 751 717 125
+474,Alfa Gourmet 00474,Czech Republic,Pilsen,retail,2025-03-31,+49 074 948 219
+475,Gamma Deli 00475,Poland,Wroclaw,distributor,2025-04-02,+39 718 152 027
+476,Gamma Stores 00476,Germany,Frankfurt,horeca,2025-04-10,+1 690 024 820
+477,Prime Gourmet 00477,Germany,Cologne,wholesale,2025-04-13,+39 346 253 291
+478,Prime Distribution 00478,USA,Austin,horeca,2025-04-15,+33 103 338 910
+479,Urban Group 00479,Poland,Wroclaw,retail,2025-04-15,+39 074 901 083
+480,Gamma Trading 00480,Poland,Gdansk,retail,2025-04-22,+44 286 248 011
+481,Green Wholesale 00481,Germany,Frankfurt,online,2025-05-03,+48 325 204 106
+482,Prime Group 00482,Spain,Seville,retail,2025-05-03,+1 649 375 643
+483,Royal Gourmet 00483,Sweden,Gothenburg,retail,2025-05-10,+33 814 518 696
+484,Euro Partners 00484,Czech Republic,Brno,online,2025-05-10,+44 878 875 286
+485,Euro Gourmet 00485,United Kingdom,Manchester,horeca,2025-05-11,+44 834 514 174
+486,Euro Cafe 00486,Poland,Gdansk,retail,2025-05-24,+44 825 978 749
+487,Blue Gourmet 00487,Poland,Gdansk,horeca,2025-05-24,+44 291 178 908
+488,Gamma Gourmet 00488,Germany,Munich,retail,2025-05-31,+48 425 974 297
+489,East Foods 00489,Germany,Berlin,retail,2025-05-31,+34 148 374 735
+490,East Gourmet 00490,USA,Seattle,wholesale,2025-06-02,+44 877 546 489
+491,Blue Trading 00491,Canada,Ottawa,retail,2025-06-02,+1 412 152 699
+492,Alfa Trading 00492,United Kingdom,Leeds,retail,2025-06-02,+49 316 442 536
+493,Fresh Stores 00493,Spain,Bilbao,retail,2025-06-03,+39 544 283 703
+494,North Kitchen 00494,Italy,Florence,retail,2025-06-07,+44 980 854 710
+495,Amber Distribution 00495,Germany,Frankfurt,wholesale,2025-06-12,+33 693 197 074
+496,North Trading 00496,Austria,Salzburg,retail,2025-06-14,+48 565 543 938
+497,Amber Gourmet 00497,Germany,Cologne,online,2025-06-18,+44 372 461 613
+498,Baltic Partners 00498,France,Nice,retail,2025-06-25,+34 650 833 269
+499,Alfa Supplies 00499,Italy,Milan,wholesale,2025-06-27,+34 479 386 848
+500,Central Deli 00500,United Kingdom,Bristol,wholesale,2025-06-28,+33 090 952 548
