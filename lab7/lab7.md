@@ -141,17 +141,16 @@ Nie trzeba dołączać pełnych logów. Wystarczy jedno zdanie:
 
 ---
 
-**1. Pierwsze poznanie Couchbase i danych -- 1 pkt**
+## 1. Pierwsze poznanie Couchbase i danych -- 1 pkt
 
-**Cel**
+### Cel
 
 Poznaj podstawową strukturę danych w Couchbase i sprawdź, jakie kolekcje
 są dostępne.
 
-**Wykonaj**
+### Wykonaj
 
-1.  W panelu Couchbase za pomocą zakładek w menu bocznym np. 'Buckets',
-    'Documents', 'Query' zbadaj strukturę:
+### 1. W panelu Couchbase za pomocą zakładek w menu bocznym np. 'Buckets', 'Documents', 'Query' zbadaj strukturę:
 
 ```sql
 bucket → scope → collection
@@ -163,7 +162,7 @@ scope - odpowiednik schematu w SQL, logiczna grupa kolekcji
 
 collection - odpowiednik tabeli w SQL, zawiera dokumenty JSON z danymi
 
-2. W Query Workbench policz liczbę dokumentów w kolekcjach:
+### 2. W Query Workbench policz liczbę dokumentów w kolekcjach:
 
 - orders,
 
@@ -176,12 +175,12 @@ collection - odpowiednik tabeli w SQL, zawiera dokumenty JSON z danymi
 - orders_nested.
 
 | Kolekcja      | Liczba dokumentów |
-|----------------|------------------|
-| orders         | 830               |
-| orderdetails   | 2155              |
-| customers      | 91                |
-| products       | 77                |
-| orders_nested  | 830               |
+| ------------- | ----------------- |
+| orders        | 830               |
+| orderdetails  | 2155              |
+| customers     | 91                |
+| products      | 77                |
+| orders_nested | 830               |
 
 ```sql
 SELECT COUNT(1) AS orders_count
@@ -217,8 +216,8 @@ SELECT COUNT(1) AS orders_nested_count
 FROM `north0`._default.orders_nested
 WHERE OrderID IS NOT MISSING;
 ```
-  
-3. Podejrzyj kilka dokumentów z kolekcji orders.
+
+### 3. Podejrzyj kilka dokumentów z kolekcji orders.
 
 ```sql
 SELECT o
@@ -228,7 +227,7 @@ LIMIT 3;
 ```
 
 ```json
- [
+[
   {
     "o": {
       "CustomerID": "VINET",
@@ -313,7 +312,7 @@ LIMIT 3;
 ]
 ```
 
-4. Podejrzyj jeden dokument z kolekcji orders_nested.
+### 4. Podejrzyj jeden dokument z kolekcji orders_nested.
 
 ```sql
 SELECT o
@@ -432,13 +431,11 @@ LIMIT 3;
 ```
 
 Dokumenty z kolekcji orders i orders_nested różnią się sposobem modelowania danych.
-Dokumenty z orders zawierają tylko dane nagłówkowe zamównienia - nie mają listy produktów składających sie na nie. Informacje te znajdują się w innej kolekcji, podejscie podobne do tego z SQL'a. Dokumenty z orders_nested zawierają całe zamówienie w jednym dokumencie - tablica iteams zawiera te dane w sobie. Nie trzeba więc łączyć danych jak w przypadku orders, żeby zobaczyc np. skład zamówienia, podejscie NoSQL. 
-
+Dokumenty z orders zawierają tylko dane nagłówkowe zamównienia - nie mają listy produktów składających sie na nie. Informacje te znajdują się w innej kolekcji, podejscie podobne do tego z SQL'a. Dokumenty z orders_nested zawierają całe zamówienie w jednym dokumencie - tablica iteams zawiera te dane w sobie. Nie trzeba więc łączyć danych jak w przypadku orders, żeby zobaczyc np. skład zamówienia, podejscie NoSQL.
 
 **Wskazówki**
 
 Przykład zapytania liczącego dokumenty:
-
 
 ```sql
 SELECT COUNT(1) AS orders_count
@@ -455,7 +452,7 @@ WHERE o.OrderID IS NOT MISSING
 LIMIT 3;
 ```
 
-**W komentarzu napisz**
+### W komentarzu napisz
 
 - Co oznaczają pojęcia bucket, scope i collection?
 
@@ -735,15 +732,15 @@ Ponieważ wymusza operację Primary Scan, czyli pobieranie i sprawdzanie każdeg
 
 ---
 
-**3.** JOIN **na kolekcjach dokumentów -- 2 pkt**
+## 3.** JOIN **na kolekcjach dokumentów -- 2 pkt
 
-**Cel**
+### Cel
 
 Zobacz, że Couchbase pozwala wykonywać JOIN podobny do SQL, ale pracuje
 na dokumentach JSON i kolekcjach, a nie na klasycznych tabelach
 relacyjnych.
 
-**Część A -- zamówienia z nazwą klienta**
+### Część A -- zamówienia z nazwą klienta
 
 Dla zamówień pokaż:
 
@@ -769,7 +766,7 @@ indeksie. W takiej sytuacji przejdź do kolejnego kroku.
 Następnie przygotuj zapytanie łączące orders z customers.
 
 ```sql
-SELECT 
+SELECT
     o.OrderID,
     o.OrderDate,
     o.CustomerID,
@@ -781,7 +778,7 @@ ON o.CustomerID = c.CustomerID;
 
 ![zdj2](./_img/3_a.png)
 
-**Część B -- zamówienia i pozycje zamówień**
+### Część B -- zamówienia i pozycje zamówień
 
 Dla pozycji zamówień pokaż:
 
@@ -821,10 +818,9 @@ JOIN `north0`._default.orderdetails AS od
 ON o.OrderID = od.OrderID;
 ```
 
-**Część C -- wartość zamówienia**
+### Część C -- wartość zamówienia
 
 Policz wartość zamówienia według wzoru:
-
 
 ```sql
 wartość pozycji = UnitPrice * Quantity * (1 - Discount)
@@ -849,7 +845,6 @@ Dla każdego zamówienia oblicz:
 
 Pokaż 10 zamówień o najwyższej wartości.
 
-
 ```sql
 SELECT
     o.OrderID,
@@ -869,7 +864,7 @@ LIMIT 10;
 
 ![zdj2](./_img/3_c.png)
 
-**W komentarzu napisz**
+### W komentarzu napisz
 
 - Czy JOIN w Couchbase przypomina składnię znaną z SQL?
 
@@ -879,15 +874,15 @@ Tak, bardzo są podobne obie składnie.
   (np. czy baza wymusza klucze obce i spójność relacji tak jak w typowym
   modelu relacyjnym)?
 
-W SQL relacje są wymuszone przez klucze obce i baza pilnuje spójności danych. W Couchbase nie ma kluczy obcych i wymuszania relacji. JOIN działa na poziomie zapytania łącząc dokumenty, ale nie muszą być one spójne - baza nie  pilnuje spójności danych.
+W SQL relacje są wymuszone przez klucze obce i baza pilnuje spójności danych. W Couchbase nie ma kluczy obcych i wymuszania relacji. JOIN działa na poziomie zapytania łącząc dokumenty, ale nie muszą być one spójne - baza nie pilnuje spójności danych.
 
 - Dlaczego indeks po stronie dołączanej kolekcji jest ważny?
 
-Indeks po stronie dołączanej kolekcji jest ważny, bo decyduje on czy JOIN szybko wyszuka pasujących dokumentów, czy wykona pełne skanowanie. 
+Indeks po stronie dołączanej kolekcji jest ważny, bo decyduje on czy JOIN szybko wyszuka pasujących dokumentów, czy wykona pełne skanowanie.
 
 - Czy największe zamówienia mają zawsze największą liczbę pozycji?
 
-Nie, największe zamówienia maja 1-2 pozycje, a mniejsze posiadają nawet 5 pozycji - wyniki tylko z pierwszych 10 dokumentów. 
+Nie, największe zamówienia maja 1-2 pozycje, a mniejsze posiadają nawet 5 pozycji - wyniki tylko z pierwszych 10 dokumentów.
 
 ---
 
@@ -1310,18 +1305,18 @@ Kiedy pozycje są analizowane niezależnie od zamówień, np. raporty sprzedaży
 
 ---
 
-**5. Agregacja biznesowa -- 1 pkt**
+## 5. Agregacja biznesowa -- 1 pkt
 
-**Cel**
+### Cel
 
 Wykonaj prostą analizę biznesową na danych dokumentowych.
 
-**Wybierz [jeden]{.underline} wariant**
+### Wybierz jeden wariant
 
 Do zaliczenia zadania wybierz jeden wariant. Jeżeli skończysz wcześniej,
 wykonaj drugi wariant jako ćwiczenie dodatkowe.
 
-**Wariant A -- top 10 produktów po wartości sprzedaży**
+### Wariant A -- top 10 produktów po wartości sprzedaży
 
 Dla produktów policz:
 
@@ -1341,7 +1336,6 @@ Wykorzystaj kolekcje:
 
 Przed zapytaniem może być potrzebny indeks:
 
-
 ```sql
 CREATE INDEX idx_products_productid
 ON `north0`._default.products(ProductID);
@@ -1352,7 +1346,6 @@ ON `north0`._default.orderdetails(ProductID);
 
 Jeżeli indeks już istnieje, Couchbase zwróci komunikat o istniejącym
 indeksie --- to nie jest błąd.
-
 
 ```sql
 SELECT
@@ -1372,7 +1365,7 @@ ORDER BY total_sales_value DESC;
 
 ![zdj2](./_img/5_a.png)
 
-**W komentarzu napisz**
+### W komentarzu napisz
 
 - Który produkt albo klient ma najwyższą wartość sprzedaży?
 
@@ -1384,7 +1377,7 @@ Wynik jest łatwy do interpretacji biznesowej, bo przedstawia ranking produktów
 
 - Czy zapytanie bardziej przypomina klasyczny SQL/BI, czy pracę z
   dokumentami JSON?
-  
+
 Zapytanie bardziej przypomina klasyczny SQL, mimo, że dane są dokumentowe.
 
 ---

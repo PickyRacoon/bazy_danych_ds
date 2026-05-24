@@ -1,0 +1,21 @@
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated CSV data
+data/
+
+# Output files
+output/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Docker volumes / local state
+.env
