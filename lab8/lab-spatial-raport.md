@@ -508,6 +508,19 @@ WHERE state = 'Florida';
 
 SDO_CENTROID wyznacza geometryczny środek Florydy.
 
+```sql
+SELECT geom
+FROM (
+    SELECT SDO_GEOM.SDO_BUFFER(s.geom, 100000, 0.005) AS geom
+    FROM us_states s
+    WHERE s.state = 'Florida'
+
+```
+
+![Opis obrazka](./img/6c4.png)
+
+SDO_BUFFER tworzy strefę buforową wokół Florydy w zadanej odległości - w przykładadzie wybrana duża wawrtość, żeby była dobrze widoczna.
+
 # Zadanie 7
 
 Wykonaj kilka własnych przykładów/analiz
