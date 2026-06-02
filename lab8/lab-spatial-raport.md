@@ -512,12 +512,77 @@ FROM (
     SELECT SDO_GEOM.SDO_BUFFER(s.geom, 100000, 0.005) AS geom
     FROM us_states s
     WHERE s.state = 'Florida'
-
+)
 ```
 
 ![Opis obrazka](./img/6c4.png)
 
 SDO_BUFFER tworzy strefę buforową wokół Florydy w zadanej odległości - w przykładadzie wybrana duża wawrtość, żeby była dobrze widoczna.
+
+Teraz będziemy porównywać wyniki zapytań między zadaną geometrią a wybranym stanem.
+
+```sql
+SELECT geom
+FROM (
+    SELECT SDO_GEOM.SDO_UNION(
+             s.geom,
+             sdo_geometry(
+               2003, 8307, NULL,
+               sdo_elem_info_array(1,1003,3),
+               sdo_ordinate_array(-117.0, 40.0, -90.0, 44.0)
+             ),
+             0.005
+           ) AS geom
+    FROM us_states s
+    WHERE s.state = 'Florida'
+)
+```
+
+![Opis obrazka](./img/65.png)
+
+SDO_UNION łączy geometrię stanu Florida z zadanym prostokątem. Wynikiem jest jeden obiekt, który obejmuje oba obszary.
+
+```sql
+SELECT geom
+FROM (
+    SELECT SDO_GEOM.SDO_INTERSECTION(
+             s.geom,
+             sdo_geometry(
+               2003, 8307, NULL,
+               sdo_elem_info_array(1,1003,3),
+               sdo_ordinate_array(-117.0, 40.0, -90.0, 44.0)
+             ),
+             0.005
+           ) AS geom
+    FROM us_states s
+    WHERE s.state = 'Iowa'
+)
+```
+
+![Opis obrazka](./img/66.png)
+
+SDO_INTERSECTION zwraca wspólną część geometrii Iowa oraz prostokąta - pokazuje tylko ten fragment Iowa, który znajduje się w zadanym obszarze.
+
+```sql
+SELECT geom
+FROM (
+    SELECT SDO_GEOM.SDO_DIFFERENCE(
+             sdo_geometry(
+               2003, 8307, NULL,
+               sdo_elem_info_array(1,1003,3),
+               sdo_ordinate_array(-117.0, 40.0, -90.0, 44.0)
+             ),
+             s.geom,
+             0.005
+           ) AS geom
+    FROM us_states s
+    WHERE s.state = 'Iowa'
+)
+```
+
+![Opis obrazka](./img/67.png)
+
+SDO_DIFFERENCE pokazuje obszar prostokąta minus Iowy.
 
 # Zadanie 7
 
