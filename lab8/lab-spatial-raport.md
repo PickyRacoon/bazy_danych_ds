@@ -129,17 +129,15 @@ Pokaż wynik na mapie.
 prostokąt
 
 ```sql
-SELECT  sdo_geometry (2003, 8307, null,
+SELECT sdo_geometry (2003, 8307, null,
 sdo_elem_info_array (1,1003,3),
 sdo_ordinate_array ( -117.0, 40.0, -90., 44.0)) g
-FROM dual
+FROM dual 
 ```
 
 > Wyniki, zrzut ekranu, komentarz
 
-```sql
---  ...
-```
+![img](./img/21.png)
 
 Użyj funkcji SDO_FILTER
 
@@ -156,9 +154,8 @@ Zwróć uwagę na liczbę zwróconych wierszy (16)
 
 > Wyniki, zrzut ekranu, komentarz
 
-```sql
---  ...
-```
+![img](./img/22.png)
+
 
 Użyj funkcji SDO_ANYINTERACT
 
@@ -177,9 +174,8 @@ Pokaż wynik na mapie
 
 > Wyniki, zrzut ekranu, komentarz
 
-```sql
---  ...
-```
+![img](./img/23.png)
+
 
 # Zadanie 3
 
