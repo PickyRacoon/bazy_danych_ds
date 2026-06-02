@@ -129,13 +129,15 @@ Pokaż wynik na mapie.
 prostokąt
 
 ```sql
-SELECT  sdo_geometry (2003, 8307, null,
+SELECT sdo_geometry (2003, 8307, null,
 sdo_elem_info_array (1,1003,3),
 sdo_ordinate_array ( -117.0, 40.0, -90., 44.0)) g
 FROM dual
 ```
 
-![img](./img/2.1.png)
+> Wyniki, zrzut ekranu, komentarz
+
+![img](./img/21.png)
 
 Użyj funkcji SDO_FILTER
 
@@ -152,7 +154,9 @@ Zwróć uwagę na liczbę zwróconych wierszy (16)
 
 > Wyniki, zrzut ekranu, komentarz
 
-![img](./img/2.2.png)
+![img](./img/22.png)
+
+SDO_FILTER zwraca wszystkie obiekty, których obwiednia (MBR) przecina się z podanym prostokątem, więc daje wynik szybciej, ale mniej dokładnie. W efekcie może zwrócić więcej stanów (jak w tym przypadku 16), bo uwzględnia potencjalne przecięcia.
 
 Użyj funkcji SDO_ANYINTERACT
 
@@ -165,17 +169,15 @@ sdo_ordinate_array ( -117.0, 40.0, -90., 44.0))
 ) = 'TRUE';
 ```
 
-![img](./img/2.3.png)
-
 Porównaj wyniki sdo_filter i sdo_anyinteract
 
 Pokaż wynik na mapie
 
-![img](./img/2.4.png)
+> Wyniki, zrzut ekranu, komentarz
 
-Porównaj wyniki sdo_filter i sdo_anyinteract
+![img](./img/23.png)
 
-Jak widać mamy różnicę dwóch stanów 16 dla sdo_filter vs 14 dla sdo_anyinteract. Wynika to z faktu, że dla dwóch stanów ich uproszczone prostokąty otaczające (MBR) nakładały się na nasz poszukiwany obszar, ale ich rzeczywiste terytoria znajdowały się obok niego.
+SDO_ANYINTERACT sprawdza rzeczywiste przecięcie geometrii, więc zwraca dokładniejsze wyniki - tylko te stany, które faktycznie mają kontakt z prostokątem. Jest ich mniej niż dla SDO_FILTER w tym przykładzie.
 
 # Zadanie 3
 
@@ -203,22 +205,14 @@ WHERE id IN
 )
 ```
 
-> Wyniki, zrzut ekranu, komentarz
+![img](./img/3.1.png)
 
 ```sql
---  ...
-```
-
-```sql
-SELECT state, geom FROM us_statesIdeConnections%2523K1student//STUDENT/QUEUE+TABLE
+SELECT state, geom FROM us_states
 WHERE state = 'Wyoming'
 ```
 
-> Wyniki, zrzut ekranu, komentarz
-
-```sql
---  ...
-```
+![img](./img/3.2.png)
 
 Porównaj wynik z:
 
@@ -226,16 +220,25 @@ Porównaj wynik z:
 SELECT p.name, p.geom
 FROM us_parks p, us_states s
 WHERE s.state = 'Wyoming'
-AND SDO_ANYINTERACT (p.geom, s.geom ) = 'TRUE';
+AND SDO_ANYINTERACT (p.geom, s.geom ) = 'TRUE'
 ```
 
 W celu wizualizacji użyj podzapytania
 
-> Wyniki, zrzut ekranu, komentarz
-
 ```sql
---  ...
+SELECT pp.name, pp.geom FROM us_parks pp
+WHERE id IN
+(
+ SELECT p.id
+ FROM us_parks p, us_states s
+ WHERE s.state = 'Wyoming'
+ and SDO_ANYINTERACT (p.geom, s.geom ) = 'TRUE'
+)
 ```
+
+![img](./img/3.3.png)
+
+SDO_ANYINTERACT zwraca szerszy zbiór wyników, również te parki, które przecinają granicę ze stanem Wyoming, podczas gdy SDO_INSIDE ogranicza wynik tylko do obiektów wewnętrznych.
 
 # Zadanie 4
 
@@ -319,6 +322,12 @@ WHERE c.id IN
 ```
 
 ![Opis obrazka](./img/4.png)
+
+Zapytanie g1 zwraca wszystkie hrabstwa znajdujące się w New Hampshire - całkowicie wewnętrzne (INSIDE) oraz te, które mogą leżeć na granicy stanu (COVEREDBY).
+
+Zapytanie g2 zawiera tylko te hrabstwa, które w pełni są zawarte wewnątrz stanu New Hampshire.
+
+Zapytanie g3 zwraca hrabstwa, które mają kontakt graniczny ze stanem New Hampshire - stykają się z granicą stanu, ale nie mają wspólnego wnętrza.
 
 # Zadanie 5
 
@@ -408,11 +417,52 @@ WHERE i.interstate = 'I4';
 
 ![Opis obrazka](./img/6.png)
 
+SDO_NN - znajdź najbliższe obiekty geograficzne
+
 Dodatkowo:
 
 a) Podaj 3 parki narodowe do których jest najbliżej z Nowego Jorku, oblicz odległości do tych parków
 
+```sql
+SELECT p.name,
+       p.geom,
+       SDO_NN_DISTANCE(1) AS distance_km
+FROM us_parks p,
+     us_cities c
+WHERE c.city = 'New York'
+  AND c.state_abrv = 'NY'
+  AND SDO_NN(
+        p.geom,
+        c.location,
+        'sdo_num_res=3 unit=km',
+        1
+      ) = 'TRUE'
+ORDER BY distance_km;
+```
+
+![Opis obrazka](./img/6a.png)
+
 b) Znajdz 5 najbliższych dużych miast (o populacji powyżej 300 tys) od drogi  'I170'
+
+```sql
+SELECT *
+FROM (
+    SELECT c.city,
+           c.state_abrv,
+           c.pop90,
+           c.location
+    FROM us_cities c,
+         us_interstates i
+    WHERE i.interstate = 'I170'
+      AND c.pop90 > 300000
+      AND SDO_NN(c.location, i.geom) = 'TRUE'
+)
+WHERE ROWNUM <= 5;
+```
+
+![Opis obrazka](./img/6b.png)
+
+WHERE ROWNUM <= 5 jako znane LIMIT 5, żeby ograniczyć liczbę wyświetlanych wyników. Jeżeli damy ograniczenie do środka SDO_NN to potem sprawdzany jest warunek populacji przez co zmniejsza się liczba wierszy w wyniku - nie otrzymujemy 5.
 
 c)  Itp. (własne przykłady).
 
@@ -424,9 +474,50 @@ c)  Itp. (własne przykłady).
 > Wyniki, zrzut ekranu, komentarz
 > (dla każdego z podpunktów)
 
+Wyniki nowych funkcji porównane z oryginalnymi granicami Florydy.
+
 ```sql
---  ...
+SELECT SDO_GEOM.SDO_CONVEXHULL(geom, 0.005) AS geom
+FROM us_states
+WHERE state = 'Florida';
 ```
+
+![Opis obrazka](./img/6c1.png)
+
+SDO_CONVEXHULL tworzy wypukłą otoczkę Florydy, czyli najmniejszy wypukły wielokąt zawierający cały stan.
+
+```sql
+SELECT SDO_GEOM.SDO_MBR(geom) AS geom
+FROM us_states
+WHERE state = 'Florida';
+```
+
+![Opis obrazka](./img/6c2.png)
+
+SDO_MBR zwraca minimalny prostokąt obejmujący całą Florydę.
+
+```sql
+SELECT SDO_GEOM.SDO_CENTROID(s.geom, 0.005) AS geom
+FROM us_states s
+WHERE state = 'Florida';
+```
+
+![Opis obrazka](./img/6c3.png)
+
+SDO_CENTROID wyznacza geometryczny środek Florydy.
+
+```sql
+SELECT geom
+FROM (
+    SELECT SDO_GEOM.SDO_BUFFER(s.geom, 100000, 0.005) AS geom
+    FROM us_states s
+    WHERE s.state = 'Florida'
+
+```
+
+![Opis obrazka](./img/6c4.png)
+
+SDO_BUFFER tworzy strefę buforową wokół Florydy w zadanej odległości - w przykładadzie wybrana duża wawrtość, żeby była dobrze widoczna.
 
 # Zadanie 7
 
