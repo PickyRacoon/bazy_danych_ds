@@ -1,9 +1,8 @@
-
 # Raport
 
-# Przetwarzanie i analiza danych przestrzennych 
-# Oracle spatial
+# Przetwarzanie i analiza danych przestrzennych
 
+# Oracle spatial
 
 ---
 
@@ -11,7 +10,7 @@
 
 Karolina Węgrzyn, Patrycja Markiewicz
 
---- 
+---
 
 Celem ćwiczenia jest zapoznanie się ze sposobem przechowywania, przetwarzania i analizy danych przestrzennych w bazach danych
 (na przykładzie systemu Oracle spatial)
@@ -19,6 +18,7 @@ Celem ćwiczenia jest zapoznanie się ze sposobem przechowywania, przetwarzani
 Swoje odpowiedzi wpisuj w miejsca oznaczone jako:
 
 ---
+
 > Wyniki, zrzut ekranu, komentarz
 
 ```sql
@@ -36,6 +36,7 @@ Raport należy przesłać w formacie pdf.
 Należy też dołączyć raport zawierający kod w formacie źródłowym.
 
 Np.
+
 - plik tekstowy .sql z kodem poleceń
 - plik .md zawierający kod wersji tekstowej
 - notebook programu jupyter – plik .ipynb
@@ -52,63 +53,72 @@ Zwizualizuj przykładowe dane
 
 US_STATES
 
-
 > Wyniki, zrzut ekranu, komentarz
 
 ```sql
---  ...
+select * from us_states
 ```
 
+![img](./img/1.1.png)
 
 US_INTERSTATES
 
-
 > Wyniki, zrzut ekranu, komentarz
 
 ```sql
---  ...
+select * from us_interstates
 ```
 
+![img](./img/1.2.png)
+![img](./img/1.3.png)
 
 US_CITIES
 
-
 > Wyniki, zrzut ekranu, komentarz
 
 ```sql
---  ...
+select * from us_cities
 ```
 
+![img](./img/1.4.png)
+
+```sql
+select * from us_cities
+where state_abrv = 'FL'
+```
+
+![img](./img/1.5.png)
 
 US_RIVERS
 
-
 > Wyniki, zrzut ekranu, komentarz
 
 ```sql
---  ...
+select * from us_rivers
 ```
 
+![img](./img/1.6.png)
 
 US_COUNTIES
 
-
 > Wyniki, zrzut ekranu, komentarz
 
-```sqlIdeConnections%2523K1student//STUDENT/XML+SCHEMA
---  ...
+```sql
+select * from us_counties
 ```
 
+![img](./img/1.7.png)
 
 US_PARKS
-
 
 > Wyniki, zrzut ekranu, komentarz
 
 ```sql
---  ...
+select * from us_parks
+where id < 50
 ```
 
+![img](./img/1.8.png)
 
 # Zadanie 2
 
@@ -125,14 +135,11 @@ sdo_ordinate_array ( -117.0, 40.0, -90., 44.0)) g
 FROM dual
 ```
 
-
-
 > Wyniki, zrzut ekranu, komentarz
 
 ```sql
 --  ...
 ```
-
 
 Użyj funkcji SDO_FILTER
 
@@ -147,15 +154,13 @@ sdo_ordinate_array ( -117.0, 40.0, -90., 44.0))
 
 Zwróć uwagę na liczbę zwróconych wierszy (16)
 
-
 > Wyniki, zrzut ekranu, komentarz
 
 ```sql
 --  ...
 ```
 
-
-Użyj funkcji  SDO_ANYINTERACT
+Użyj funkcji SDO_ANYINTERACT
 
 ```sql
 SELECT state, geom FROM us_states
@@ -169,7 +174,6 @@ sdo_ordinate_array ( -117.0, 40.0, -90., 44.0))
 Porównaj wyniki sdo_filter i sdo_anyinteract
 
 Pokaż wynik na mapie
-
 
 > Wyniki, zrzut ekranu, komentarz
 
@@ -193,38 +197,32 @@ WHERE s.state = 'Wyoming'
 W przypadku wykorzystywania narzędzia SQL Developer, w celu wizualizacji na mapie użyj podzapytania
 
 ```sql
-SELECT pp.name, pp.geom FROM us_parks pp  
-WHERE id IN  
-(  
-      SELECT p.id  
-      FROM us_parks p, us_states s  
-      WHERE s.state = 'Wyoming'  
-            AND SDO_INSIDE (p.geom, s.geom ) = 'TRUE'  
+SELECT pp.name, pp.geom FROM us_parks pp
+WHERE id IN
+(
+      SELECT p.id
+      FROM us_parks p, us_states s
+      WHERE s.state = 'Wyoming'
+            AND SDO_INSIDE (p.geom, s.geom ) = 'TRUE'
 )
 ```
-
-
 
 > Wyniki, zrzut ekranu, komentarz
 
 ```sql
 --  ...
 ```
-
 
 ```sql
 SELECT state, geom FROM us_statesIdeConnections%2523K1student//STUDENT/QUEUE+TABLE
 WHERE state = 'Wyoming'
 ```
 
-
-
 > Wyniki, zrzut ekranu, komentarz
 
 ```sql
 --  ...
 ```
-
 
 Porównaj wynik z:
 
@@ -237,14 +235,11 @@ AND SDO_ANYINTERACT (p.geom, s.geom ) = 'TRUE';
 
 W celu wizualizacji użyj podzapytania
 
-
-
 > Wyniki, zrzut ekranu, komentarz
 
 ```sql
 --  ...
 ```
-
 
 # Zadanie 4
 
@@ -326,6 +321,7 @@ WHERE c.id IN
           ) = 'TRUE'
 );
 ```
+
 ![Opis obrazka](./img/4.png)
 
 # Zadanie 5
@@ -341,18 +337,16 @@ WHERE interstate = 'I4'
 SELECT * FROM us_states
 WHERE state_abrv = 'FL'
 
-SELECT c.city, c.state_abrv, c.location 
+SELECT c.city, c.state_abrv, c.location
 FROM us_cities c
-WHERE ROWID IN 
-( 
+WHERE ROWID IN
+(
 SELECT c.rowid
-FROM us_interstates i, us_cities c 
+FROM us_interstates i, us_cities c
 WHERE i.interstate = 'I4'
 AND sdo_within_distance (c.location, i.geom,'distance=50 unit=mile') = 'TRUE'
 )
 ```
-
-
 
 > Wyniki, zrzut ekranu, komentarz
 
@@ -360,16 +354,13 @@ AND sdo_within_distance (c.location, i.geom,'distance=50 unit=mile') = 'TRUE'
 --  ...
 ```
 
-
 Dodatkowo:
-
 
 a)    Znajdz wszystkie drogi które przecinają rzekę Mississippi
 
 b)    Znajdz wszystkie miasta w odlegości od 15 do 30 mil od drogi 'I275'
 
 c)      Itp. (własne przykłady)
-
 
 > Wyniki, zrzut ekranu, komentarz
 > (dla każdego z podpunktów)
@@ -384,12 +375,12 @@ Znajdz 5 miast najbliższych drogi I4
 
 ```sql
 SELECT c.city, c.state_abrv, c.location
-FROM us_interstates i, us_cities c 
+FROM us_interstates i, us_cities c
 WHERE i.interstate = 'I4'
 AND sdo_nn(c.location, i.geom, 'sdo_num_res=5') = 'TRUE';
 ```
 
->Wyniki, zrzut ekranu, komentarz
+> Wyniki, zrzut ekranu, komentarz
 
 ```sql
 --- map fl
@@ -423,17 +414,16 @@ WHERE i.interstate = 'I4';
 
 Dodatkowo:
 
-
 a) Podaj 3 parki narodowe do których jest najbliżej z Nowego Jorku, oblicz odległości do tych parków
 
 b) Znajdz 5 najbliższych dużych miast (o populacji powyżej 300 tys) od drogi  'I170'
 
-c)  Itp. (własne przykłady). 
-- np. przetestuj działanie funkcji 
-	- sdo_intersection, sdo_union, sdo_difference
-	- sdo_buffer
-	- sdo_centroid, sdo_mbr, sdo_convexhull, sdo_simplify
+c)  Itp. (własne przykłady).
 
+- np. przetestuj działanie funkcji
+  - sdo_intersection, sdo_union, sdo_difference
+  - sdo_buffer
+  - sdo_centroid, sdo_mbr, sdo_convexhull, sdo_simplify
 
 > Wyniki, zrzut ekranu, komentarz
 > (dla każdego z podpunktów)
@@ -442,13 +432,11 @@ c)  Itp. (własne przykłady).
 --  ...
 ```
 
-
 # Zadanie 7
 
 Wykonaj kilka własnych przykładów/analiz
 
-
->Wyniki, zrzut ekranu, komentarz
+> Wyniki, zrzut ekranu, komentarz
 
 ```sql
 --  ...
