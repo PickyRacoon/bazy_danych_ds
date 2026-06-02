@@ -419,6 +419,8 @@ WHERE i.interstate = 'I4';
 
 ![Opis obrazka](./img/6.png)
 
+SDO_NN - znajdź najbliższe obiekty geograficzne
+
 Dodatkowo:
 
 a) Podaj 3 parki narodowe do których jest najbliżej z Nowego Jorku, oblicz odległości do tych parków
