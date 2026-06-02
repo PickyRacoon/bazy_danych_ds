@@ -561,7 +561,7 @@ FROM (
 
 ![Opis obrazka](./img/66.png)
 
-SDO_INTERSECTION zwraca wspólną część geometrii Iowa oraz prostokąta - pokazuje tylko ten fragment Iowa, który znajduje się w zadanym obszarze. Żółty obaszar pokazany dla referencji.
+SDO_INTERSECTION zwraca wspólną część geometrii Iowy oraz prostokąta - pokazuje tylko ten fragment Iowa, który znajduje się w zadanym obszarze. Żółty obaszar pokazany dla referencji.
 
 ```sql
 SELECT geom
