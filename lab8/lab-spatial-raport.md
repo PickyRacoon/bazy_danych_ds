@@ -324,6 +324,13 @@ WHERE c.id IN
 
 ![Opis obrazka](./img/4.png)
 
+Zapytanie g1 zwraca wszystkie hrabstwa znajdujące się w New Hampshire - całkowicie wewnętrzne (INSIDE) oraz te, które mogą leżeć na granicy stanu (COVEREDBY).
+
+Zapytanie g2 zawiera tylko te hrabstwa, które w pełni są zawarte wewnątrz stanu New Hampshire.
+
+Zapytanie g3 zwraca hrabstwa, które mają kontakt graniczny ze stanem New Hampshire -  stykają się z granicą stanu, ale nie mają wspólnego wnętrza.
+
+
 # Zadanie 5
 
 Znajdź wszystkie miasta w odległości 50 mili od drogi (us_interstates) I4
