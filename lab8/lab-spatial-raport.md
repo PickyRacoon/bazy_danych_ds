@@ -476,6 +476,8 @@ c)  Itp. (własne przykłady).
 > Wyniki, zrzut ekranu, komentarz
 > (dla każdego z podpunktów)
 
+Wyniki nowych funkcji porównane z oryginalnymi granicami Florydy. 
+
 ```sql
 SELECT SDO_GEOM.SDO_CONVEXHULL(geom, 0.005) AS geom
 FROM us_states
@@ -483,6 +485,8 @@ WHERE state = 'Florida';
 ```
 
 ![Opis obrazka](./img/6c1.png)
+
+SDO_CONVEXHULL tworzy wypukłą otoczkę Florydy, czyli najmniejszy wypukły wielokąt zawierający cały stan. 
 
 ```sql
 SELECT SDO_GEOM.SDO_MBR(geom) AS geom
@@ -492,6 +496,7 @@ WHERE state = 'Florida';
 
 ![Opis obrazka](./img/6c2.png)
 
+SDO_MBR zwraca minimalny prostokąt obejmujący całą Florydę.
 
 ```sql
 SELECT SDO_GEOM.SDO_CENTROID(s.geom, 0.005) AS geom
@@ -500,6 +505,8 @@ WHERE state = 'Florida';
 ```
 
 ![Opis obrazka](./img/6c3.png)
+
+SDO_CENTROID wyznacza geometryczny środek Florydy.
 
 # Zadanie 7
 
