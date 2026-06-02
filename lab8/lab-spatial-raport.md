@@ -156,7 +156,7 @@ Zwróć uwagę na liczbę zwróconych wierszy (16)
 
 ![img](./img/22.png)
 
-SDO_FILTER zwraca wszystkie obiekty, których obwiednia (MBR) przecina się z podanym prostokątem, więc daje wynik szybciej, ale mniej dokładnie. W efekcie może zwrócić więcej stanów (jak w tym przypadku 16), bo uwzględnia potencjalne przecięcia.
+SDO_FILTER zwraca wszystkie obiekty, których minimalny prostokąt (MBR) przecina się z podanym prostokątem - daje wynik szybciej, ale mniej dokładnie. W efekcie zweraca więcej stanów, w tym przypadku 16.
 
 Użyj funkcji SDO_ANYINTERACT
 
@@ -177,7 +177,7 @@ Pokaż wynik na mapie
 
 ![img](./img/23.png)
 
-SDO_ANYINTERACT sprawdza rzeczywiste przecięcie geometrii, więc zwraca dokładniejsze wyniki - tylko te stany, które faktycznie mają kontakt z prostokątem. Jest ich mniej niż dla SDO_FILTER w tym przykładzie.
+SDO_ANYINTERACT sprawdza rzeczywiste przecięcie geometrii, więc zwraca dokładniejsze wyniki - tylko te stany, które faktycznie mają kontakt z prostokątem. Jest ich mniej (14) niż dla SDO_FILTER w tym przykładzie.
 
 # Zadanie 3
 
@@ -512,12 +512,77 @@ FROM (
     SELECT SDO_GEOM.SDO_BUFFER(s.geom, 100000, 0.005) AS geom
     FROM us_states s
     WHERE s.state = 'Florida'
-
+)
 ```
 
 ![Opis obrazka](./img/6c4.png)
 
 SDO_BUFFER tworzy strefę buforową wokół Florydy w zadanej odległości - w przykładadzie wybrana duża wawrtość, żeby była dobrze widoczna.
+
+Teraz będziemy porównywać wyniki zapytań między zadaną geometrią a wybranym stanem.
+
+```sql
+SELECT geom
+FROM (
+    SELECT SDO_GEOM.SDO_UNION(
+             s.geom,
+             sdo_geometry(
+               2003, 8307, NULL,
+               sdo_elem_info_array(1,1003,3),
+               sdo_ordinate_array(-117.0, 40.0, -90.0, 44.0)
+             ),
+             0.005
+           ) AS geom
+    FROM us_states s
+    WHERE s.state = 'Florida'
+)
+```
+
+![Opis obrazka](./img/65.png)
+
+SDO_UNION łączy geometrię stanu Florida z zadanym prostokątem. Wynikiem jest jeden obiekt, który obejmuje oba obszary.
+
+```sql
+SELECT geom
+FROM (
+    SELECT SDO_GEOM.SDO_INTERSECTION(
+             s.geom,
+             sdo_geometry(
+               2003, 8307, NULL,
+               sdo_elem_info_array(1,1003,3),
+               sdo_ordinate_array(-117.0, 40.0, -90.0, 44.0)
+             ),
+             0.005
+           ) AS geom
+    FROM us_states s
+    WHERE s.state = 'Iowa'
+)
+```
+
+![Opis obrazka](./img/66.png)
+
+SDO_INTERSECTION zwraca wspólną część geometrii Iowy oraz prostokąta - pokazuje tylko ten fragment Iowa, który znajduje się w zadanym obszarze. Żółty obaszar pokazany dla referencji.
+
+```sql
+SELECT geom
+FROM (
+    SELECT SDO_GEOM.SDO_DIFFERENCE(
+             sdo_geometry(
+               2003, 8307, NULL,
+               sdo_elem_info_array(1,1003,3),
+               sdo_ordinate_array(-117.0, 40.0, -90.0, 44.0)
+             ),
+             s.geom,
+             0.005
+           ) AS geom
+    FROM us_states s
+    WHERE s.state = 'Iowa'
+)
+```
+
+![Opis obrazka](./img/67.png)
+
+SDO_DIFFERENCE pokazuje obszar prostokąta minus Iowy.
 
 # Zadanie 7
 
