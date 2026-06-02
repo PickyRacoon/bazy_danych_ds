@@ -9,6 +9,8 @@
 
 **Imiona i nazwiska:**
 
+Karolina Węgrzyn, Patrycja Markiewicz
+
 --- 
 
 Celem ćwiczenia jest zapoznanie się ze sposobem przechowywania, przetwarzania i analizy danych przestrzennych w bazach danych
