@@ -135,11 +135,7 @@ sdo_ordinate_array ( -117.0, 40.0, -90., 44.0)) g
 FROM dual
 ```
 
-> Wyniki, zrzut ekranu, komentarz
-
-```sql
---  ...
-```
+![img](./img/2.1.png)
 
 Użyj funkcji SDO_FILTER
 
@@ -156,9 +152,7 @@ Zwróć uwagę na liczbę zwróconych wierszy (16)
 
 > Wyniki, zrzut ekranu, komentarz
 
-```sql
---  ...
-```
+![img](./img/2.2.png)
 
 Użyj funkcji SDO_ANYINTERACT
 
@@ -171,15 +165,17 @@ sdo_ordinate_array ( -117.0, 40.0, -90., 44.0))
 ) = 'TRUE';
 ```
 
+![img](./img/2.3.png)
+
 Porównaj wyniki sdo_filter i sdo_anyinteract
 
 Pokaż wynik na mapie
 
-> Wyniki, zrzut ekranu, komentarz
+![img](./img/2.4.png)
 
-```sql
---  ...
-```
+Porównaj wyniki sdo_filter i sdo_anyinteract
+
+Jak widać mamy różnicę dwóch stanów 16 dla sdo_filter vs 14 dla sdo_anyinteract. Wynika to z faktu, że dla dwóch stanów ich uproszczone prostokąty otaczające (MBR) nakładały się na nasz poszukiwany obszar, ale ich rzeczywiste terytoria znajdowały się obok niego.
 
 # Zadanie 3
 
