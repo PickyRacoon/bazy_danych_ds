@@ -425,7 +425,44 @@ Dodatkowo:
 
 a) Podaj 3 parki narodowe do których jest najbliżej z Nowego Jorku, oblicz odległości do tych parków
 
+```sql
+SELECT p.name,
+       p.geom,
+       SDO_NN_DISTANCE(1) AS distance_km
+FROM us_parks p,
+     us_cities c
+WHERE c.city = 'New York'
+  AND c.state_abrv = 'NY'
+  AND SDO_NN(
+        p.geom,
+        c.location,
+        'sdo_num_res=3 unit=km',
+        1
+      ) = 'TRUE'
+ORDER BY distance_km;
+```
+
+![Opis obrazka](./img/6a.png)
+
 b) Znajdz 5 najbliższych dużych miast (o populacji powyżej 300 tys) od drogi  'I170'
+
+```sql
+SELECT *
+FROM (
+    SELECT c.city,
+           c.state_abrv,
+           c.pop90,
+           c.location
+    FROM us_cities c,
+         us_interstates i
+    WHERE i.interstate = 'I170'
+      AND c.pop90 > 300000
+      AND SDO_NN(c.location, i.geom) = 'TRUE'
+)
+WHERE ROWNUM <= 5;
+```
+
+![Opis obrazka](./img/6b.png)
 
 c)  Itp. (własne przykłady).
 
