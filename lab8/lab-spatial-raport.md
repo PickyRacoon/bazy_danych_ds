@@ -477,8 +477,29 @@ c)  Itp. (własne przykłady).
 > (dla każdego z podpunktów)
 
 ```sql
---  ...
+SELECT SDO_GEOM.SDO_CONVEXHULL(geom, 0.005) AS geom
+FROM us_states
+WHERE state = 'Florida';
 ```
+
+![Opis obrazka](./img/6c1.png)
+
+```sql
+SELECT SDO_GEOM.SDO_MBR(geom) AS geom
+FROM us_states
+WHERE state = 'Florida';
+```
+
+![Opis obrazka](./img/6c2.png)
+
+
+```sql
+SELECT SDO_GEOM.SDO_CENTROID(s.geom, 0.005) AS geom
+FROM us_states s
+WHERE state = 'Florida';
+```
+
+![Opis obrazka](./img/6c3.png)
 
 # Zadanie 7
 
