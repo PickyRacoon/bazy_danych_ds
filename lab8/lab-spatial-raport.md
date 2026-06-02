@@ -93,7 +93,7 @@ US_COUNTIES
 
 > Wyniki, zrzut ekranu, komentarz
 
-```sql
+```sqlIdeConnections%2523K1student//STUDENT/XML+SCHEMA
 --  ...
 ```
 
@@ -267,8 +267,6 @@ AND SDO_RELATE ( c.geom,s.geom, 'mask=COVEREDBY') = 'TRUE';
 
 W przypadku wykorzystywania narzędzia SQL Developer, w celu wizualizacji danych na mapie należy użyć podzapytania (podobnie jak w poprzednim zadaniu)
 
-
-
 > Wyniki, zrzut ekranu, komentarz
 
 ```sql
@@ -326,8 +324,7 @@ WHERE c.id IN
           ) = 'TRUE'
 );
 ```
-
-
+![Opis obrazka](./img/4.png)
 
 # Zadanie 5
 
