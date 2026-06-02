@@ -156,7 +156,7 @@ Zwróć uwagę na liczbę zwróconych wierszy (16)
 
 ![img](./img/22.png)
 
-SDO_FILTER zwraca wszystkie obiekty, których obwiednia (MBR) przecina się z podanym prostokątem, więc daje wynik szybciej, ale mniej dokładnie. W efekcie może zwrócić więcej stanów (jak w tym przypadku 16), bo uwzględnia potencjalne przecięcia.
+SDO_FILTER zwraca wszystkie obiekty, których minimalny prostokąt (MBR) przecina się z podanym prostokątem - daje wynik szybciej, ale mniej dokładnie. W efekcie zweraca więcej stanów, w tym przypadku 16.
 
 Użyj funkcji SDO_ANYINTERACT
 
@@ -177,7 +177,7 @@ Pokaż wynik na mapie
 
 ![img](./img/23.png)
 
-SDO_ANYINTERACT sprawdza rzeczywiste przecięcie geometrii, więc zwraca dokładniejsze wyniki - tylko te stany, które faktycznie mają kontakt z prostokątem. Jest ich mniej niż dla SDO_FILTER w tym przykładzie.
+SDO_ANYINTERACT sprawdza rzeczywiste przecięcie geometrii, więc zwraca dokładniejsze wyniki - tylko te stany, które faktycznie mają kontakt z prostokątem. Jest ich mniej (14) niż dla SDO_FILTER w tym przykładzie.
 
 # Zadanie 3
 
