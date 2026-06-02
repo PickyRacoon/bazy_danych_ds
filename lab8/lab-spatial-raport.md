@@ -390,9 +390,34 @@ AND sdo_nn(c.location, i.geom, 'sdo_num_res=5') = 'TRUE';
 >Wyniki, zrzut ekranu, komentarz
 
 ```sql
---  ...
+--- map fl
+SELECT s.state,
+       s.geom
+FROM us_states s
+WHERE s.state = 'Florida';
+
+--- map city
+SELECT c.city,
+       c.state_abrv,
+       c.location
+FROM us_cities c
+WHERE c.id IN
+(
+    SELECT c2.id
+    FROM us_cities c2,
+         us_interstates i
+    WHERE i.interstate = 'I4'
+      AND SDO_NN(c2.location, i.geom, 'sdo_num_res=5') = 'TRUE'
+);
+
+--- road
+SELECT i.interstate,
+       i.geom
+FROM us_interstates i
+WHERE i.interstate = 'I4';
 ```
 
+![Opis obrazka](./img/6.png)
 
 Dodatkowo:
 
