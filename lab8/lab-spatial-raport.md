@@ -464,6 +464,8 @@ WHERE ROWNUM <= 5;
 
 ![Opis obrazka](./img/6b.png)
 
+WHERE ROWNUM <= 5 jako znane LIMIT 5, żeby ograniczyć liczbę wyświetlanych wyników. Jeżeli damy ograniczenie do środka SDO_NN to potem sprawdzany jest warunek populacji przez co zmniejsza się liczba wierszy w wyniku - nie otrzymujemy 5.
+
 c)  Itp. (własne przykłady).
 
 - np. przetestuj działanie funkcji
