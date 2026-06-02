@@ -211,7 +211,7 @@ WHERE id IN
 
 
 ```sql
-SELECT state, geom FROM us_states
+SELECT state, geom FROM us_statesIdeConnections%2523K1student//STUDENT/QUEUE+TABLE
 WHERE state = 'Wyoming'
 ```
 
@@ -272,8 +272,62 @@ W przypadku wykorzystywania narzędzia SQL Developer, w celu wizualizacji danych
 > Wyniki, zrzut ekranu, komentarz
 
 ```sql
---  ...
+--- map g1
+SELECT c.county,
+       c.state_abrv,
+       c.geom
+FROM us_counties c
+WHERE c.id IN
+(
+    SELECT c2.id
+    FROM us_counties c2,
+         us_states s
+    WHERE s.state = 'New Hampshire'
+      AND SDO_RELATE(
+            c2.geom,
+            s.geom,
+            'mask=INSIDE+COVEREDBY'
+          ) = 'TRUE'
+);
+
+--- map g2
+SELECT c.county,
+       c.state_abrv,
+       c.geom
+FROM us_counties c
+WHERE c.id IN
+(
+    SELECT c2.id
+    FROM us_counties c2,
+         us_states s
+    WHERE s.state = 'New Hampshire'
+      AND SDO_RELATE(
+            c2.geom,
+            s.geom,
+            'mask=INSIDE'
+          ) = 'TRUE'
+);
+
+--- map g3
+SELECT c.county,
+       c.state_abrv,
+       c.geom
+FROM us_counties c
+WHERE c.id IN
+(
+    SELECT c2.id
+    FROM us_counties c2,
+         us_states s
+    WHERE s.state = 'New Hampshire'
+      AND SDO_RELATE(
+            c2.geom,
+            s.geom,
+            'mask=TOUCH'
+          ) = 'TRUE'
+);
 ```
+
+
 
 # Zadanie 5
 
