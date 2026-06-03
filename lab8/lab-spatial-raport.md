@@ -355,24 +355,90 @@ AND sdo_within_distance (c.location, i.geom,'distance=50 unit=mile') = 'TRUE'
 
 > Wyniki, zrzut ekranu, komentarz
 
-```sql
---  ...
-```
+![img](./img/5.1.png)
+
+SDO_WITHIN_DISTANCE wyszukuje obiekty znajdujące się w zadanym promieniu od geometrii bazowej. Użycie podzapytania z ROWID pozwala na poprawne wyświetlenie warstwy w Map View.
 
 Dodatkowo:
 
-a)    Znajdz wszystkie drogi które przecinają rzekę Mississippi
+a)    Znajdz wszystkie drogi które przecinają rzekę
+
+```sql
+SELECT * FROM us_states
+
+SELECT * FROM us_rivers
+WHERE name = 'Mississippi'
+
+SELECT i.interstate, i.geom
+FROM us_interstates i
+WHERE ROWID IN
+(
+    SELECT i.rowid
+    FROM us_rivers r, us_interstates i
+    WHERE r.name = 'Mississippi'
+    AND SDO_ANYINTERACT (i.geom, r.geom) = 'TRUE'
+)
+```
+
+![img](./img/5a.png)
+
+SDO_ANYINTERACT sprawdza czy obiekty wchodzą w jakąkolwiek relację przestrzenną, w tym przypadku szukamy dróg, które fizycznie przecinają linię rzeki.
 
 b)    Znajdz wszystkie miasta w odlegości od 15 do 30 mil od drogi 'I275'
 
+```sql
+SELECT * FROM us_states
+
+SELECT * FROM us_interstates
+WHERE interstate = 'I275'
+
+SELECT c.city, c.state_abrv, c.location
+FROM us_cities c
+WHERE ROWID IN
+(
+    SELECT c.rowid
+    FROM us_interstates i, us_cities c
+    WHERE i.interstate = 'I275'
+    AND SDO_WITHIN_DISTANCE(c.location, i.geom, 'distance=30 unit=mile') = 'TRUE'
+)
+AND ROWID NOT IN
+(
+    SELECT c.rowid
+    FROM us_interstates i, us_cities c
+    WHERE i.interstate = 'I275'
+    AND SDO_WITHIN_DISTANCE(c.location, i.geom, 'distance=15 unit=mile') = 'TRUE'
+)
+```
+
+![img](./img/5b.png)
+
+Połączenie dwóch warunków SDO_WITHIN_DISTANCE przy pomocy IN oraz NOT IN pozwala wyznaczyć obszar, w którym wykluczamy miasta leżące bliżej niż 15 mil od autostrady.
+
 c)      Itp. (własne przykłady)
 
-> Wyniki, zrzut ekranu, komentarz
-> (dla każdego z podpunktów)
+Znajdziemy wszystkie parki znajdujące się w promieniu 100 mil od Los Angeles.
 
 ```sql
---  ...
+SELECT * FROM us_states
+WHERE state_abrv = 'CA'
+
+SELECT * FROM us_cities
+WHERE city = 'Los Angeles'
+AND state_abrv = 'CA'
+
+SELECT p.name, p.geom
+FROM us_parks p
+WHERE ROWID IN (
+    SELECT p.rowid
+    FROM us_parks p, us_cities c
+    WHERE c.city = 'Los Angeles' AND c.state_abrv = 'CA'
+    AND SDO_WITHIN_DISTANCE(p.geom, c.location, 'distance=100 unit=mile') = 'TRUE'
+)
 ```
+
+![img](./img/5c.png)
+
+SDO_WITHIN_DISTANCE wyznacza odległość między geometrią punktową (miasto) a poligonową (park).
 
 # Zadanie 6
 
