@@ -656,9 +656,102 @@ Wykonaj kilka własnych przykładów/analiz
 
 > Wyniki, zrzut ekranu, komentarz
 
-```sql
---  ...
+Wizualizacje i analizy w Jupyter Notebook'u.
+Połączenie z bazą:
+
+```python
+import oracledb
+import folium
+import geojson
+
+cs = oracledb.makedsn("dbmanage.lab.ii.agh.edu.pl", 1521, sid="DBMANAGE")
+c = oracledb.connect(user="student", password="stu638dent", dsn=cs)
+cursor = c.cursor()
+cursor.execute("ALTER SESSION SET CURRENT_SCHEMA = US_SPAT")
 ```
+
+a) Parki znajdujące się do 20 mil od autostrady I90
+
+```python
+m1 = folium.Map(location=[44, -100], zoom_start=4)
+
+q_road = "SELECT sdo_util.to_geojson(geom) FROM us_interstates WHERE interstate = 'I90'"
+r_road = cursor.execute(q_road).fetchall()
+f_road = [geojson.Feature(geometry=geojson.loads(row[0].read())) for row in r_road]
+folium.GeoJson(geojson.FeatureCollection(f_road), style_function=lambda x: {'color': 'blue'}).add_to(m1)
+
+q_parks = """
+SELECT sdo_util.to_geojson(p.geom)
+FROM us_parks p, us_interstates i
+WHERE i.interstate = 'I90'
+AND SDO_WITHIN_DISTANCE(p.geom, i.geom, 'distance=20 unit=mile') = 'TRUE'
+"""
+r_parks = cursor.execute(q_parks).fetchall()
+f_parks = [geojson.Feature(geometry=geojson.loads(row[0].read())) for row in r_parks]
+folium.GeoJson(geojson.FeatureCollection(f_parks), style_function=lambda x: {'color': 'green'}).add_to(m1)
+
+m1
+```
+
+![img](./img/7a.png)
+
+SDO_WITHIN_DISTANCE wyszukuje parki w promieniu 20 mil od autostrady. Funkcja sdo_util.to_geojson konwertuje geometrię prosto z bazy na format czytelny dla biblioteki folium.
+
+b) Miasta powyżej 100 tys. mieszkańców leżące w strefie do 10 mil od rzeki Mississippi
+
+```python
+m2 = folium.Map(location=[35, -90], zoom_start=5)
+
+q_river = "SELECT sdo_util.to_geojson(geom) FROM us_rivers WHERE name = 'Mississippi'"
+r_river = cursor.execute(q_river).fetchall()
+f_river = [geojson.Feature(geometry=geojson.loads(row[0].read())) for row in r_river]
+folium.GeoJson(geojson.FeatureCollection(f_river), style_function=lambda x: {'color': 'cyan', 'weight': 4}).add_to(m2)
+
+q_cities = """
+SELECT sdo_util.to_geojson(c.location)
+FROM us_cities c, us_rivers r
+WHERE r.name = 'Mississippi' AND c.pop90 > 100000
+AND SDO_WITHIN_DISTANCE(c.location, r.geom, 'distance=10 unit=mile') = 'TRUE'
+"""
+r_cities = cursor.execute(q_cities).fetchall()
+f_cities = [geojson.Feature(geometry=geojson.loads(row[0].read())) for row in r_cities]
+folium.GeoJson(geojson.FeatureCollection(f_cities), marker=folium.CircleMarker(radius=5, color='red', fill=True)).add_to(m2)
+
+m2
+```
+
+![img](./img/7b.png)
+
+Połączenie warunku na populację z operatorem SDO_WITHIN_DISTANCE. Miasta spełniające oba warunki zostały wyrenderowane punktowo przy uzyciu znacznika CircleMarker na czerwono.
+
+c) 5 największych parków wewnątrz stanu Kalifornia
+
+```python
+m3 = folium.Map(location=[36, -119], zoom_start=6)
+
+q_state = "SELECT sdo_util.to_geojson(geom) FROM us_states WHERE state_abrv = 'CA'"
+f_state = [geojson.Feature(geometry=geojson.loads(row[0].read())) for row in cursor.execute(q_state).fetchall()]
+folium.GeoJson(geojson.FeatureCollection(f_state), style_function=lambda x: {'fillColor': 'yellow', 'color': 'gray', 'weight': 1}).add_to(m3)
+
+q_top_parks = """
+SELECT sdo_util.to_geojson(p.geom)
+FROM us_parks p, us_states s
+WHERE s.state_abrv = 'CA' AND SDO_INSIDE(p.geom, s.geom) = 'TRUE'
+ORDER BY SDO_GEOM.SDO_AREA(p.geom, 0.005, 'unit=SQ_KM') DESC
+FETCH FIRST 5 ROWS ONLY
+"""
+r_top = cursor.execute(q_top_parks).fetchall()
+f_top = [geojson.Feature(geometry=geojson.loads(row[0].read())) for row in r_top]
+folium.GeoJson(geojson.FeatureCollection(f_top), style_function=lambda x: {'fillColor': 'green', 'color': 'black', 'fillOpacity': 0.7}).add_to(m3)
+
+m3
+```
+
+![img](./img/7c.png)
+
+Wykorzystałyśmy SDO_GEOM.SDO_AREA do wyliczenia pola powierzchni w km^2. Pozwoliło to na przesortowanie wyników operatorem ORDER BY i zwrócenie 5 największych parków.
+
+---
 
 Punktacja
 
